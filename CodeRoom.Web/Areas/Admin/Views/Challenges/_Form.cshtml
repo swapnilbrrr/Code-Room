@@ -9,8 +9,10 @@
         </select>
         <span asp-validation-for="CourseId" class="field-error"></span>
     </label>
-    <label class="form-field form-field-wide">Lesson ID (optional)
-        <input class="input" asp-for="LessonId" type="number" min="1" placeholder="Link to a specific lesson" />
+    <label class="form-field form-field-wide">Lesson (optional)
+        <select class="input" asp-for="LessonId" asp-items="ViewBag.Lessons">
+            <option value="">Link to a course-level challenge</option>
+        </select>
         <span asp-validation-for="LessonId" class="field-error"></span>
     </label>
     <label class="form-field form-field-wide">Title
