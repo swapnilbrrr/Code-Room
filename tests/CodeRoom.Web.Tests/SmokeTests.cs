@@ -1,3 +1,5 @@
+using Xunit;
+
 namespace CodeRoom.Web.Tests;
 
 public class SmokeTests
