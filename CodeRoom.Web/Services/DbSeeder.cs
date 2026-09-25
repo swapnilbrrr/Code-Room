@@ -14,6 +14,8 @@ public static class DbSeeder
     {
         await db.Database.EnsureCreatedAsync();
 
+        await UpgradeLegacyDemoDataAsync(db);
+
         if (await db.Users.AnyAsync())
         {
             return;
@@ -24,6 +26,78 @@ public static class DbSeeder
         SeedAnnouncements(db);
 
         await db.SaveChangesAsync();
+    }
+
+    private static async Task UpgradeLegacyDemoDataAsync(ApplicationDbContext db)
+    {
+        var upgrades = new (string LegacyEmail, string Email, string Name, string PasswordHash, string Role)[]
+        {
+            ("superadmin@coderoom.test", "platform.admin@coderoom.test", "Maya Sharma", "100000.u9/V8OI69QKU4Qb2qdggfA==.Fm4nbZCU5LS7bmASYExTd1k4VO7mIxeyNzo7PQdLvBU=", Roles.SuperAdmin),
+            ("admin@coderoom.test", "content.manager@coderoom.test", "Rohan Thapa", "100000.xRwBf1OHMhk1nl12BefrlA==.NuCojoZxgDuQXfx93ja+DLKp7eCXAiuyJybB8/Cnbew=", Roles.Admin),
+            ("student@coderoom.test", "aarav.learner@coderoom.test", "Aarav Karki", "100000.4eo2A1LstZpd0mqYsZ7TVA==.RocQCT2fO+YhMB18FajPAIACjMiYdV6Y6W6BJ8WQPsI=", Roles.Student)
+        };
+
+        var changed = false;
+
+        foreach (var upgrade in upgrades)
+        {
+            var user = await db.Users.FirstOrDefaultAsync(u => u.Email == upgrade.LegacyEmail);
+
+            if (user is not null)
+            {
+                user.Email = upgrade.Email;
+                user.FullName = upgrade.Name;
+                user.PasswordHash = upgrade.PasswordHash;
+                user.Role = upgrade.Role;
+                changed = true;
+                continue;
+            }
+
+            if (!await db.Users.AnyAsync(u => u.Email == upgrade.Email))
+            {
+                db.Users.Add(new User
+                {
+                    Email = upgrade.Email,
+                    FullName = upgrade.Name,
+                    PasswordHash = upgrade.PasswordHash,
+                    Role = upgrade.Role
+                });
+                changed = true;
+            }
+        }
+
+        var lessons = await db.Lessons
+            .Include(l => l.Course)
+            .ToListAsync();
+
+        foreach (var lesson in lessons)
+        {
+            if (lesson.Content.Trim().Length < 260)
+            {
+                lesson.Content = LessonContentBuilder.Build(
+                    lesson.Course.Title,
+                    lesson.Title,
+                    lesson.Order);
+                changed = true;
+            }
+
+            if (lesson.Order == 1 && string.IsNullOrWhiteSpace(lesson.VideoUrl))
+            {
+                lesson.VideoUrl = LessonMediaCatalog.VideoFor(lesson.Course.Title);
+                changed = true;
+            }
+
+            if (lesson.Order == 1 && string.IsNullOrWhiteSpace(lesson.ResourceUrl))
+            {
+                lesson.ResourceUrl = LessonMediaCatalog.ResourceFor(lesson.Course.Title);
+                changed = true;
+            }
+        }
+
+        if (changed)
+        {
+            await db.SaveChangesAsync();
+        }
     }
 
     private static void SeedUsers(ApplicationDbContext db)
