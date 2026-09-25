@@ -9,54 +9,45 @@
   <img src="https://img.shields.io/badge/ASP.NET%20Core-MVC-512BD4?logo=dotnet&logoColor=white" alt="ASP.NET Core MVC" />
   <img src="https://img.shields.io/badge/Entity%20Framework%20Core-8.0-512BD4?logo=dotnet&logoColor=white" alt="Entity Framework Core" />
   <img src="https://img.shields.io/badge/MySQL-8-4479A1?logo=mysql&logoColor=white" alt="MySQL" />
-  <img src="https://img.shields.io/badge/Razor-Views-512BD4" alt="Razor Views" />
   <img src="https://img.shields.io/badge/JavaScript-ES6%2B-F7DF1E?logo=javascript&logoColor=black" alt="JavaScript" />
-</p>
-
-<p align="center">
-  <a href="#features">Features</a> •
-  <a href="#technology-stack">Technology</a> •
-  <a href="#project-structure">Structure</a> •
-  <a href="#run-locally">Run locally</a> •
-  <a href="#development-workflow">Workflow</a>
 </p>
 
 ## Overview
 
-Code-Room is a web-based technology learning platform for students. It is being developed as a university web-application project and as a portfolio project, with an emphasis on clear MVC structure, maintainable code, database-backed learning workflows and practical usability.
+Code-Room is a web-based technology learning platform for students. The project demonstrates ASP.NET Core MVC, MySQL database connectivity, authenticated student activities, administrator content management, form validation and responsive frontend development.
 
-The planned learning experience connects courses, lessons, resources, quizzes and progress tracking. An administrative area will provide controlled content management.
+The learning workflow connects courses, lessons, resources, quizzes, enrolment and progress tracking. An administrative area provides controlled CRUD operations for major content modules.
 
 ## Features
 
 ### Student experience
-- Course browsing and discovery
+- Course browsing, search and filtering
 - Structured lessons
-- Supporting resources and multimedia
-- Course enrollment
+- Supporting resources and multimedia links
+- Course enrolment
 - Lesson completion and progress tracking
 - Quizzes and scored attempts
 - Student dashboard
 - Announcements
 
 ### Administration
-- Course management
-- Lesson management
-- Quiz and question management
-- Resource management
-- Announcements
+- Course CRUD
+- Lesson CRUD
+- Quiz and question CRUD
+- Resource CRUD
+- Announcement CRUD
+- User management with role protection
 - Dashboard statistics
 
-### Quality and usability
+### Quality and security
 - Responsive interface
 - Client-side and server-side validation
-- Secure password handling
+- PBKDF2 password hashing
+- Cookie-based authentication
 - Role-based authorization
-- Automated tests
-- GitHub Actions CI
-- Search and course filtering
-- Progress indicators and quiz history
-- Dark/light theme support planned within the controlled feature scope
+- Anti-forgery protection on state-changing forms
+- Dark/light theme support
+- Safe local database configuration without committed credentials
 
 > **Status:** Active development. Items are treated as complete only after implementation and verification. See [PROJECT-CHECKLIST.md](PROJECT-CHECKLIST.md).
 
@@ -70,61 +61,33 @@ The planned learning experience connects courses, lessons, resources, quizzes an
 | Database | MySQL |
 | ORM | Entity Framework Core + Pomelo |
 | Frontend | Razor, HTML5, CSS3, JavaScript |
-| Testing | xUnit |
-| CI | GitHub Actions |
-| Development | GitHub Codespaces / Dev Container |
+| Development | Visual Studio / .NET CLI |
+| Optional environment | Dev Container |
 
 ## Project Structure
-
-The application is intentionally organised around the MVC responsibilities agreed for Code-Room. Empty folders are kept where a feature will be implemented later so the architecture is visible before the code is filled in.
 
 ```text
 Code-Room/
 ├── .devcontainer/
-│   └── devcontainer.json
 ├── CodeRoom.Web/
-│   ├── Areas/
-│   │   └── Admin/
-│   │       ├── Controllers/
-│   │       └── Views/
-│   │           ├── Dashboard/
-│   │           ├── Courses/
-│   │           ├── Lessons/
-│   │           ├── Quizzes/
-│   │           ├── Users/
-│   │           ├── Resources/
-│   │           └── Announcements/
+│   ├── Areas/Admin/
 │   ├── Controllers/
-│   │   ├── AccountController.cs
-│   │   ├── CoursesController.cs
-│   │   ├── HomeController.cs
-│   │   ├── LessonsController.cs
-│   │   ├── QuizController.cs
-│   │   └── StudentController.cs
 │   ├── Data/
-│   │   └── ApplicationDbContext.cs
-│   ├── Migrations/
 │   ├── Models/
 │   ├── Services/
 │   ├── ViewModels/
 │   ├── Views/
-│   │   ├── Account/
-│   │   ├── Courses/
-│   │   ├── Home/
-│   │   ├── Lessons/
-│   │   ├── Quiz/
-│   │   ├── Shared/
-│   │   └── Student/
 │   ├── wwwroot/
-│   │   ├── css/
-│   │   ├── js/
-│   │   └── images/
+│   ├── Properties/
+│   │   └── launchSettings.json
 │   ├── appsettings.json
+│   ├── appsettings.Development.json.example
 │   ├── CodeRoom.Web.csproj
 │   └── Program.cs
 ├── database/
 │   ├── schema/
-│   └── seed/
+│   ├── seed/
+│   └── setup.sql
 ├── tests/
 ├── CodeRoom.sln
 ├── global.json
@@ -134,68 +97,110 @@ Code-Room/
 
 ## Run Locally
 
-### 1. Open the repository
+### 1. Prerequisites
 
-Open the repository in GitHub Codespaces or clone it locally with the .NET 8 SDK installed.
+Install:
+- .NET 8 SDK
+- MySQL Server 8.x
+- Visual Studio with ASP.NET and web development tools (or the .NET CLI)
 
-The included Dev Container config provides the expected development environment. The repository currently targets the .NET 8 SDK installed by the container image.
+Verify the SDK:
 
-### 2. Verify the SDK
-
-```bash
+```powershell
 dotnet --version
 ```
 
-Expected major version:
+The repository pins the .NET 8 SDK through `global.json`.
 
-```text
-8.0.x
+### 2. Create the Code-Room database
+
+Start MySQL, then run:
+
+```powershell
+mysql -u root -p < database/setup.sql
 ```
 
-### 3. Restore dependencies
+Alternatively, open `database/setup.sql` in MySQL Workbench and execute it.
 
-```bash
+The setup script creates the empty `coderoom` database. The ASP.NET Core application creates the tables and baseline seed data on first startup.
+
+### 3. Configure the connection string safely
+
+Do **not** put your real MySQL password into a tracked file.
+
+The project includes local user-secrets support. From the repository root:
+
+```powershell
+dotnet user-secrets set "ConnectionStrings:DefaultConnection" "server=localhost;port=3306;database=coderoom;user=root;password=YOUR_PASSWORD;TreatTinyAsBoolean=true" --project .CodeRoom.Web
+```
+
+The checked-in `appsettings.Development.json.example` shows the expected connection-string shape.
+
+### 4. Restore and build
+
+```powershell
 dotnet restore
-```
-
-### 4. Build
-
-```bash
 dotnet build
 ```
 
 ### 5. Run
 
-```bash
-dotnet run --project CodeRoom.Web
+```powershell
+dotnet run --project .CodeRoom.Web
 ```
 
-In Codespaces, open the forwarded application port shown in the Ports panel.
+The included development launch profile uses:
 
-### Codespaces troubleshooting
+- HTTP: `http://localhost:5000`
+- HTTPS: `https://localhost:5001`
 
-The Dev Container explicitly configures `TMPDIR`, `TMP` and `TEMP` to use `/tmp`. If the container was created before this configuration was added, use **Codespaces → Rebuild Container** after pulling the latest changes.
+If HTTPS is not trusted yet:
 
-## Database Configuration
+```powershell
+dotnet dev-certs https --trust
+```
 
-Database persistence is being implemented incrementally.
+### 6. Demo accounts
 
-Do not commit database credentials. The tracked `appsettings.json` intentionally contains an empty connection string. During database development, provide `DefaultConnection` through user secrets or environment-specific configuration.
+The first successful startup seeds these demonstration accounts:
 
-Example connection string shape:
+| Role | Email | Password |
+| --- | --- | --- |
+| Super Administrator | `superadmin@coderoom.test` | `SuperAdmin@123` |
+| Administrator | `admin@coderoom.test` | `Admin@123` |
+| Student | `student@coderoom.test` | `Student@123` |
+
+These are project demo credentials only. Change or remove them before any real deployment.
+
+## Database Setup Model
+
+Code-Room is designed so the submitted project can be recreated on another machine without needing the developer's personal MySQL server:
 
 ```text
-server=localhost;port=3306;database=coderoom;user=coderoom;password=YOUR_PASSWORD
+Submitted ZIP
+   |
+   +--> ASP.NET Core application
+   +--> EF Core model configuration
+   +--> database/setup.sql
+   +--> seed logic
+   +--> README setup instructions
+                    |
+                    v
+             Marker/local MySQL
+                    |
+                    v
+          Code-Room creates schema
+          and seeds demo content
 ```
 
-Migrations, seed data and clean database setup are tracked in [PROJECT-CHECKLIST.md](PROJECT-CHECKLIST.md).
+The application uses EF Core's `EnsureCreated` during startup for this assignment so a fresh database can be prepared without requiring a pre-existing schema or migration history.
 
 ## Development Workflow
 
 Implementation follows controlled milestones:
 
 1. Foundation and development environment
-2. Database and EF Core persistence
+2. Database and persistence
 3. Authentication and authorization
 4. Core learning workflows
 5. Administration
@@ -212,7 +217,7 @@ The repository is reviewed before moving between milestones so incomplete demo U
 - Comment intent or non-obvious decisions, not obvious syntax.
 - Keep credentials and secrets out of source control.
 - Test meaningful behaviour before marking a feature complete.
-- Keep the repository free from generated build output and unused template files.
+- Keep generated build output out of the repository.
 
 ## Contributors
 
@@ -223,15 +228,11 @@ The repository is reviewed before moving between milestones so incomplete demo U
 | Member | To be recorded from confirmed group contribution |
 | Member | To be recorded from confirmed group contribution |
 
-Only confirmed contributions should be added here; the table is intentionally not inventing responsibilities.
+Only confirmed contributions should be recorded.
 
 ## Project Control
 
 [PROJECT-CHECKLIST.md](PROJECT-CHECKLIST.md) contains the definition of done, implementation phases and final submission checks.
-
-## Repository Topics / Tags
-
-`aspnet-core` · `csharp` · `dotnet` · `mvc` · `entity-framework-core` · `mysql` · `razor` · `web-application` · `e-learning` · `education` · `github-codespaces`
 
 ## License
 
