@@ -1,3 +1,4 @@
+using CodeRoom.Web.Models;
 using System.ComponentModel.DataAnnotations;
 using CodeRoom.Web.ViewModels.Dashboard;
 
