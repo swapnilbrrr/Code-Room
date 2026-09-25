@@ -117,7 +117,7 @@ The repository pins the .NET 8 SDK through `global.json`.
 Start MySQL, then run:
 
 ```powershell
-mysql -u root -p < database/setup.sql
+Get-Content -Raw .\database\setup.sql | mysql -u root -p
 ```
 
 Alternatively, open `database/setup.sql` in MySQL Workbench and execute it.
