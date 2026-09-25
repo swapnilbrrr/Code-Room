@@ -4,6 +4,7 @@
     var quizId = ViewData["QuizId"] as int?;
     var isAuthenticated = User.Identity?.IsAuthenticated ?? false;
     var resources = ViewData["CourseResources"] as IReadOnlyList<CodeRoom.Web.Models.Resource> ?? [];
+    var isEnrolled = ViewData["IsEnrolled"] as bool? ?? false;
 }
 
 <section class="page-shell">
@@ -39,11 +40,18 @@
 
                 @if (isAuthenticated)
                 {
-                    <form asp-controller="Student" asp-action="Enroll" method="post">
-                        @Html.AntiForgeryToken()
-                        <input type="hidden" name="courseId" value="@Model.Id" />
-                        <button class="btn btn-primary btn-full" type="submit">Enroll &amp; start learning</button>
-                    </form>
+                    @if (isEnrolled)
+                    {
+                        <a class="btn btn-primary btn-full" asp-controller="Lessons" asp-action="Index" asp-route-id="@Model.Id">Continue learning</a>
+                    }
+                    else
+                    {
+                        <form asp-controller="Student" asp-action="Enroll" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="courseId" value="@Model.Id" />
+                            <button class="btn btn-primary btn-full" type="submit">Enroll &amp; start learning</button>
+                        </form>
+                    }
                 }
                 else
                 {
