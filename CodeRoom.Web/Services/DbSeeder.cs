@@ -17,16 +17,15 @@ public static class DbSeeder
 
         await UpgradeLegacyDemoDataAsync(db);
 
-        if (await db.Users.AnyAsync())
+        if (!await db.Users.AnyAsync())
         {
-            return;
+            SeedUsers(db);
+            SeedCatalogue(db);
+            SeedAnnouncements(db);
+            await db.SaveChangesAsync();
         }
 
-        SeedUsers(db);
-        SeedCatalogue(db);
-        SeedAnnouncements(db);
-
-        await db.SaveChangesAsync();
+        await LearningPlatformSeeder.SeedAsync(db);
     }
 
     private static async Task UpgradeLegacyDemoDataAsync(ApplicationDbContext db)
