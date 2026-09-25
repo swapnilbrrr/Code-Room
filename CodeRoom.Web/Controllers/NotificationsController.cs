@@ -23,6 +23,13 @@ public class NotificationsController(ApplicationDbContext db) : Controller
             .OrderByDescending(a => a.PublishedAt)
             .ToListAsync();
 
+        announcements = announcements
+            .Where(a => !notifications.Any(n =>
+                n.Type == "Announcement" &&
+                n.Title == a.Title &&
+                n.Message == a.Message))
+            .ToList();
+
         var items = notifications
             .Select(n => new NotificationItemViewModel
             {
