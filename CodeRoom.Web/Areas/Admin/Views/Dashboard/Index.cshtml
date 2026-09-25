@@ -37,15 +37,20 @@
                 <small>Learning paths started by users</small>
             </article>
             <article class="admin-stat">
-                <span class="admin-stat-label">Quiz activity</span>
+                <span class="admin-stat-label">Assessments</span>
                 <strong>@ViewBag.AttemptCount</strong>
-                <small>@ViewBag.QuizCount quizzes currently configured</small>
+                <small>@ViewBag.QuizCount quizzes configured</small>
+            </article>
+            <article class="admin-stat">
+                <span class="admin-stat-label">Certificates</span>
+                <strong>@ViewBag.CertificateCount</strong>
+                <small>@ViewBag.ChallengeCount practice challenges</small>
             </article>
         </div>
 
         <div class="admin-section-title">
             <h2>Platform management</h2>
-            <span>Users first, then learning content</span>
+            <span>Users, content, assessment and governance</span>
         </div>
 
         <div class="admin-module-grid">
@@ -85,6 +90,42 @@
                 <p>Publish updates and important learning platform notices.</p>
                 <a class="btn btn-secondary" asp-area="Admin" asp-controller="Announcements" asp-action="Index">Manage announcements</a>
             </article>
+            <article class="admin-module">
+                <span class="admin-module-icon">07</span>
+                <h3>Audit Log</h3>
+                <p>@ViewBag.AuditCount administrative actions are recorded for traceability.</p>
+                <a class="btn btn-secondary" asp-area="Admin" asp-controller="Audit" asp-action="Index">View audit trail</a>
+            </article>
+            @if (User.IsInRole(Roles.SuperAdmin))
+            {
+                <article class="admin-module admin-super-module">
+                    <span class="admin-module-icon">08</span>
+                    <h3>SuperAdmin workspace</h3>
+                    <p>@ViewBag.AdminCount administrative accounts currently have platform access.</p>
+                    <a class="btn btn-secondary" asp-area="Admin" asp-controller="Users" asp-action="Index">Manage roles</a>
+                </article>
+            }
+        </div>
+
+        <div class="admin-lower-grid">
+            <section class="admin-recent-panel">
+                <div class="admin-section-title"><h2>Recent registrations</h2><span>Newest accounts</span></div>
+                <div class="admin-recent-list">
+                    @foreach (var user in ViewBag.RecentUsers)
+                    {
+                        <div class="admin-recent-row"><span class="profile-avatar">@user.FullName.Substring(0, 1).ToUpperInvariant()</span><div><strong>@user.FullName</strong><small>@@@user.Username · @user.Role</small></div><time>@user.CreatedAt.ToLocalTime().ToString("dd MMM")</time></div>
+                    }
+                </div>
+            </section>
+            <section class="admin-recent-panel">
+                <div class="admin-section-title"><h2>Recent admin activity</h2><span>Last six actions</span></div>
+                <div class="admin-recent-list">
+                    @foreach (var log in ViewBag.RecentAudit)
+                    {
+                        <div class="admin-recent-row"><span class="audit-person">@log.User.FullName.Substring(0, 1).ToUpperInvariant()</span><div><strong>@log.Action · @log.EntityType</strong><small>@log.Description</small></div><time>@log.CreatedAt.ToLocalTime().ToString("HH:mm")</time></div>
+                    }
+                </div>
+            </section>
         </div>
     </div>
 </section>
