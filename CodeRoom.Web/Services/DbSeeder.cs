@@ -17,9 +17,13 @@ public static class DbSeeder
 
         await UpgradeLegacyDemoDataAsync(db);
 
-        if (!await db.Users.AnyAsync())
+        if (!await db.Courses.AnyAsync())
         {
-            SeedUsers(db);
+            if (!await db.Users.AnyAsync())
+            {
+                SeedUsers(db);
+            }
+
             SeedCatalogue(db);
             SeedAnnouncements(db);
             await db.SaveChangesAsync();
