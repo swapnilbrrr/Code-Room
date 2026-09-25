@@ -170,7 +170,7 @@ public class ChallengesController(ApplicationDbContext db) : Controller
 
     private async Task LoadLessonsAsync(int? courseId, int? selected)
     {
-        var lessons = courseId is null
+        List<Lesson> lessons = courseId is null
             ? []
             : await db.Lessons.Where(l => l.CourseId == courseId).OrderBy(l => l.Order).ToListAsync();
 
