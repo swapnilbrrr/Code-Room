@@ -24,9 +24,24 @@ public class LessonsController(ApplicationDbContext db) : Controller
             return NotFound();
         }
 
-        var current = lessonId is null
-            ? course.Lessons.First()
-            : course.Lessons.FirstOrDefault(l => l.Id == lessonId) ?? course.Lessons.First();
+        var userId = User.GetUserId();
+        var isStaff = User.IsInRole(Roles.Admin) || User.IsInRole(Roles.SuperAdmin);
+        var enrolled = await db.Enrollments.AnyAsync(e => e.UserId == userId && e.CourseId == id);
+
+        if (!enrolled && !isStaff)
+        {
+            TempData["Error"] = "Enroll in this course to start the lesson.";
+            return RedirectToAction("Details", "Courses", new { id });
+        }
+
+        var completed = await db.Progress
+            .Where(p => p.UserId == userId && p.IsCompleted && p.Lesson.CourseId == id)
+            .Select(p => p.LessonId)
+            .ToHashSetAsync();
+
+        var current = lessonId is not null
+            ? course.Lessons.FirstOrDefault(l => l.Id == lessonId) ?? course.Lessons.FirstOrDefault(l => !completed.Contains(l.Id)) ?? course.Lessons.First()
+            : course.Lessons.FirstOrDefault(l => !completed.Contains(l.Id)) ?? course.Lessons.First();
 
         current.Content = LessonContentBuilder.EnsureRichContent(
             current.Content,
@@ -41,12 +56,6 @@ public class LessonsController(ApplicationDbContext db) : Controller
         current.ResourceUrl ??= current.Order == 1
             ? LessonMediaCatalog.ResourceFor(course.Title)
             : null;
-
-        var userId = User.GetUserId();
-        var completed = await db.Progress
-            .Where(p => p.UserId == userId && p.IsCompleted && p.Lesson.CourseId == id)
-            .Select(p => p.LessonId)
-            .ToListAsync();
 
         var quiz = await db.Quizzes.FirstOrDefaultAsync(q => q.CourseId == id);
         var challenge = await db.Challenges
@@ -86,7 +95,8 @@ public class LessonsController(ApplicationDbContext db) : Controller
 
         if (!await db.Enrollments.AnyAsync(e => e.UserId == userId && e.CourseId == lesson.CourseId))
         {
-            db.Enrollments.Add(new Enrollment { UserId = userId, CourseId = lesson.CourseId });
+            TempData["Error"] = "Enroll in this course before completing lessons.";
+            return RedirectToAction("Details", "Courses", new { id = lesson.CourseId });
         }
 
         var progress = await db.Progress
