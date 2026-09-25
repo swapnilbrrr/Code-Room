@@ -80,6 +80,31 @@ public class NotificationsController(ApplicationDbContext db) : Controller
         return RedirectToAction(nameof(Index));
     }
 
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Open(int id)
+    {
+        var userId = User.GetUserId();
+        var notification = await db.Notifications
+            .FirstOrDefaultAsync(n => n.Id == id && n.UserId == userId);
+
+        if (notification is null)
+        {
+            return RedirectToAction(nameof(Index));
+        }
+
+        notification.IsRead = true;
+        await db.SaveChangesAsync();
+
+        if (!string.IsNullOrWhiteSpace(notification.LinkUrl) && Url.IsLocalUrl(notification.LinkUrl))
+        {
+            return LocalRedirect(notification.LinkUrl);
+        }
+
+        return RedirectToAction(nameof(Index));
+    }
+
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> MarkRead(int id)
