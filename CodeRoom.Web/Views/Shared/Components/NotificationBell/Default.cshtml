@@ -36,18 +36,33 @@
             {
                 @foreach (var item in Model.Items)
                 {
-                    <a class="notification-item @(item.IsRead ? "" : "is-unread")" href="@item.LinkUrl">
-                        <span class="notification-item-icon">@(item.IsAnnouncement ? "📢" : item.Type == "StreakMilestone" ? "🔥" : item.Type == "AchievementUnlocked" ? "🏆" : "•")</span>
-                        <span class="notification-item-copy">
-                            <strong>@item.Title</strong>
-                            <span>@item.Message</span>
-                            <small>@item.CreatedAt.ToLocalTime().ToString("dd MMM, HH:mm")</small>
-                        </span>
-                        @if (!item.IsRead)
-                        {
-                            <i class="notification-unread-dot"></i>
-                        }
-                    </a>
+                    if (!item.IsRead && item.NotificationId.HasValue)
+                    {
+                        <form asp-controller="Notifications" asp-action="Open" method="post" class="notification-open-form">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@item.NotificationId" />
+                            <button class="notification-item is-unread" type="submit">
+                                <span class="notification-item-icon">@(item.IsAnnouncement ? "📢" : item.Type == "StreakMilestone" ? "🔥" : item.Type == "Achievement" ? "🏆" : "•")</span>
+                                <span class="notification-item-copy">
+                                    <strong>@item.Title</strong>
+                                    <span>@item.Message</span>
+                                    <small>@item.CreatedAt.ToLocalTime().ToString("dd MMM, HH:mm")</small>
+                                </span>
+                                <i class="notification-unread-dot"></i>
+                            </button>
+                        </form>
+                    }
+                    else
+                    {
+                        <a class="notification-item @(item.IsRead ? "" : "is-unread")" href="@item.LinkUrl">
+                            <span class="notification-item-icon">@(item.IsAnnouncement ? "📢" : item.Type == "StreakMilestone" ? "🔥" : item.Type == "Achievement" ? "🏆" : "•")</span>
+                            <span class="notification-item-copy">
+                                <strong>@item.Title</strong>
+                                <span>@item.Message</span>
+                                <small>@item.CreatedAt.ToLocalTime().ToString("dd MMM, HH:mm")</small>
+                            </span>
+                        </a>
+                    }
                 }
             }
         </div>
