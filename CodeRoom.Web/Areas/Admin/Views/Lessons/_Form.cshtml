@@ -20,16 +20,38 @@
         <input class="input" asp-for="Title" />
         <span asp-validation-for="Title" class="field-error"></span>
     </label>
+    <label class="form-field form-field-wide">Summary
+        <input class="input" asp-for="Summary" placeholder="A one-line learner-friendly overview." />
+        <span asp-validation-for="Summary" class="field-error"></span>
+    </label>
+    <label class="form-field">Content type
+        <select class="input" asp-for="ContentType">
+            <option>Reading</option>
+            <option>Video</option>
+            <option>Audio</option>
+            <option>Challenge</option>
+            <option>Assessment</option>
+            <option>Final Exam</option>
+        </select>
+    </label>
+    <label class="form-field">Duration (minutes)
+        <input class="input" asp-for="DurationMinutes" type="number" min="1" />
+        <span asp-validation-for="DurationMinutes" class="field-error"></span>
+    </label>
     <label class="form-field form-field-wide">Content
-        <textarea class="input" asp-for="Content" rows="6"></textarea>
+        <textarea class="input" asp-for="Content" rows="9"></textarea>
         <span asp-validation-for="Content" class="field-error"></span>
     </label>
-    <label class="form-field">Video URL (optional)
-        <input class="input" asp-for="VideoUrl" />
+    <label class="form-field">Video URL (YouTube embed supported)
+        <input class="input" asp-for="VideoUrl" type="url" />
         <span asp-validation-for="VideoUrl" class="field-error"></span>
     </label>
-    <label class="form-field">Resource URL (optional)
-        <input class="input" asp-for="ResourceUrl" />
+    <label class="form-field">Audio URL (optional)
+        <input class="input" asp-for="AudioUrl" type="url" />
+        <span asp-validation-for="AudioUrl" class="field-error"></span>
+    </label>
+    <label class="form-field form-field-wide">Supporting resource URL
+        <input class="input" asp-for="ResourceUrl" type="url" />
         <span asp-validation-for="ResourceUrl" class="field-error"></span>
     </label>
     <label class="checkbox-row">
