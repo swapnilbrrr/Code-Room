@@ -1,0 +1,29 @@
+@model int
+@{
+    ViewData["Title"] = "Course Details";
+}
+
+<section class="page-shell">
+    <div class="container course-detail">
+        <span class="eyebrow">COURSE</span>
+        <h1>ASP.NET Core MVC</h1>
+        <p class="page-intro">Learn how modern .NET web applications are structured, routed and rendered.</p>
+
+        <div class="detail-grid">
+            <div class="content-panel">
+                <h2>What you'll learn</h2>
+                <ul class="check-list">
+                    <li>MVC architecture and separation of concerns</li>
+                    <li>Controllers, routes and Razor views</li>
+                    <li>Forms, validation and application structure</li>
+                    <li>Working with databases through Entity Framework Core</li>
+                </ul>
+            </div>
+            <aside class="content-panel">
+                <strong>10 lessons</strong>
+                <span>Intermediate</span>
+                <a class="btn btn-primary" asp-action="Lesson" asp-route-id="1">Start learning</a>
+            </aside>
+        </div>
+    </div>
+</section>
