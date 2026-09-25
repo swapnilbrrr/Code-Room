@@ -1,0 +1,30 @@
+@model int
+@{
+    ViewData["Title"] = "Lesson";
+}
+
+<section class="page-shell">
+    <div class="container lesson-layout">
+        <main class="content-panel lesson-content">
+            <span class="eyebrow">LESSON 01</span>
+            <h1>Understanding MVC</h1>
+            <p>MVC separates application responsibilities into models, views and controllers so each part has a clear purpose.</p>
+            <h2>Model</h2>
+            <p>The model represents application data and the rules around that data.</p>
+            <h2>View</h2>
+            <p>The view presents information to the user through Razor markup.</p>
+            <h2>Controller</h2>
+            <p>The controller receives requests, coordinates application logic and selects the appropriate response.</p>
+            <button class="btn btn-primary" type="button">Mark lesson complete</button>
+        </main>
+        <aside class="content-panel lesson-sidebar">
+            <h3>Course progress</h3>
+            <div class="progress-track"><span style="width: 10%"></span></div>
+            <small>1 of 10 lessons completed</small>
+            <hr />
+            <a href="#" class="lesson-link active">01. Understanding MVC</a>
+            <a href="#" class="lesson-link">02. Controllers & Routes</a>
+            <a href="#" class="lesson-link">03. Razor Views</a>
+        </aside>
+    </div>
+</section>
