@@ -1,0 +1,50 @@
+@model CodeRoom.Web.Models.Challenge
+@{
+    ViewData["Title"] = "Challenge · " + Model.Title;
+}
+<section class="page-shell">
+    <div class="container challenge-take">
+        <article class="content-panel challenge-panel">
+            <div class="challenge-header">
+                <div>
+                    <span class="eyebrow">PRACTICE CHALLENGE · @Model.Course.Category.ToUpperInvariant()</span>
+                    <h1>@Model.Title</h1>
+                </div>
+                <span class="xp-chip">+@Model.Points XP</span>
+            </div>
+
+            <div class="challenge-instructions">
+                @foreach (var paragraph in Model.Instructions.Split("\n\n", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+                {
+                    <p>@paragraph</p>
+                }
+            </div>
+
+            @if (!string.IsNullOrWhiteSpace(Model.StarterCode))
+            {
+                <div class="code-block">
+                    <div class="code-block-label">STARTER</div>
+                    <pre><code>@Model.StarterCode</code></pre>
+                </div>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(Model.Hint))
+            {
+                <details class="hint-box">
+                    <summary>Need a hint?</summary>
+                    <p>@Model.Hint</p>
+                </details>
+            }
+
+            <form asp-action="Submit" method="post" class="challenge-answer-form">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@Model.Id" />
+                <label for="answer">Your answer</label>
+                <textarea id="answer" name="answer" class="input challenge-editor" rows="5" placeholder="Type your answer here..." required></textarea>
+                <button class="btn btn-primary" type="submit">Run check ⚡</button>
+            </form>
+
+            <a class="text-link" asp-action="Index" asp-route-id="@Model.CourseId">← Back to challenge list</a>
+        </article>
+    </div>
+</section>
