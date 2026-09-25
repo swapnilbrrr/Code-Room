@@ -13,6 +13,7 @@ public static class DbSeeder
     public static async Task SeedAsync(ApplicationDbContext db)
     {
         await db.Database.EnsureCreatedAsync();
+        await DatabaseSchemaUpdater.EnsureLatestAsync(db);
 
         await UpgradeLegacyDemoDataAsync(db);
 
@@ -30,11 +31,11 @@ public static class DbSeeder
 
     private static async Task UpgradeLegacyDemoDataAsync(ApplicationDbContext db)
     {
-        var demos = new (string[] Aliases, string Email, string Name, string Password, string Role)[]
+        var demos = new (string[] Aliases, string Email, string Username, string Name, string Password, string Role)[]
         {
-            (["superadmin@coderoom.test", "platform.admin@coderoom.test", "swapnil.superadmin@coderoom.test"], "swapnil.katuwal@coderoom.com", "Swapnil Katuwal", "Swapnil.Admin@2026", Roles.SuperAdmin),
-            (["admin@coderoom.test", "content.manager@coderoom.test", "chandra.admin@coderoom.test"], "chandra.shrestha@coderoom.com", "Chandra Shrestha", "Chandra.Admin@2026", Roles.Admin),
-            (["student@coderoom.test", "aarav.learner@coderoom.test", "bijay.student@coderoom.test"], "bijay.khadka@coderoom.com", "Bijay Khadka", "Bijay.Student@2026", Roles.Student)
+            (["superadmin@coderoom.test", "platform.admin@coderoom.test", "swapnil.superadmin@coderoom.test"], "swapnil.katuwal@coderoom.com", "swapnil", "Swapnil Katuwal", "Swapnil.Admin@2026", Roles.SuperAdmin),
+            (["admin@coderoom.test", "content.manager@coderoom.test", "chandra.admin@coderoom.test"], "chandra.shrestha@coderoom.com", "chandra", "Chandra Shrestha", "Chandra.Admin@2026", Roles.Admin),
+            (["student@coderoom.test", "aarav.learner@coderoom.test", "bijay.student@coderoom.test"], "bijay.khadka@coderoom.com", "bijay", "Bijay Khadka", "Bijay.Student@2026", Roles.Student)
         };
 
         var changed = false;
@@ -49,6 +50,7 @@ public static class DbSeeder
                 db.Users.Add(new User
                 {
                     FullName = demo.Name,
+                    Username = demo.Username,
                     Email = demo.Email,
                     PasswordHash = PasswordHasher.Hash(demo.Password),
                     Role = demo.Role
@@ -75,6 +77,12 @@ public static class DbSeeder
                     changed = true;
                 }
 
+                if (user.Username != demo.Username)
+                {
+                    user.Username = demo.Username;
+                    changed = true;
+                }
+
                 // Keep the built-in demo account usable after an older seed/version.
                 if (!PasswordHasher.Verify(demo.Password, user.PasswordHash))
                 {
@@ -84,13 +92,13 @@ public static class DbSeeder
             }
         }
 
-        var additionalUsers = new (string[] Aliases, string Email, string Name, string Password)[]
+        var additionalUsers = new (string[] Aliases, string Email, string Username, string Name, string Password)[]
         {
-            (["anisha.student@coderoom.test", "anisha.gurung@coderoom.com"], "anisha.gurung@coderoom.com", "Anisha Gurung", "Anisha.Student@2026"),
-            (["nischal.student@coderoom.test", "nischal.bhandari@coderoom.com"], "nischal.bhandari@coderoom.com", "Nischal Bhandari", "Nischal.Student@2026"),
-            (["suman.student@coderoom.test", "suman.adhikari@coderoom.com"], "suman.adhikari@coderoom.com", "Suman Adhikari", "Suman.Student@2026"),
-            (["prerana.student@coderoom.test", "prerana.rai@coderoom.com"], "prerana.rai@coderoom.com", "Prerana Rai", "Prerana.Student@2026"),
-            (["babin.student@coderoom.test"], "babin.aryal@coderoom.com", "Babin Aryal", "Babin.Student@2026")
+            (["anisha.student@coderoom.test", "anisha.gurung@coderoom.com"], "anisha.gurung@coderoom.com", "anisha", "Anisha Gurung", "Anisha.Student@2026"),
+            (["nischal.student@coderoom.test", "nischal.bhandari@coderoom.com"], "nischal.bhandari@coderoom.com", "nischal", "Nischal Bhandari", "Nischal.Student@2026"),
+            (["suman.student@coderoom.test", "suman.adhikari@coderoom.com"], "suman.adhikari@coderoom.com", "suman", "Suman Adhikari", "Suman.Student@2026"),
+            (["prerana.student@coderoom.test", "prerana.rai@coderoom.com"], "prerana.rai@coderoom.com", "prerana", "Prerana Rai", "Prerana.Student@2026"),
+            (["babin.student@coderoom.test"], "babin.aryal@coderoom.com", "babin", "Babin Aryal", "Babin.Student@2026")
         };
 
         foreach (var demo in additionalUsers)
@@ -103,12 +111,19 @@ public static class DbSeeder
                 db.Users.Add(new User
                 {
                     FullName = demo.Name,
+                    Username = demo.Username,
                     Email = demo.Email,
                     PasswordHash = PasswordHasher.Hash(demo.Password),
                     Role = Roles.Student
                 });
                 changed = true;
                 continue;
+            }
+
+            if (user.Username != demo.Username)
+            {
+                user.Username = demo.Username;
+                changed = true;
             }
 
             if (user.Email != demo.Email)
@@ -177,6 +192,7 @@ public static class DbSeeder
             {
                 FullName = "Swapnil Katuwal",
                 Email = "swapnil.katuwal@coderoom.com",
+                Username = "swapnil",
                 PasswordHash = PasswordHasher.Hash("Swapnil.Admin@2026"),
                 Role = Roles.SuperAdmin
             },
@@ -184,6 +200,7 @@ public static class DbSeeder
             {
                 FullName = "Chandra Shrestha",
                 Email = "chandra.shrestha@coderoom.com",
+                Username = "chandra",
                 PasswordHash = PasswordHasher.Hash("Chandra.Admin@2026"),
                 Role = Roles.Admin
             },
@@ -191,6 +208,7 @@ public static class DbSeeder
             {
                 FullName = "Bijay Khadka",
                 Email = "bijay.khadka@coderoom.com",
+                Username = "bijay",
                 PasswordHash = PasswordHasher.Hash("Bijay.Student@2026"),
                 Role = Roles.Student
             },
@@ -198,6 +216,7 @@ public static class DbSeeder
             {
                 FullName = "Anisha Gurung",
                 Email = "anisha.gurung@coderoom.com",
+                Username = "anisha",
                 PasswordHash = PasswordHasher.Hash("Anisha.Student@2026"),
                 Role = Roles.Student
             },
@@ -205,6 +224,7 @@ public static class DbSeeder
             {
                 FullName = "Nischal Bhandari",
                 Email = "nischal.bhandari@coderoom.com",
+                Username = "nischal",
                 PasswordHash = PasswordHasher.Hash("Nischal.Student@2026"),
                 Role = Roles.Student
             },
@@ -212,6 +232,7 @@ public static class DbSeeder
             {
                 FullName = "Suman Adhikari",
                 Email = "suman.adhikari@coderoom.com",
+                Username = "suman",
                 PasswordHash = PasswordHasher.Hash("Suman.Student@2026"),
                 Role = Roles.Student
             },
@@ -219,6 +240,7 @@ public static class DbSeeder
             {
                 FullName = "Prerana Rai",
                 Email = "prerana.rai@coderoom.com",
+                Username = "prerana",
                 PasswordHash = PasswordHasher.Hash("Prerana.Student@2026"),
                 Role = Roles.Student
             },
@@ -226,6 +248,7 @@ public static class DbSeeder
             {
                 FullName = "Babin Aryal",
                 Email = "babin.aryal@coderoom.com",
+                Username = "babin",
                 PasswordHash = PasswordHasher.Hash("Babin.Student@2026"),
                 Role = Roles.Student
             });
