@@ -166,7 +166,8 @@ public class ProfileController(ApplicationDbContext db, IWebHostEnvironment envi
             (user.AvatarUrl ?? string.Empty) != (model.AvatarUrl?.Trim() ?? string.Empty) ||
             user.ThemePreference != model.ThemePreference ||
             user.ProfileVisibility != model.ProfileVisibility ||
-            user.EmailNotificationsEnabled != model.EmailNotificationsEnabled;
+            user.EmailNotificationsEnabled != model.EmailNotificationsEnabled ||
+            model.AvatarFile is not null;
 
         user.FullName = model.FullName.Trim();
         user.Username = username;
