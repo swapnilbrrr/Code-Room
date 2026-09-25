@@ -131,7 +131,7 @@ Do **not** put your real MySQL password into a tracked file.
 The project includes local user-secrets support. From the repository root:
 
 ```powershell
-dotnet user-secrets set "ConnectionStrings:DefaultConnection" "server=localhost;port=3306;database=coderoom;user=root;password=YOUR_PASSWORD;TreatTinyAsBoolean=true" --project .CodeRoom.Web
+dotnet user-secrets set "ConnectionStrings:DefaultConnection" "server=localhost;port=3306;database=coderoom;user=root;password=YOUR_PASSWORD;TreatTinyAsBoolean=true" --project ./CodeRoom.Web
 ```
 
 The checked-in `appsettings.Development.json.example` shows the expected connection-string shape.
@@ -146,7 +146,7 @@ dotnet build
 ### 5. Run
 
 ```powershell
-dotnet run --project .CodeRoom.Web
+dotnet run --project ./CodeRoom.Web
 ```
 
 The included development launch profile uses:
@@ -167,7 +167,7 @@ The first successful startup seeds these fictional demonstration accounts:
 | Role | Name | Email |
 | --- | --- | --- |
 | Super Administrator | Swapnil Katuwal | `swapnil.katuwal@coderoom.com` |
-| Administrator | Chandra Shrestha | `chandra.shrestha@coderoom.com` |
+| Administrator | Chandra Bhatta | `chandra.bhatta@coderoom.com` |
 | Student | Bijay Khadka | `bijay.khadka@coderoom.com` |
 | Student | Babin Aryal | `babin.aryal@coderoom.com` |
 | Student | Anisha Gurung | `anisha.gurung@coderoom.com` |
