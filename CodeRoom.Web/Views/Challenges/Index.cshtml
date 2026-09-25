@@ -1,0 +1,39 @@
+@model CodeRoom.Web.Controllers.ChallengeListViewModel
+@{
+    ViewData["Title"] = "Challenges · " + Model.Course.Title;
+}
+<section class="page-shell">
+    <div class="container">
+        <div class="learning-page-heading">
+            <div>
+                <span class="eyebrow">PRACTICE LAB</span>
+                <h1 class="page-title">@Model.Course.Title challenges</h1>
+                <p class="page-intro">Short, focused tasks turn concepts into something you can actually do.</p>
+            </div>
+            <a class="btn btn-secondary" asp-controller="Courses" asp-action="Details" asp-route-id="@Model.Course.Id">Back to course</a>
+        </div>
+
+        @if (Model.Challenges.Count == 0)
+        {
+            <div class="empty-state">
+                <div class="empty-state-icon">🧩</div>
+                <h2>More challenges are coming.</h2>
+                <p>Continue through the course while this practice set is being expanded.</p>
+            </div>
+        }
+        else
+        {
+            <div class="challenge-grid">
+                @foreach (var challenge in Model.Challenges)
+                {
+                    <a class="challenge-card" asp-action="Take" asp-route-id="@challenge.Id">
+                        <span class="challenge-number">+@challenge.Points XP</span>
+                        <h2>@challenge.Title</h2>
+                        <p>@challenge.Instructions</p>
+                        <span class="text-link">Start challenge →</span>
+                    </a>
+                }
+            </div>
+        }
+    </div>
+</section>
