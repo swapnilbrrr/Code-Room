@@ -1,0 +1,56 @@
+@model CodeRoom.Web.ViewModels.Notifications.NotificationsPageViewModel
+@{
+    ViewData["Title"] = "Notifications";
+}
+
+<section class="page-shell notifications-page">
+    <div class="container">
+        <div class="page-heading-row">
+            <div>
+                <span class="eyebrow">NOTIFICATION CENTRE</span>
+                <h1 class="page-title">Stay in the loop.</h1>
+                <p class="page-intro">Announcements, course milestones, achievements and account updates.</p>
+            </div>
+            @if (Model.UnreadCount > 0)
+            {
+                <form asp-action="MarkAllRead" method="post">
+                    @Html.AntiForgeryToken()
+                    <button class="btn btn-secondary" type="submit">Mark all as read</button>
+                </form>
+            }
+        </div>
+
+        <div class="notifications-list">
+            @if (Model.Notifications.Count == 0)
+            {
+                <div class="empty-state">
+                    <h2>You're all caught up.</h2>
+                    <p>New updates will appear here.</p>
+                </div>
+            }
+            else
+            {
+                @foreach (var item in Model.Notifications)
+                {
+                    <article class="notification-page-item @(item.IsRead ? string.Empty : "is-unread")">
+                        <div class="notification-icon">@(item.IsAnnouncement ? "📢" : "•")</div>
+                        <div class="notification-page-copy">
+                            <div class="notification-page-top">
+                                <strong>@item.Title</strong>
+                                <time>@item.CreatedAt.ToLocalTime().ToString("dd MMM yyyy, HH:mm")</time>
+                            </div>
+                            <p>@item.Message</p>
+                            <div class="notification-page-meta">
+                                <span>@(item.IsAnnouncement ? "Announcement" : item.Type)</span>
+                                @if (!string.IsNullOrWhiteSpace(item.LinkUrl))
+                                {
+                                    <a class="text-link" href="@item.LinkUrl">Open <span>→</span></a>
+                                }
+                            </div>
+                        </div>
+                    </article>
+                }
+            }
+        </div>
+    </div>
+</section>
