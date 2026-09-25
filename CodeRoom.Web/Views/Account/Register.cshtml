@@ -1,0 +1,18 @@
+@{
+    ViewData["Title"] = "Register";
+}
+
+<section class="auth-shell">
+    <div class="auth-card">
+        <span class="eyebrow">GET STARTED</span>
+        <h1>Create your account</h1>
+        <p>Join Code-Room and start learning at your own pace.</p>
+        <form>
+            <label>Full name<input class="input" type="text" required /></label>
+            <label>Email<input class="input" type="email" required /></label>
+            <label>Password<input class="input" type="password" minlength="8" required /></label>
+            <button class="btn btn-primary btn-full" type="submit">Create account</button>
+        </form>
+        <p class="auth-footer">Already registered? <a asp-action="Login">Sign in</a></p>
+    </div>
+</section>
