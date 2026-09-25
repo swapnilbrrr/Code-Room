@@ -1,3 +1,4 @@
+@model IReadOnlyList<CodeRoom.Web.ViewModels.CoursePreviewViewModel>
 @{
     ViewData["Title"] = "Courses";
 }
@@ -10,7 +11,10 @@
                 <h1 class="page-title">Courses</h1>
                 <p class="page-intro">Focused courses that take you from fundamentals to practical technology skills.</p>
             </div>
-            <div class="catalogue-count" aria-label="Available course count"><strong>8</strong><span>courses</span></div>
+            <div class="catalogue-count" aria-label="Available course count">
+                <strong>@Model.Count</strong>
+                <span>courses</span>
+            </div>
         </div>
 
         <div class="course-toolbar" aria-label="Course filters">
@@ -42,69 +46,22 @@
         </div>
 
         <div class="course-grid" aria-live="polite">
-            <article class="course-card" data-course-card data-category="programming" data-level="beginner">
-                <div class="course-card-top"><span class="course-tag">Programming</span><span class="level-pill">Beginner</span></div>
-                <h2>C# Fundamentals</h2>
-                <p>Variables, control flow, methods, classes and object-oriented programming.</p>
-                <div class="course-meta"><span>12 lessons</span><span>Foundation</span></div>
-                <a class="btn btn-secondary" asp-action="Details" asp-route-id="1">View course</a>
-            </article>
-
-            <article class="course-card" data-course-card data-category="programming" data-level="beginner">
-                <div class="course-card-top"><span class="course-tag">Programming</span><span class="level-pill">Beginner</span></div>
-                <h2>Python Programming</h2>
-                <p>Learn Python syntax, functions, collections, modules and practical problem solving.</p>
-                <div class="course-meta"><span>10 lessons</span><span>Foundation</span></div>
-                <a class="btn btn-secondary" asp-action="Details" asp-route-id="2">View course</a>
-            </article>
-
-            <article class="course-card" data-course-card data-category="web" data-level="beginner">
-                <div class="course-card-top"><span class="course-tag">Web development</span><span class="level-pill">Beginner</span></div>
-                <h2>HTML &amp; CSS Foundations</h2>
-                <p>Build accessible page structures, layouts, responsive interfaces and visual hierarchy.</p>
-                <div class="course-meta"><span>9 lessons</span><span>Foundation</span></div>
-                <a class="btn btn-secondary" asp-action="Details" asp-route-id="3">View course</a>
-            </article>
-
-            <article class="course-card" data-course-card data-category="web" data-level="intermediate">
-                <div class="course-card-top"><span class="course-tag">Web development</span><span class="level-pill">Intermediate</span></div>
-                <h2>ASP.NET Core MVC</h2>
-                <p>Understand MVC architecture, routing, Razor views, models and web application structure.</p>
-                <div class="course-meta"><span>10 lessons</span><span>Intermediate</span></div>
-                <a class="btn btn-secondary" asp-action="Details" asp-route-id="4">View course</a>
-            </article>
-
-            <article class="course-card" data-course-card data-category="security" data-level="beginner">
-                <div class="course-card-top"><span class="course-tag">Cybersecurity</span><span class="level-pill">Beginner</span></div>
-                <h2>Networking Fundamentals</h2>
-                <p>Learn TCP/IP, addressing, ports, protocols, DNS, HTTP and the basics of network traffic.</p>
-                <div class="course-meta"><span>10 lessons</span><span>Foundation</span></div>
-                <a class="btn btn-secondary" asp-action="Details" asp-route-id="5">View course</a>
-            </article>
-
-            <article class="course-card" data-course-card data-category="security" data-level="beginner">
-                <div class="course-card-top"><span class="course-tag">Cybersecurity</span><span class="level-pill">Beginner</span></div>
-                <h2>Linux Fundamentals</h2>
-                <p>Work with the Linux command line, files, permissions, processes and system basics.</p>
-                <div class="course-meta"><span>8 lessons</span><span>Foundation</span></div>
-                <a class="btn btn-secondary" asp-action="Details" asp-route-id="6">View course</a>
-            </article>
-
-            <article class="course-card" data-course-card data-category="security" data-level="intermediate">
-                <div class="course-card-top"><span class="course-tag">Cybersecurity</span><span class="level-pill">Intermediate</span></div>
-                <h2>Cybersecurity Foundations</h2>
-                <p>Explore authentication, common threats, security controls, incident concepts and defence.</p>
-                <div class="course-meta"><span>9 lessons</span><span>Intermediate</span></div>
-                <a class="btn btn-secondary" asp-action="Details" asp-route-id="7">View course</a>
-            </article>
-
-            <article class="course-card" data-course-card data-category="database" data-level="beginner">
-                <div class="course-card-top"><span class="course-tag">Databases</span><span class="level-pill">Beginner</span></div>
-                <h2>Database Fundamentals</h2>
-                <p>Understand relational databases, SQL queries, relationships, constraints and basic design.</p>
-                <div class="course-meta"><span>8 lessons</span><span>Foundation</span></div>
-                <a class="btn btn-secondary" asp-action="Details" asp-route-id="8">View course</a>
-            </article>
+            @foreach (var course in Model)
+            {
+                <article class="course-card" data-course-card data-category="@course.CategorySlug" data-level="@course.LevelSlug">
+                    <div class="course-card-top">
+                        <span class="course-tag">@course.Category</span>
+                        <span class="level-pill">@course.Level</span>
+                    </div>
+                    <h2>@course.Title</h2>
+                    <p>@course.Summary</p>
+                    <div class="course-meta">
+                        <span>@course.Lessons.Length lessons</span>
+                        <span>@course.Level</span>
+                    </div>
+                    <a class="btn btn-secondary" asp-action="Details" asp-route-id="@course.Id">View course</a>
+                </article>
+            }
         </div>
 
         <div class="empty-state" data-course-empty hidden>
