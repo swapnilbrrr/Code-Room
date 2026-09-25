@@ -13,6 +13,7 @@ public static class LearningPlatformSeeder
         await EnsureModulesForAllCoursesAsync(db);
         await SeedAchievementsAsync(db);
         await SeedResourceLinksAsync(db);
+        await MaterializeLessonResourcesAsync(db);
     }
 
     private static async Task UpgradeNetworkingCourseAsync(ApplicationDbContext db)
