@@ -1,18 +1,39 @@
 @model CodeRoom.Web.ViewModels.Quizzes.QuizResultViewModel
 @{
-    ViewData["Title"] = "Quiz Results";
+    ViewData["Title"] = "Assessment Results";
 }
-
 <section class="page-shell">
     <div class="container result-shell">
         <div class="content-panel result-card">
-            <span class="eyebrow">QUIZ COMPLETE</span>
-            <h1>Quiz results</h1>
+            <span class="eyebrow">@(Model.Passed ? "PASSED" : "ASSESSMENT COMPLETE")</span>
+            <h1>@(Model.Passed ? "Great work." : "Assessment complete.")</h1>
             <div class="score">@Model.Score / @Model.Total</div>
-            <p>You scored @Model.Percent% on the @Model.QuizTitle.</p>
+            <p>You scored <strong>@Model.Percent%</strong> on the @Model.QuizTitle.</p>
+
+            <div class="result-status @(Model.Passed ? "result-passed" : "result-failed")">
+                <strong>@(Model.Passed ? "✓ Passing score reached" : "↻ Keep practising")</strong>
+                <span>Required score: @Model.PassingScorePercent%</span>
+            </div>
+
+            @if (Model.Certificate is not null)
+            {
+                <div class="certificate-earned-callout">
+                    <span>🎓</span>
+                    <div>
+                        <strong>Certificate unlocked</strong>
+                        <p>@Model.Certificate.Title · @Model.Certificate.CertificateNumber</p>
+                    </div>
+                    <a class="btn btn-primary" asp-controller="Certificates" asp-action="Details" asp-route-id="@Model.Certificate.Id">View certificate</a>
+                </div>
+            }
+
             <div class="result-actions">
                 <a class="btn btn-secondary" asp-controller="Courses" asp-action="Details" asp-route-id="@Model.CourseId">Back to course</a>
-                <a class="btn btn-primary" asp-controller="Student" asp-action="Index">Go to dashboard</a>
+                @if (Model.IsCertificationExam)
+                {
+                    <a class="btn btn-secondary" asp-controller="Certificates" asp-action="Index">My certificates</a>
+                }
+                <a class="btn btn-primary" asp-controller="Dashboard" asp-action="Index">Dashboard</a>
             </div>
         </div>
     </div>
