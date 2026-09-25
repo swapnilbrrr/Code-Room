@@ -7,14 +7,18 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 
-// Database (MySQL via Pomelo). Connection string lives in appsettings.json.
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-    ?? throw new InvalidOperationException("Connection string 'DefaultConnection' was not found.");
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+if (string.IsNullOrWhiteSpace(connectionString))
+{
+    throw new InvalidOperationException(
+        "Code-Room is missing the MySQL connection string. " +
+        "Set ConnectionStrings:DefaultConnection with user secrets or environment-specific configuration.");
+}
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
-// Cookie authentication with role-based authorization.
 builder.Services
     .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
@@ -60,10 +64,10 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-// Create and seed the database on startup (safe to run repeatedly).
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
+
     try
     {
         var db = services.GetRequiredService<ApplicationDbContext>();
@@ -72,7 +76,8 @@ using (var scope = app.Services.CreateScope())
     catch (Exception ex)
     {
         var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "Database seeding failed. Check the MySQL connection string in appsettings.json.");
+        logger.LogCritical(ex, "Code-Room could not initialise the MySQL database.");
+        throw;
     }
 }
 
