@@ -15,6 +15,11 @@ public class ProfileViewModel
     public string RoleLabel { get; set; } = "Student";
     public bool IsAdmin { get; set; }
 
+    public int AdminManagedUsers { get; set; }
+    public int AdminCourseCount { get; set; }
+    public int AdminAuditEvents { get; set; }
+    public int AdminPublishedAnnouncements { get; set; }
+
     public int CoursesEnrolled { get; set; }
     public int LessonsCompleted { get; set; }
     public int QuizAttempts { get; set; }
@@ -29,6 +34,7 @@ public class ProfileViewModel
 
     public IReadOnlyList<ActivityDayViewModel> ActivityDays { get; set; } = [];
     public IReadOnlyList<RecentActivityViewModel> RecentActivity { get; set; } = [];
+    public IReadOnlyList<RecentActivityViewModel> AdminRecentActivity { get; set; } = [];
 }
 
 public class ProfileSettingsViewModel
