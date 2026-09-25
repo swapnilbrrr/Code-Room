@@ -28,4 +28,20 @@ public class CertificatesController(ApplicationDbContext db) : Controller
 
         return certificate is null ? NotFound() : View(certificate);
     }
+
+    [AllowAnonymous]
+    public async Task<IActionResult> Verify(string? number)
+    {
+        if (string.IsNullOrWhiteSpace(number))
+        {
+            return View(null);
+        }
+
+        var certificate = await db.Certificates
+            .Include(c => c.Course)
+            .Include(c => c.User)
+            .FirstOrDefaultAsync(c => c.CertificateNumber == number.Trim());
+
+        return View(certificate);
+    }
 }
