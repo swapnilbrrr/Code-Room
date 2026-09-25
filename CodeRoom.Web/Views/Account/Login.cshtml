@@ -1,0 +1,17 @@
+@{
+    ViewData["Title"] = "Login";
+}
+
+<section class="auth-shell">
+    <div class="auth-card">
+        <span class="eyebrow">WELCOME BACK</span>
+        <h1>Sign in to Code-Room</h1>
+        <p>Continue your learning journey.</p>
+        <form>
+            <label>Email<input class="input" type="email" required /></label>
+            <label>Password<input class="input" type="password" required /></label>
+            <button class="btn btn-primary btn-full" type="submit">Sign in</button>
+        </form>
+        <p class="auth-footer">New to Code-Room? <a asp-action="Register">Create an account</a></p>
+    </div>
+</section>
