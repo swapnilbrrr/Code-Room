@@ -1,0 +1,24 @@
+@model CodeRoom.Web.Models.Certificate
+@{
+    ViewData["Title"] = "Certificate";
+}
+<section class="page-shell">
+    <div class="container certificate-page">
+        <article class="certificate-frame">
+            <div class="certificate-mark">CODE-ROOM</div>
+            <span class="eyebrow">CERTIFICATE OF COMPLETION</span>
+            <h1>@Model.Title</h1>
+            <p class="certificate-label">This credential is awarded to</p>
+            <h2>@Model.User.FullName</h2>
+            <p class="certificate-copy">for successfully completing <strong>@Model.Course.Title</strong> and passing the required certification assessment.</p>
+            <div class="certificate-meta">
+                <span><small>Certificate ID</small><strong>@Model.CertificateNumber</strong></span>
+                <span><small>Issued</small><strong>@Model.IssuedAt.ToLocalTime().ToString("dd MMM yyyy")</strong></span>
+            </div>
+            <div class="certificate-actions">
+                <a class="btn btn-secondary" asp-action="Index">Back to certificates</a>
+                <button class="btn btn-primary" type="button" onclick="window.print()">Print certificate</button>
+            </div>
+        </article>
+    </div>
+</section>
