@@ -54,4 +54,19 @@
 
         <a class="notification-view-all" asp-controller="Notifications" asp-action="Index">View all notifications →</a>
     </div>
+
+    @{
+        var popup = Model.Items.FirstOrDefault(x => !x.IsRead && x.NotificationId.HasValue);
+    }
+    @if (popup is not null)
+    {
+        <div class="notification-auto-popup" data-notification-popup data-notification-id="@popup.NotificationId">
+            <span class="notification-auto-icon">@(popup.Type == "Announcement" ? "📢" : popup.Type == "Achievement" ? "🏆" : popup.Type == "StreakMilestone" ? "🔥" : "✦")</span>
+            <div>
+                <strong>@popup.Title</strong>
+                <span>@popup.Message</span>
+            </div>
+            <button type="button" class="toast-close" data-notification-popup-close aria-label="Dismiss">×</button>
+        </div>
+    }
 </div>
