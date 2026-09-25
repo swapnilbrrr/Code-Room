@@ -50,11 +50,15 @@
                         <div class="account-popover-header">
                             <strong>@displayName</strong>
                             <span>@@@username</span>
-                            <span class="account-role">@(isAdmin ? "Administrator" : "Student")</span>
+                            <span class="account-role">@(User.IsInRole(Roles.SuperAdmin) ? "Super Administrator" : isAdmin ? "Administrator" : "Student")</span>
                         </div>
                         <a asp-area="" asp-controller="Dashboard" asp-action="Index">▦&nbsp;&nbsp;Dashboard</a>
                         <a asp-area="" asp-controller="Profile" asp-action="Index">◎&nbsp;&nbsp;Profile</a>
                         <a asp-area="" asp-controller="Profile" asp-action="Settings">⚙&nbsp;&nbsp;Settings</a>
+                        @if (!User.IsInRole(Roles.Admin) && !User.IsInRole(Roles.SuperAdmin))
+                        {
+                            <a asp-area="" asp-controller="Certificates" asp-action="Index">🎓&nbsp;&nbsp;Certificates</a>
+                        }
                         @if (isAdmin)
                         {
                             <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index">▤&nbsp;&nbsp;Admin Console</a>
@@ -86,7 +90,10 @@
                 <a asp-area="" asp-controller="Dashboard" asp-action="Index">Dashboard</a>
                 <a asp-area="" asp-controller="Profile" asp-action="Index">Profile</a>
                 <a asp-area="" asp-controller="Profile" asp-action="Settings">Settings</a>
-
+                @if (isAdmin)
+                {
+                    <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Admin Console</a>
+                }
             }
 
             <a asp-area="" asp-controller="Home" asp-action="About">About</a>
