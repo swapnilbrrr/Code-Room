@@ -108,6 +108,18 @@ button { color: inherit; }
     height: auto;
 }
 
+.brand .logo-dark {
+    display: none;
+}
+
+:root[data-theme="dark"] .brand .logo-light {
+    display: none;
+}
+
+:root[data-theme="dark"] .brand .logo-dark {
+    display: block;
+}
+
 .nav-links {
     display: flex;
     align-items: center;
@@ -831,13 +843,15 @@ main {
 
 .footer-inner {
     display: grid;
-    grid-template-columns: 1fr 1.6fr;
-    gap: 70px;
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: 30px;
     padding: 55px 0 48px;
+    text-align: center;
 }
 
 .footer-brand {
-    text-align: left;
+    text-align: center;
 }
 
 .footer-brand img {
@@ -852,9 +866,11 @@ main {
 }
 
 .footer-links {
+    width: min(620px, 100%);
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 30px;
+    text-align: center;
 }
 
 .footer-links div {
@@ -914,9 +930,7 @@ main {
     }
 
     .footer-inner {
-        grid-template-columns: 1fr;
         gap: 35px;
-        text-align: center;
     }
 
     .footer-brand {
