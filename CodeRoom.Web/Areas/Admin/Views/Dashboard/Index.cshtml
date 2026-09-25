@@ -92,6 +92,12 @@
             </article>
             <article class="admin-module">
                 <span class="admin-module-icon">07</span>
+                <h3>Practice Challenges</h3>
+                <p>Build hands-on coding and command-line tasks, set validation rules and award XP.</p>
+                <a class="btn btn-secondary" asp-area="Admin" asp-controller="Challenges" asp-action="Index">Manage challenges</a>
+            </article>
+            <article class="admin-module">
+                <span class="admin-module-icon">08</span>
                 <h3>Audit Log</h3>
                 <p>@ViewBag.AuditCount administrative actions are recorded for traceability.</p>
                 <a class="btn btn-secondary" asp-area="Admin" asp-controller="Audit" asp-action="Index">View audit trail</a>
@@ -99,7 +105,7 @@
             @if (User.IsInRole(Roles.SuperAdmin))
             {
                 <article class="admin-module admin-super-module">
-                    <span class="admin-module-icon">08</span>
+                    <span class="admin-module-icon">09</span>
                     <h3>SuperAdmin workspace</h3>
                     <p>@ViewBag.AdminCount administrative accounts currently have platform access.</p>
                     <a class="btn btn-secondary" asp-area="Admin" asp-controller="Users" asp-action="Index">Manage roles</a>
