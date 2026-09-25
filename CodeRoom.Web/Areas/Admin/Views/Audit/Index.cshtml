@@ -1,0 +1,44 @@
+@model IReadOnlyList<CodeRoom.Web.Models.AdminAuditLog>
+@{
+    ViewData["Title"] = "Audit Log";
+}
+<section class="page-shell admin-dashboard">
+    <div class="container">
+        <div class="admin-header">
+            <div class="admin-header-copy">
+                <span class="eyebrow">AUDIT TRAIL</span>
+                <h1 class="page-title">Administrative activity</h1>
+                <p class="page-intro">A traceable history of platform changes made by administrators.</p>
+            </div>
+            <a class="btn btn-secondary" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Back to Admin Console</a>
+        </div>
+
+        @if (Model.Count == 0)
+        {
+            <div class="empty-state">
+                <div class="empty-state-icon">🧾</div>
+                <h2>No admin actions recorded yet.</h2>
+                <p>Changes to users and platform content will appear here as administrators work.</p>
+            </div>
+        }
+        else
+        {
+            <div class="admin-audit-table">
+                @foreach (var log in Model)
+                {
+                    <div class="admin-audit-row">
+                        <div class="audit-person">@log.User.FullName.Substring(0, 1).ToUpperInvariant()</div>
+                        <div class="audit-copy">
+                            <strong>@log.Action · @log.EntityType</strong>
+                            <span>@log.Description</span>
+                        </div>
+                        <div class="audit-meta">
+                            <strong>@log.EntityName</strong>
+                            <time>@log.CreatedAt.ToLocalTime().ToString("dd MMM yyyy · HH:mm")</time>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</section>
