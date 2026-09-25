@@ -30,7 +30,21 @@
             <div class="lesson-copy">
                 @foreach (var paragraph in (Model.Current.Content ?? string.Empty).Split("\n\n", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
                 {
-                    <p>@paragraph</p>
+                    var separator = paragraph.IndexOf(':');
+                    var label = separator > 0 ? paragraph[..separator] : string.Empty;
+                    var body = separator > 0 ? paragraph[(separator + 1)..].Trim() : paragraph;
+
+                    if (label is "WHY IT MATTERS" or "HOW TO THINK ABOUT IT" or "IN PRACTICE" or "COMMON MISTAKES" or "PRACTICE FOCUS" or "CHECK YOURSELF")
+                    {
+                        <div class="lesson-copy-block">
+                            <h3>@label</h3>
+                            <p>@body</p>
+                        </div>
+                    }
+                    else
+                    {
+                        <p>@paragraph</p>
+                    }
                 }
             </div>
 
