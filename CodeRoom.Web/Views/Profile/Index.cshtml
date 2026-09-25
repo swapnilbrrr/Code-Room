@@ -27,141 +27,163 @@
                     }
                     else
                     {
-                        <p class="profile-bio">Build your learning identity as you learn, practise and grow.</p>
+                        <p class="profile-bio">@(Model.IsAdmin ? "Platform operations and governance." : "Build your learning identity as you learn, practise and grow.")</p>
                     }
                 </div>
             </div>
             <div class="profile-actions">
-                <a class="btn btn-secondary" asp-controller="Dashboard" asp-action="Index">Dashboard</a>
+                @if (Model.IsAdmin)
+                {
+                    <a class="btn btn-secondary" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Admin Console</a>
+                }
+                else
+                {
+                    <a class="btn btn-secondary" asp-controller="Dashboard" asp-action="Index">Dashboard</a>
+                }
                 <a class="btn btn-primary" asp-controller="Profile" asp-action="Settings">Edit profile</a>
             </div>
         </div>
 
-        <div class="xp-profile-card">
-            <div>
-                <span class="eyebrow">LEVEL @Model.Level</span>
-                <h2>@Model.Xp XP</h2>
-                <p>@(250 - Model.LevelProgress) XP until your next level</p>
+        @if (Model.IsAdmin)
+        {
+            <div class="profile-stat-grid">
+                <article class="profile-stat"><strong>@Model.AdminManagedUsers</strong><span>Platform users</span></article>
+                <article class="profile-stat"><strong>@Model.AdminCourseCount</strong><span>Courses managed</span></article>
+                <article class="profile-stat"><strong>@Model.AdminPublishedAnnouncements</strong><span>Published announcements</span></article>
+                <article class="profile-stat"><strong>@Model.AdminAuditEvents</strong><span>Your audit events</span></article>
+                <article class="profile-stat"><strong>@Model.CertificateCount</strong><span>Certificates issued by platform</span></article>
             </div>
-            <div class="xp-bar-wrap">
-                <div class="xp-bar"><span style="width:@levelWidth.ToString("0")%"></span></div>
-                <div class="xp-bar-labels"><span>Level @Model.Level</span><span>Level @(Model.Level + 1)</span></div>
-            </div>
-        </div>
 
-        <div class="profile-stat-grid">
-            <article class="profile-stat"><strong>@Model.CoursesEnrolled</strong><span>Courses</span></article>
-            <article class="profile-stat"><strong>@Model.LessonsCompleted</strong><span>Lessons</span></article>
-            <article class="profile-stat"><strong>@Model.QuizAttempts</strong><span>Assessments</span></article>
-            <article class="profile-stat"><strong>@Model.LearningStreak</strong><span>Day streak</span></article>
-            <article class="profile-stat"><strong>@Model.CertificateCount</strong><span>Certificates</span></article>
-        </div>
-
-        <div class="profile-main-grid profile-main-grid-three">
-            <section class="profile-panel profile-activity-panel">
-                <div class="panel-heading">
-                    <div>
-                        <span class="eyebrow">ACTIVITY</span>
-                        <h2>Learning history</h2>
+            <div class="profile-main-grid">
+                <section class="profile-panel">
+                    <div class="panel-heading">
+                        <div><span class="eyebrow">ADMIN ACTIVITY</span><h2>Recent platform actions</h2></div>
+                        <a class="text-link" asp-area="Admin" asp-controller="Audit" asp-action="Index">Open audit log →</a>
                     </div>
-                    <span class="profile-muted">Last 365 days</span>
-                </div>
-
-                <div class="activity-legend">
-                    <span>Less</span>
-                    <i class="activity-level level-0"></i>
-                    <i class="activity-level level-1"></i>
-                    <i class="activity-level level-2"></i>
-                    <i class="activity-level level-3"></i>
-                    <i class="activity-level level-4"></i>
-                    <span>More</span>
-                </div>
-
-                <div class="activity-grid" aria-label="Learning activity calendar">
-                    @foreach (var day in Model.ActivityDays)
+                    @if (Model.AdminRecentActivity.Count == 0)
                     {
-                        <span class="activity-cell level-@day.Level" title="@day.Date.ToString("dd MMM yyyy"): @day.Count activities"></span>
+                        <p class="profile-empty">Administrative changes will appear here as you manage the platform.</p>
                     }
-                </div>
-            </section>
-
-            <section class="profile-panel">
-                <div class="panel-heading">
-                    <div>
-                        <span class="eyebrow">ACHIEVEMENTS</span>
-                        <h2>Unlocked</h2>
-                    </div>
-                </div>
-
-                @if (Model.Achievements.Count == 0)
-                {
-                    <p class="profile-empty">Finish lessons, quizzes and challenges to unlock your first badge.</p>
-                }
-                else
-                {
-                    <div class="achievement-list">
-                        @foreach (var achievement in Model.Achievements)
-                        {
-                            <div class="achievement-card">
-                                <span class="achievement-icon">@achievement.Icon</span>
-                                <div>
-                                    <strong>@achievement.Name</strong>
-                                    <p>@achievement.Description</p>
+                    else
+                    {
+                        <div class="activity-list">
+                            @foreach (var item in Model.AdminRecentActivity)
+                            {
+                                <div class="activity-item">
+                                    <span class="activity-dot"></span>
+                                    <div><strong>@item.Description</strong><time>@item.CreatedAt.ToLocalTime().ToString("dd MMM, HH:mm")</time></div>
                                 </div>
-                            </div>
-                        }
-                    </div>
-                }
-            </section>
+                            }
+                        </div>
+                    }
+                </section>
 
-            <section class="profile-panel">
-                <div class="panel-heading">
-                    <div>
-                        <span class="eyebrow">RECENT</span>
-                        <h2>Recent activity</h2>
+                <section class="profile-panel">
+                    <div class="panel-heading">
+                        <div><span class="eyebrow">GOVERNANCE</span><h2>Administration workspace</h2></div>
                     </div>
-                </div>
-
-                @if (Model.RecentActivity.Count == 0)
-                {
-                    <p class="profile-empty">Your activity will appear here as you start learning.</p>
-                }
-                else
-                {
-                    <div class="activity-list">
-                        @foreach (var item in Model.RecentActivity)
-                        {
-                            <div class="activity-item">
-                                <span class="activity-dot"></span>
-                                <div>
-                                    <strong>@item.Description</strong>
-                                    <time>@item.CreatedAt.ToLocalTime().ToString("dd MMM, HH:mm")</time>
-                                </div>
-                            </div>
-                        }
+                    <div class="recommendation-list">
+                        <a class="recommendation-card" asp-area="Admin" asp-controller="Users" asp-action="Index">
+                            <span class="recommendation-icon">01</span><span><strong>Manage users</strong><small>Accounts, usernames and privileged roles.</small></span><span>→</span>
+                        </a>
+                        <a class="recommendation-card" asp-area="Admin" asp-controller="Challenges" asp-action="Index">
+                            <span class="recommendation-icon">02</span><span><strong>Manage practice</strong><small>Challenges and hands-on learning tasks.</small></span><span>→</span>
+                        </a>
+                        <a class="recommendation-card" asp-area="Admin" asp-controller="Announcements" asp-action="Index">
+                            <span class="recommendation-icon">03</span><span><strong>Announcements</strong><small>Publish updates to the learner community.</small></span><span>→</span>
+                        </a>
                     </div>
-                }
-            </section>
-        </div>
-
-        <section class="profile-panel profile-about">
-            <div class="panel-heading">
+                </section>
+            </div>
+        }
+        else
+        {
+            <div class="xp-profile-card">
                 <div>
-                    <span class="eyebrow">ACCOUNT</span>
-                    <h2>Profile details</h2>
+                    <span class="eyebrow">LEVEL @Model.Level</span>
+                    <h2>@Model.Xp XP</h2>
+                    <p>@(250 - Model.LevelProgress) XP until your next level</p>
                 </div>
-                <div class="profile-panel-actions">
-                    <a class="text-link" asp-controller="Certificates" asp-action="Index">Certificates →</a>
-                    <a class="text-link" asp-action="Settings">Settings →</a>
+                <div class="xp-bar-wrap">
+                    <div class="xp-bar"><span style="width:@levelWidth.ToString("0")%"></span></div>
+                    <div class="xp-bar-labels"><span>Level @Model.Level</span><span>Level @(Model.Level + 1)</span></div>
                 </div>
             </div>
 
-            <div class="profile-detail-grid">
-                <div><span>Email</span><strong>@Model.Email</strong></div>
-                <div><span>Username</span><strong>@@@Model.Username</strong></div>
-                <div><span>Role</span><strong>@Model.RoleLabel</strong></div>
-                <div><span>Overall progress</span><strong>@Model.ProgressPercent% complete</strong></div>
+            <div class="profile-stat-grid">
+                <article class="profile-stat"><strong>@Model.CoursesEnrolled</strong><span>Courses</span></article>
+                <article class="profile-stat"><strong>@Model.LessonsCompleted</strong><span>Lessons</span></article>
+                <article class="profile-stat"><strong>@Model.QuizAttempts</strong><span>Assessments</span></article>
+                <article class="profile-stat"><strong>@Model.LearningStreak</strong><span>Day streak</span></article>
+                <article class="profile-stat"><strong>@Model.CertificateCount</strong><span>Certificates</span></article>
             </div>
-        </section>
+
+            <div class="profile-main-grid profile-main-grid-three">
+                <section class="profile-panel profile-activity-panel">
+                    <div class="panel-heading">
+                        <div><span class="eyebrow">ACTIVITY</span><h2>Learning history</h2></div>
+                        <span class="profile-muted">Last 365 days</span>
+                    </div>
+
+                    <div class="activity-legend"><span>Less</span><i class="activity-level level-0"></i><i class="activity-level level-1"></i><i class="activity-level level-2"></i><i class="activity-level level-3"></i><i class="activity-level level-4"></i><span>More</span></div>
+                    <div class="activity-grid" aria-label="Learning activity calendar">
+                        @foreach (var day in Model.ActivityDays)
+                        {
+                            <span class="activity-cell level-@day.Level" title="@day.Date.ToString("dd MMM yyyy"): @day.Count activities"></span>
+                        }
+                    </div>
+                </section>
+
+                <section class="profile-panel">
+                    <div class="panel-heading"><div><span class="eyebrow">ACHIEVEMENTS</span><h2>Unlocked</h2></div></div>
+                    @if (Model.Achievements.Count == 0)
+                    {
+                        <p class="profile-empty">Finish lessons, quizzes and challenges to unlock your first badge.</p>
+                    }
+                    else
+                    {
+                        <div class="achievement-list">
+                            @foreach (var achievement in Model.Achievements)
+                            {
+                                <div class="achievement-card"><span class="achievement-icon">@achievement.Icon</span><div><strong>@achievement.Name</strong><p>@achievement.Description</p></div></div>
+                            }
+                        </div>
+                    }
+                </section>
+
+                <section class="profile-panel">
+                    <div class="panel-heading"><div><span class="eyebrow">RECENT</span><h2>Recent activity</h2></div></div>
+                    @if (Model.RecentActivity.Count == 0)
+                    {
+                        <p class="profile-empty">Your activity will appear here as you start learning.</p>
+                    }
+                    else
+                    {
+                        <div class="activity-list">
+                            @foreach (var item in Model.RecentActivity)
+                            {
+                                <div class="activity-item"><span class="activity-dot"></span><div><strong>@item.Description</strong><time>@item.CreatedAt.ToLocalTime().ToString("dd MMM, HH:mm")</time></div></div>
+                            }
+                        </div>
+                    }
+                </section>
+            </div>
+
+            <section class="profile-panel profile-about">
+                <div class="panel-heading">
+                    <div><span class="eyebrow">ACCOUNT</span><h2>Profile details</h2></div>
+                    <div class="profile-panel-actions">
+                        <a class="text-link" asp-controller="Certificates" asp-action="Index">Certificates →</a>
+                        <a class="text-link" asp-action="Settings">Settings →</a>
+                    </div>
+                </div>
+                <div class="profile-detail-grid">
+                    <div><span>Email</span><strong>@Model.Email</strong></div>
+                    <div><span>Username</span><strong>@@@Model.Username</strong></div>
+                    <div><span>Role</span><strong>@Model.RoleLabel</strong></div>
+                    <div><span>Overall progress</span><strong>@Model.ProgressPercent% complete</strong></div>
+                </div>
+            </section>
+        }
     </div>
 </section>
