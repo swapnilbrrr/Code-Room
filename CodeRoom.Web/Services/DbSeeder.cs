@@ -34,7 +34,7 @@ public static class DbSeeder
         var demos = new (string[] Aliases, string Email, string Username, string Name, string Password, string Role)[]
         {
             (["superadmin@coderoom.test", "platform.admin@coderoom.test", "swapnil.superadmin@coderoom.test"], "swapnil.katuwal@coderoom.com", "swapnil", "Swapnil Katuwal", "Swapnil.Admin@2026", Roles.SuperAdmin),
-            (["admin@coderoom.test", "content.manager@coderoom.test", "chandra.admin@coderoom.test"], "chandra.shrestha@coderoom.com", "chandra", "Chandra Shrestha", "Chandra.Admin@2026", Roles.Admin),
+            (["admin@coderoom.test", "content.manager@coderoom.test", "chandra.admin@coderoom.test"], "chandra.bhatta@coderoom.com", "chandra", "Chandra Bhatta", "Chandra.Admin@2026", Roles.Admin),
             (["student@coderoom.test", "aarav.learner@coderoom.test", "bijay.student@coderoom.test"], "bijay.khadka@coderoom.com", "bijay", "Bijay Khadka", "Bijay.Student@2026", Roles.Student)
         };
 
@@ -185,6 +185,12 @@ public static class DbSeeder
         }
     }
 
+    private static string DemoPassword(string fullName, string roleLabel)
+    {
+        var firstName = fullName.Split(' ', StringSplitOptions.RemoveEmptyEntries)[0];
+        return $"{firstName}.{roleLabel}@2026";
+    }
+
     private static void SeedUsers(ApplicationDbContext db)
     {
         db.Users.AddRange(
@@ -193,15 +199,15 @@ public static class DbSeeder
                 FullName = "Swapnil Katuwal",
                 Email = "swapnil.katuwal@coderoom.com",
                 Username = "swapnil",
-                PasswordHash = PasswordHasher.Hash("Swapnil.Admin@2026"),
+                PasswordHash = PasswordHasher.Hash(DemoPassword("Swapnil Katuwal", "Admin")),
                 Role = Roles.SuperAdmin
             },
             new User
             {
-                FullName = "Chandra Shrestha",
-                Email = "chandra.shrestha@coderoom.com",
+                FullName = "Chandra Bhatta",
+                Email = "chandra.bhatta@coderoom.com",
                 Username = "chandra",
-                PasswordHash = PasswordHasher.Hash("Chandra.Admin@2026"),
+                PasswordHash = PasswordHasher.Hash(DemoPassword("Chandra Bhatta", "Admin")),
                 Role = Roles.Admin
             },
             new User
@@ -209,7 +215,7 @@ public static class DbSeeder
                 FullName = "Bijay Khadka",
                 Email = "bijay.khadka@coderoom.com",
                 Username = "bijay",
-                PasswordHash = PasswordHasher.Hash("Bijay.Student@2026"),
+                PasswordHash = PasswordHasher.Hash(DemoPassword("Bijay Khadka", "Student")),
                 Role = Roles.Student
             },
             new User
@@ -217,7 +223,7 @@ public static class DbSeeder
                 FullName = "Anisha Gurung",
                 Email = "anisha.gurung@coderoom.com",
                 Username = "anisha",
-                PasswordHash = PasswordHasher.Hash("Anisha.Student@2026"),
+                PasswordHash = PasswordHasher.Hash(DemoPassword("Anisha Gurung", "Student")),
                 Role = Roles.Student
             },
             new User
@@ -225,7 +231,7 @@ public static class DbSeeder
                 FullName = "Nischal Bhandari",
                 Email = "nischal.bhandari@coderoom.com",
                 Username = "nischal",
-                PasswordHash = PasswordHasher.Hash("Nischal.Student@2026"),
+                PasswordHash = PasswordHasher.Hash(DemoPassword("Nischal Bhandari", "Student")),
                 Role = Roles.Student
             },
             new User
@@ -233,7 +239,7 @@ public static class DbSeeder
                 FullName = "Suman Adhikari",
                 Email = "suman.adhikari@coderoom.com",
                 Username = "suman",
-                PasswordHash = PasswordHasher.Hash("Suman.Student@2026"),
+                PasswordHash = PasswordHasher.Hash(DemoPassword("Suman Adhikari", "Student")),
                 Role = Roles.Student
             },
             new User
@@ -241,7 +247,7 @@ public static class DbSeeder
                 FullName = "Prerana Rai",
                 Email = "prerana.rai@coderoom.com",
                 Username = "prerana",
-                PasswordHash = PasswordHasher.Hash("Prerana.Student@2026"),
+                PasswordHash = PasswordHasher.Hash(DemoPassword("Prerana Rai", "Student")),
                 Role = Roles.Student
             },
             new User
@@ -249,7 +255,7 @@ public static class DbSeeder
                 FullName = "Babin Aryal",
                 Email = "babin.aryal@coderoom.com",
                 Username = "babin",
-                PasswordHash = PasswordHasher.Hash("Babin.Student@2026"),
+                PasswordHash = PasswordHasher.Hash(DemoPassword("Babin Aryal", "Student")),
                 Role = Roles.Student
             });
     }
