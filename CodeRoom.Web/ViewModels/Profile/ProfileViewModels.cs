@@ -18,6 +18,12 @@ public class ProfileViewModel
     public int QuizAttempts { get; set; }
     public int ProgressPercent { get; set; }
     public int LearningStreak { get; set; }
+    public int Xp { get; set; }
+    public int Level { get; set; }
+    public int LevelProgress { get; set; }
+    public int CertificateCount { get; set; }
+    public string? AvatarUrl { get; set; }
+    public IReadOnlyList<Achievement> Achievements { get; set; } = [];
 
     public IReadOnlyList<ActivityDayViewModel> ActivityDays { get; set; } = [];
     public IReadOnlyList<RecentActivityViewModel> RecentActivity { get; set; } = [];
@@ -39,6 +45,22 @@ public class ProfileSettingsViewModel
     [StringLength(500)]
     [Display(Name = "Bio")]
     public string? Bio { get; set; }
+
+    [StringLength(300)]
+    [Url(ErrorMessage = "Enter a valid avatar URL.")]
+    [Display(Name = "Avatar URL")]
+    public string? AvatarUrl { get; set; }
+
+    [StringLength(20)]
+    [Display(Name = "Theme")]
+    public string ThemePreference { get; set; } = "system";
+
+    [StringLength(20)]
+    [Display(Name = "Profile visibility")]
+    public string ProfileVisibility { get; set; } = "Public";
+
+    [Display(Name = "Email notifications")]
+    public bool EmailNotificationsEnabled { get; set; } = true;
 
     [DataType(DataType.Password)]
     [Display(Name = "Current password")]
