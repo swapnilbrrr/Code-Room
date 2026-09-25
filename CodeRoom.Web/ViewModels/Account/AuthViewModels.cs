@@ -9,6 +9,11 @@ public class RegisterViewModel
     [Display(Name = "Full name")]
     public string FullName { get; set; } = string.Empty;
 
+    [Required(ErrorMessage = "Username is required.")]
+    [StringLength(30, MinimumLength = 3, ErrorMessage = "Username must be between 3 and 30 characters.")]
+    [RegularExpression("^[a-zA-Z0-9._-]+$", ErrorMessage = "Username may contain letters, numbers, dots, underscores and hyphens.")]
+    public string Username { get; set; } = string.Empty;
+
     [Required(ErrorMessage = "Email is required.")]
     [EmailAddress(ErrorMessage = "Enter a valid email address.")]
     [StringLength(120)]
