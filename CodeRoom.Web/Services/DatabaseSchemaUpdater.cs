@@ -5,18 +5,24 @@ using Microsoft.EntityFrameworkCore;
 namespace CodeRoom.Web.Services;
 
 /// <summary>
-/// Keeps older assignment databases compatible when new profile/activity fields are introduced.
+/// Keeps older assignment databases compatible when new profile, activity and notification fields are introduced.
 /// Fresh databases are still created by EF EnsureCreated; this updater only fills gaps on an existing database.
 /// </summary>
 public static class DatabaseSchemaUpdater
 {
     public static async Task EnsureLatestAsync(ApplicationDbContext db)
     {
-        await db.Database.ExecuteSqlRawAsync(
-            "ALTER TABLE Users ADD COLUMN IF NOT EXISTS Username varchar(60) NULL;");
+        if (!await ColumnExistsAsync(db, "Users", "Username"))
+        {
+            await db.Database.ExecuteSqlRawAsync(
+                "ALTER TABLE Users ADD COLUMN Username varchar(60) NULL;");
+        }
 
-        await db.Database.ExecuteSqlRawAsync(
-            "ALTER TABLE Users ADD COLUMN IF NOT EXISTS Bio varchar(500) NULL;");
+        if (!await ColumnExistsAsync(db, "Users", "Bio"))
+        {
+            await db.Database.ExecuteSqlRawAsync(
+                "ALTER TABLE Users ADD COLUMN Bio varchar(500) NULL;");
+        }
 
         var users = await db.Users.OrderBy(u => u.Id).ToListAsync();
         var usedUsernames = users
@@ -48,11 +54,8 @@ public static class DatabaseSchemaUpdater
         await db.Database.ExecuteSqlRawAsync(
             "ALTER TABLE Users MODIFY COLUMN Username varchar(60) NOT NULL;");
 
-        var usernameIndexExists = await db.Database
-            .SqlQueryRaw<long>("SELECT COUNT(*) AS Value FROM information_schema.statistics WHERE table_schema = DATABASE() AND table_name = 'Users' AND index_name = 'IX_Users_Username'")
-            .SingleAsync();
-
-        if (usernameIndexExists == 0)
+        var usernameIndexExists = await IndexExistsAsync(db, "Users", "IX_Users_Username");
+        if (!usernameIndexExists)
         {
             await db.Database.ExecuteSqlRawAsync(
                 "CREATE UNIQUE INDEX IX_Users_Username ON Users (Username);");
@@ -90,6 +93,36 @@ CREATE TABLE IF NOT EXISTS Notifications (
         FOREIGN KEY (UserId) REFERENCES Users (Id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 """);
+    }
+
+    private static async Task<bool> ColumnExistsAsync(
+        ApplicationDbContext db,
+        string tableName,
+        string columnName)
+    {
+        var count = await db.Database
+            .SqlQueryRaw<long>(
+                "SELECT COUNT(*) AS Value FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = {0} AND column_name = {1}",
+                tableName,
+                columnName)
+            .SingleAsync();
+
+        return count > 0;
+    }
+
+    private static async Task<bool> IndexExistsAsync(
+        ApplicationDbContext db,
+        string tableName,
+        string indexName)
+    {
+        var count = await db.Database
+            .SqlQueryRaw<long>(
+                "SELECT COUNT(*) AS Value FROM information_schema.statistics WHERE table_schema = DATABASE() AND table_name = {0} AND index_name = {1}",
+                tableName,
+                indexName)
+            .SingleAsync();
+
+        return count > 0;
     }
 
     private static string BuildUsername(string fullName, string email, int id)
