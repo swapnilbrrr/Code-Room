@@ -84,17 +84,21 @@ public static class DbSeeder
             }
         }
 
-        var additionalUsers = new (string Email, string Name, string Password)[]
+        var additionalUsers = new (string[] Aliases, string Email, string Name, string Password)[]
         {
-            ("anisha.student@coderoom.test", "Anisha Gurung", "Anisha.Student@2026"),
-            ("nischal.student@coderoom.test", "Nischal Bhandari", "Nischal.Student@2026"),
-            ("suman.student@coderoom.test", "Suman Adhikari", "Suman.Student@2026"),
-            ("prerana.student@coderoom.test", "Prerana Rai", "Prerana.Student@2026")
+            (["anisha.student@coderoom.test", "anisha.gurung@coderoom.com"], "anisha.gurung@coderoom.com", "Anisha Gurung", "Anisha.Student@2026"),
+            (["nischal.student@coderoom.test", "nischal.bhandari@coderoom.com"], "nischal.bhandari@coderoom.com", "Nischal Bhandari", "Nischal.Student@2026"),
+            (["suman.student@coderoom.test", "suman.adhikari@coderoom.com"], "suman.adhikari@coderoom.com", "Suman Adhikari", "Suman.Student@2026"),
+            (["prerana.student@coderoom.test", "prerana.rai@coderoom.com"], "prerana.rai@coderoom.com", "Prerana Rai", "Prerana.Student@2026"),
+            (["babin.student@coderoom.test"], "babin.aryal@coderoom.com", "Babin Aryal", "Babin.Student@2026")
         };
 
         foreach (var demo in additionalUsers)
         {
-            if (!await db.Users.AnyAsync(u => u.Email == demo.Email))
+            var user = await db.Users.FirstOrDefaultAsync(u =>
+                demo.Aliases.Contains(u.Email) || u.Email == demo.Email);
+
+            if (user is null)
             {
                 db.Users.Add(new User
                 {
@@ -103,6 +107,31 @@ public static class DbSeeder
                     PasswordHash = PasswordHasher.Hash(demo.Password),
                     Role = Roles.Student
                 });
+                changed = true;
+                continue;
+            }
+
+            if (user.Email != demo.Email)
+            {
+                user.Email = demo.Email;
+                changed = true;
+            }
+
+            if (user.FullName != demo.Name)
+            {
+                user.FullName = demo.Name;
+                changed = true;
+            }
+
+            if (user.Role != Roles.Student)
+            {
+                user.Role = Roles.Student;
+                changed = true;
+            }
+
+            if (!PasswordHasher.Verify(demo.Password, user.PasswordHash))
+            {
+                user.PasswordHash = PasswordHasher.Hash(demo.Password);
                 changed = true;
             }
         }
