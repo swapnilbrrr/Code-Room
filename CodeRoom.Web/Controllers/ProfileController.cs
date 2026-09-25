@@ -67,6 +67,7 @@ public class ProfileController(ApplicationDbContext db, IWebHostEnvironment envi
             AdminCourseCount = isAdmin ? await db.Courses.CountAsync() : 0,
             AdminAuditEvents = adminLogs.Count,
             AdminPublishedAnnouncements = isAdmin ? await db.Announcements.CountAsync(a => a.IsPublished) : 0,
+            AdminCertificateCount = isAdmin ? await db.Certificates.CountAsync() : 0,
             CoursesEnrolled = courses.Count,
             LessonsCompleted = completedLessons,
             QuizAttempts = await db.QuizAttempts.CountAsync(q => q.UserId == user.Id),
