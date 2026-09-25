@@ -24,7 +24,7 @@
                 <a class="btn btn-secondary" asp-action="Index">View profile</a>
             </div>
 
-            <form asp-action="Settings" method="post" id="account-settings-form">
+            <form asp-action="Settings" method="post" enctype="multipart/form-data" id="account-settings-form">
                 @Html.AntiForgeryToken()
                 <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
 
@@ -62,9 +62,14 @@
                             <span asp-validation-for="Bio" class="field-error"></span>
                         </label>
 
-                        <label class="form-span-2">Avatar URL
+                        <label class="form-field">Upload avatar
+                            <input class="input" asp-for="AvatarFile" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" />
+                            <small class="settings-help">JPG, PNG or WebP · max 2 MB.</small>
+                            <span asp-validation-for="AvatarFile" class="field-error"></span>
+                        </label>
+                        <label class="form-field">Avatar URL
                             <input class="input" asp-for="AvatarUrl" type="url" placeholder="https://..." />
-                            <small class="settings-help">Optional. Leave blank to use your initials.</small>
+                            <small class="settings-help">Optional remote image. Upload takes priority.</small>
                             <span asp-validation-for="AvatarUrl" class="field-error"></span>
                         </label>
                     </div>
