@@ -80,7 +80,7 @@ public class QuizController(ApplicationDbContext db) : Controller
         await LearningActivityService.RecordAsync(
             db,
             User.GetUserId(),
-            passed ? "ExamPassed" : "QuizAttempted",
+            passed && quiz.IsCertificationExam ? "ExamPassed" : "QuizAttempted",
             $"Completed {quiz.Title} with {percentage}%",
             passed ? "Assessment passed" : "Quiz completed",
             $"You scored {score}/{quiz.Questions.Count} ({percentage}%) in {quiz.Title}.",
