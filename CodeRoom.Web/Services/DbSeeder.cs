@@ -30,37 +30,71 @@ public static class DbSeeder
 
     private static async Task UpgradeLegacyDemoDataAsync(ApplicationDbContext db)
     {
-        var upgrades = new (string LegacyEmail, string Email, string Name, string PasswordHash, string Role)[]
+        var demos = new (string[] Aliases, string Email, string Name, string Password, string Role)[]
         {
-            ("superadmin@coderoom.test", "platform.admin@coderoom.test", "Maya Sharma", "100000.u9/V8OI69QKU4Qb2qdggfA==.Fm4nbZCU5LS7bmASYExTd1k4VO7mIxeyNzo7PQdLvBU=", Roles.SuperAdmin),
-            ("admin@coderoom.test", "content.manager@coderoom.test", "Rohan Thapa", "100000.xRwBf1OHMhk1nl12BefrlA==.NuCojoZxgDuQXfx93ja+DLKp7eCXAiuyJybB8/Cnbew=", Roles.Admin),
-            ("student@coderoom.test", "aarav.learner@coderoom.test", "Aarav Karki", "100000.4eo2A1LstZpd0mqYsZ7TVA==.RocQCT2fO+YhMB18FajPAIACjMiYdV6Y6W6BJ8WQPsI=", Roles.Student)
+            (["superadmin@coderoom.test", "platform.admin@coderoom.test"], "swapnil.superadmin@coderoom.test", "Swapnil Katuwal", "Swapnil.Admin@2026", Roles.SuperAdmin),
+            (["admin@coderoom.test", "content.manager@coderoom.test"], "chandra.admin@coderoom.test", "Chandra Shrestha", "Chandra.Admin@2026", Roles.Admin),
+            (["student@coderoom.test", "aarav.learner@coderoom.test"], "bijay.student@coderoom.test", "Bijay Thapa", "Bijay.Student@2026", Roles.Student)
         };
 
         var changed = false;
 
-        foreach (var upgrade in upgrades)
+        foreach (var demo in demos)
         {
-            var user = await db.Users.FirstOrDefaultAsync(u => u.Email == upgrade.LegacyEmail);
+            var user = await db.Users.FirstOrDefaultAsync(u =>
+                demo.Aliases.Contains(u.Email) || u.Email == demo.Email);
 
-            if (user is not null)
-            {
-                user.Email = upgrade.Email;
-                user.FullName = upgrade.Name;
-                user.PasswordHash = upgrade.PasswordHash;
-                user.Role = upgrade.Role;
-                changed = true;
-                continue;
-            }
-
-            if (!await db.Users.AnyAsync(u => u.Email == upgrade.Email))
+            if (user is null)
             {
                 db.Users.Add(new User
                 {
-                    Email = upgrade.Email,
-                    FullName = upgrade.Name,
-                    PasswordHash = upgrade.PasswordHash,
-                    Role = upgrade.Role
+                    FullName = demo.Name,
+                    Email = demo.Email,
+                    PasswordHash = PasswordHasher.Hash(demo.Password),
+                    Role = demo.Role
+                });
+                changed = true;
+            }
+            else
+            {
+                if (user.Email != demo.Email)
+                {
+                    user.Email = demo.Email;
+                    changed = true;
+                }
+
+                if (user.FullName != demo.Name)
+                {
+                    user.FullName = demo.Name;
+                    changed = true;
+                }
+
+                if (user.Role != demo.Role)
+                {
+                    user.Role = demo.Role;
+                    changed = true;
+                }
+            }
+        }
+
+        var additionalUsers = new (string Email, string Name, string Password)[]
+        {
+            ("anisha.student@coderoom.test", "Anisha Gurung", "Anisha.Student@2026"),
+            ("nischal.student@coderoom.test", "Nischal Bhandari", "Nischal.Student@2026"),
+            ("suman.student@coderoom.test", "Suman Adhikari", "Suman.Student@2026"),
+            ("prerana.student@coderoom.test", "Prerana Rai", "Prerana.Student@2026")
+        };
+
+        foreach (var demo in additionalUsers)
+        {
+            if (!await db.Users.AnyAsync(u => u.Email == demo.Email))
+            {
+                db.Users.Add(new User
+                {
+                    FullName = demo.Name,
+                    Email = demo.Email,
+                    PasswordHash = PasswordHasher.Hash(demo.Password),
+                    Role = Roles.Student
                 });
                 changed = true;
             }
@@ -72,7 +106,7 @@ public static class DbSeeder
 
         foreach (var lesson in lessons)
         {
-            if (lesson.Content.Trim().Length < 260)
+            if (lesson.Content.Trim().Length < 700)
             {
                 lesson.Content = LessonContentBuilder.Build(
                     lesson.Course.Title,
@@ -105,23 +139,51 @@ public static class DbSeeder
         db.Users.AddRange(
             new User
             {
-                FullName = "Maya Sharma",
-                Email = "platform.admin@coderoom.test",
-                PasswordHash = "100000.u9/V8OI69QKU4Qb2qdggfA==.Fm4nbZCU5LS7bmASYExTd1k4VO7mIxeyNzo7PQdLvBU=",
+                FullName = "Swapnil Katuwal",
+                Email = "swapnil.superadmin@coderoom.test",
+                PasswordHash = PasswordHasher.Hash("Swapnil.Admin@2026"),
                 Role = Roles.SuperAdmin
             },
             new User
             {
-                FullName = "Rohan Thapa",
-                Email = "content.manager@coderoom.test",
-                PasswordHash = "100000.xRwBf1OHMhk1nl12BefrlA==.NuCojoZxgDuQXfx93ja+DLKp7eCXAiuyJybB8/Cnbew=",
+                FullName = "Chandra Shrestha",
+                Email = "chandra.admin@coderoom.test",
+                PasswordHash = PasswordHasher.Hash("Chandra.Admin@2026"),
                 Role = Roles.Admin
             },
             new User
             {
-                FullName = "Aarav Karki",
-                Email = "aarav.learner@coderoom.test",
-                PasswordHash = "100000.4eo2A1LstZpd0mqYsZ7TVA==.RocQCT2fO+YhMB18FajPAIACjMiYdV6Y6W6BJ8WQPsI=",
+                FullName = "Bijay Thapa",
+                Email = "bijay.student@coderoom.test",
+                PasswordHash = PasswordHasher.Hash("Bijay.Student@2026"),
+                Role = Roles.Student
+            },
+            new User
+            {
+                FullName = "Anisha Gurung",
+                Email = "anisha.student@coderoom.test",
+                PasswordHash = PasswordHasher.Hash("Anisha.Student@2026"),
+                Role = Roles.Student
+            },
+            new User
+            {
+                FullName = "Nischal Bhandari",
+                Email = "nischal.student@coderoom.test",
+                PasswordHash = PasswordHasher.Hash("Nischal.Student@2026"),
+                Role = Roles.Student
+            },
+            new User
+            {
+                FullName = "Suman Adhikari",
+                Email = "suman.student@coderoom.test",
+                PasswordHash = PasswordHasher.Hash("Suman.Student@2026"),
+                Role = Roles.Student
+            },
+            new User
+            {
+                FullName = "Prerana Rai",
+                Email = "prerana.student@coderoom.test",
+                PasswordHash = PasswordHasher.Hash("Prerana.Student@2026"),
                 Role = Roles.Student
             });
     }
