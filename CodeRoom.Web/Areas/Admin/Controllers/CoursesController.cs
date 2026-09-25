@@ -40,6 +40,7 @@ public class CoursesController(ApplicationDbContext db) : Controller
         model.CreatedAt = DateTime.UtcNow;
         db.Courses.Add(model);
         await db.SaveChangesAsync();
+        await AdminAuditService.RecordAsync(db, User.GetUserId(), "Created", "Course", model.Title, $"Created course {model.Title}.");
         TempData["Success"] = "Course created.";
         return RedirectToAction(nameof(Index));
     }
@@ -81,10 +82,15 @@ public class CoursesController(ApplicationDbContext db) : Controller
         course.Description = model.Description;
         course.Category = model.Category;
         course.Level = model.Level;
+        course.EstimatedMinutes = model.EstimatedMinutes;
+        course.IsCertification = model.IsCertification;
+        course.CertificateName = model.CertificateName;
+        course.PassingScorePercent = model.PassingScorePercent;
         course.ThumbnailUrl = model.ThumbnailUrl;
         course.IsPublished = model.IsPublished;
 
         await db.SaveChangesAsync();
+        await AdminAuditService.RecordAsync(db, User.GetUserId(), "Updated", "Course", course.Title, $"Updated course {course.Title}.");
         TempData["Success"] = "Course updated.";
         return RedirectToAction(nameof(Index));
     }
@@ -96,8 +102,10 @@ public class CoursesController(ApplicationDbContext db) : Controller
         var course = await db.Courses.FindAsync(id);
         if (course is not null)
         {
+            var deletedTitle = course.Title;
             db.Courses.Remove(course);
             await db.SaveChangesAsync();
+            await AdminAuditService.RecordAsync(db, User.GetUserId(), "Deleted", "Course", deletedTitle, $"Deleted course {deletedTitle}.");
             TempData["Success"] = "Course deleted.";
         }
         return RedirectToAction(nameof(Index));
