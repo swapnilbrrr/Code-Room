@@ -9,6 +9,9 @@ public static class CatalogHelpers
         "Web Development" => "web",
         "Cybersecurity" => "security",
         "Databases" => "database",
+        "Networking" => "networking",
+        "Cloud" => "cloud",
+        "Linux" => "linux",
         _ => "other"
     };
 
