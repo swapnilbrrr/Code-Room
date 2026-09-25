@@ -4,6 +4,8 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeRoom.Web", "CodeRoom.Web\CodeRoom.Web.csproj", "{8A3F1D92-4C6E-4E0D-A0A8-7C0D3B2D9B01}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeRoom.Web.Tests", "tests\CodeRoom.Web.Tests\CodeRoom.Web.Tests.csproj", "{B6F2D2C7-2D6D-4A0E-B9A7-2B4C4A4D2F10}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -14,5 +16,9 @@ Global
 		{8A3F1D92-4C6E-4E0D-A0A8-7C0D3B2D9B01}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8A3F1D92-4C6E-4E0D-A0A8-7C0D3B2D9B01}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8A3F1D92-4C6E-4E0D-A0A8-7C0D3B2D9B01}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6F2D2C7-2D6D-4A0E-B9A7-2B4C4A4D2F10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6F2D2C7-2D6D-4A0E-B9A7-2B4C4A4D2F10}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6F2D2C7-2D6D-4A0E-B9A7-2B4C4A4D2F10}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6F2D2C7-2D6D-4A0E-B9A7-2B4C4A4D2F10}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
