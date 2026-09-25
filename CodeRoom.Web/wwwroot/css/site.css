@@ -1159,3 +1159,149 @@ main {
         grid-template-columns: 1fr;
     }
 }
+
+
+/* Compact navigation and footer */
+
+:root {
+    --header-height: 64px;
+}
+
+.navbar {
+    gap: 24px;
+}
+
+.brand img {
+    width: 116px;
+}
+
+.nav-links {
+    gap: 22px;
+}
+
+.nav-actions {
+    margin-left: auto;
+    gap: 7px;
+}
+
+.theme-toggle,
+.mobile-toggle {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+}
+
+.site-footer .footer-inner {
+    gap: 24px;
+    padding: 34px 0 30px;
+}
+
+.footer-brand img {
+    width: 116px;
+}
+
+.footer-brand p {
+    margin-top: 5px;
+    font-size: .8rem;
+}
+
+.footer-links {
+    gap: 24px;
+}
+
+.footer-bottom .container {
+    min-height: 46px;
+}
+
+/* Hero balance */
+
+.hero {
+    padding: 128px 0 78px;
+}
+
+.hero-grid {
+    gap: 58px;
+}
+
+.hero-panel {
+    padding: 26px;
+}
+
+.hero-snapshot {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 4px;
+    padding-top: 18px;
+    border-top: 1px solid var(--border);
+}
+
+.hero-snapshot > div:not(.snapshot-progress) {
+    display: grid;
+    gap: 2px;
+}
+
+.hero-snapshot span {
+    color: var(--muted);
+    font-size: .66rem;
+    font-weight: 800;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+
+.hero-snapshot strong {
+    color: var(--heading);
+    font-size: .9rem;
+}
+
+.snapshot-progress {
+    grid-column: 1 / -1;
+    margin-top: 5px;
+}
+
+.snapshot-progress > div:first-child {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 7px;
+}
+
+.snapshot-progress > div:first-child span {
+    text-transform: none;
+    letter-spacing: 0;
+    font-size: .76rem;
+    font-weight: 600;
+}
+
+.snapshot-progress > div:first-child strong {
+    font-size: .76rem;
+}
+
+@media (max-width: 760px) {
+    :root { --header-height: 62px; }
+
+    .navbar {
+        gap: 12px;
+    }
+
+    .brand img {
+        width: 104px;
+    }
+
+    .nav-actions {
+        margin-left: auto;
+    }
+
+    .hero {
+        padding-top: 108px;
+    }
+
+    .site-footer .footer-inner {
+        padding: 28px 0 24px;
+    }
+
+    .footer-brand img {
+        width: 104px;
+    }
+}
