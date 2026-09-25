@@ -5,6 +5,11 @@
     "ghcr.io/devcontainers/features/node:1": {},
     "ghcr.io/devcontainers/features/git:1": {}
   },
+  "containerEnv": {
+    "TMPDIR": "/tmp",
+    "TMP": "/tmp",
+    "TEMP": "/tmp"
+  },
   "forwardPorts": [5000, 5001],
   "portsAttributes": {
     "5000": {
@@ -25,5 +30,5 @@
       ]
     }
   },
-  "postCreateCommand": "dotnet --info && git --version"
+  "postCreateCommand": "mkdir -p /tmp/coderoom && chmod 700 /tmp/coderoom && dotnet --info && git --version"
 }
