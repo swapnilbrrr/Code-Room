@@ -53,9 +53,6 @@ public class ProfileController(ApplicationDbContext db) : Controller
             Email = user.Email,
             Bio = user.Bio,
             AvatarUrl = user.AvatarUrl,
-            ThemePreference = user.ThemePreference,
-            ProfileVisibility = user.ProfileVisibility,
-            EmailNotificationsEnabled = user.EmailNotificationsEnabled ?? string.Empty,
             RoleLabel = user.Role,
             IsAdmin = user.Role is Roles.Admin or Roles.SuperAdmin,
             CoursesEnrolled = courses.Count,
@@ -67,7 +64,6 @@ public class ProfileController(ApplicationDbContext db) : Controller
             Level = LearningActivityService.GetLevel(user.Xp),
             LevelProgress = LearningActivityService.GetLevelProgress(user.Xp),
             CertificateCount = certificateCount,
-            AvatarUrl = user.AvatarUrl,
             Achievements = achievements,
             ActivityDays = BuildActivityDays(activities),
             RecentActivity = activities
@@ -97,7 +93,11 @@ public class ProfileController(ApplicationDbContext db) : Controller
             FullName = user.FullName,
             Username = user.Username,
             Email = user.Email,
-            Bio = user.Bio
+            Bio = user.Bio,
+            AvatarUrl = user.AvatarUrl,
+            ThemePreference = user.ThemePreference,
+            ProfileVisibility = user.ProfileVisibility,
+            EmailNotificationsEnabled = user.EmailNotificationsEnabled
         });
     }
 
