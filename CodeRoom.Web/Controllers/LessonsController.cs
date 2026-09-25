@@ -65,7 +65,11 @@ public class LessonsController(ApplicationDbContext db) : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Complete(int lessonId, int courseId)
     {
-        var lesson = await db.Lessons.FindAsync(lessonId);
+        var lesson = await db.Lessons
+            .Include(l => l.Course)
+                .ThenInclude(c => c.Lessons)
+            .FirstOrDefaultAsync(l => l.Id == lessonId);
+
         if (lesson is null)
         {
             return NotFound();
@@ -73,7 +77,6 @@ public class LessonsController(ApplicationDbContext db) : Controller
 
         var userId = User.GetUserId();
 
-        // Ensure the student is enrolled so progress is meaningful.
         if (!await db.Enrollments.AnyAsync(e => e.UserId == userId && e.CourseId == lesson.CourseId))
         {
             db.Enrollments.Add(new Enrollment { UserId = userId, CourseId = lesson.CourseId });
@@ -81,6 +84,8 @@ public class LessonsController(ApplicationDbContext db) : Controller
 
         var progress = await db.Progress
             .FirstOrDefaultAsync(p => p.UserId == userId && p.LessonId == lessonId);
+
+        var wasAlreadyCompleted = progress?.IsCompleted == true;
 
         if (progress is null)
         {
@@ -99,6 +104,64 @@ public class LessonsController(ApplicationDbContext db) : Controller
         }
 
         await db.SaveChangesAsync();
+
+        if (!wasAlreadyCompleted)
+        {
+            await LearningActivityService.RecordAsync(
+                db,
+                userId,
+                "LessonCompleted",
+                $"Completed {lesson.Title}",
+                "Lesson completed",
+                $"Nice work. {lesson.Title} is now marked complete.",
+                $"/Lessons/Index/{lesson.CourseId}?lessonId={lesson.Id}",
+                "LessonCompleted");
+
+            var completedCount = await db.Progress.CountAsync(p =>
+                p.UserId == userId &&
+                p.IsCompleted &&
+                p.Lesson.CourseId == lesson.CourseId);
+
+            if (completedCount == lesson.Course.Lessons.Count)
+            {
+                var title = "Course completed";
+                var alreadyNotified = await db.Notifications.AnyAsync(n =>
+                    n.UserId == userId &&
+                    n.Type == "CourseCompleted" &&
+                    n.Title == title &&
+                    n.LinkUrl == $"/Courses/Details/{lesson.CourseId}");
+
+                if (!alreadyNotified)
+                {
+                    db.Notifications.Add(new Notification
+                    {
+                        UserId = userId,
+                        Type = "CourseCompleted",
+                        Title = title,
+                        Message = $"You completed every lesson in {lesson.Course.Title}.",
+                        LinkUrl = $"/Courses/Details/{lesson.CourseId}",
+                        CreatedAt = DateTime.UtcNow
+                    });
+
+                    db.UserActivities.Add(new UserActivity
+                    {
+                        UserId = userId,
+                        ActivityType = "CourseCompleted",
+                        Description = $"Completed {lesson.Course.Title}",
+                        CreatedAt = DateTime.UtcNow
+                    });
+
+                    await db.SaveChangesAsync();
+                }
+            }
+
+            await LearningActivityService.TryRecordStreakMilestoneAsync(db, userId);
+
+            TempData["ToastTitle"] = "Lesson completed";
+            TempData["ToastMessage"] = "Progress saved. Keep your streak alive.";
+            TempData["ToastIcon"] = "✓";
+        }
+
         return RedirectToAction(nameof(Index), new { id = lesson.CourseId, lessonId });
     }
 }
