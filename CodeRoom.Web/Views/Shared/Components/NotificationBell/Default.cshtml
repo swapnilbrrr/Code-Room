@@ -2,7 +2,10 @@
 
 <div class="notification-menu">
     <button class="icon-button notification-trigger" type="button" data-notification-toggle aria-expanded="false" aria-controls="notification-popover" aria-label="Open notifications" title="Notifications">
-        <span class="notification-bell">♧</span>
+        <svg class="icon-svg notification-bell" viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
+    <path d="M10 21h4"></path>
+</svg>
         @if (Model.UnreadCount > 0)
         {
             <span class="notification-count">@Model.UnreadCount</span>
