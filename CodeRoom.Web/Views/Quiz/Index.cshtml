@@ -1,35 +1,80 @@
 @model CodeRoom.Web.ViewModels.Quizzes.TakeQuizViewModel
 @{
     ViewData["Title"] = Model.Quiz.Title;
+    var isExam = Model.IsExam;
 }
-
-<section class="page-shell">
+<section class="page-shell quiz-page">
     <div class="container quiz-shell">
-        <div class="content-panel">
-            <span class="eyebrow">KNOWLEDGE CHECK</span>
-            <h1>@Model.Quiz.Title</h1>
-            <p>@Model.Quiz.Description</p>
+        <div class="quiz-header-card">
+            <div>
+                <span class="eyebrow">@(isExam ? "FINAL ASSESSMENT" : "KNOWLEDGE CHECK")</span>
+                <h1 class="page-title">@Model.Quiz.Title</h1>
+                <p class="page-intro">@Model.Quiz.Description</p>
+            </div>
+            <div class="quiz-meta">
+                <span>@Model.Questions.Count questions</span>
+                <span>Pass: @Model.Quiz.PassingScorePercent%</span>
+                @if (Model.TimeLimitMinutes > 0)
+                {
+                    <strong data-quiz-timer data-minutes="@Model.TimeLimitMinutes">⏱ @Model.TimeLimitMinutes:00</strong>
+                }
+            </div>
+        </div>
 
+        <div class="quiz-info-strip">
+            <span>Read each scenario carefully.</span>
+            <span>@(Model.TimeLimitMinutes > 0 ? $"You have {Model.TimeLimitMinutes} minutes." : "No time limit.")</span>
+            <span>Answers are saved when you submit.</span>
+        </div>
+
+        <div class="content-panel">
             <form asp-action="Submit" method="post" data-quiz-form>
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="quizId" value="@Model.Quiz.Id" />
-
                 @{ var index = 1; }
-                @foreach (var q in Model.Questions)
+                @foreach (var item in Model.Questions)
                 {
                     <fieldset class="quiz-question">
                         <legend>Question @index of @Model.Questions.Count</legend>
-                        <h2>@q.QuestionText</h2>
-                        <label class="option"><input type="radio" name="answers[@q.Id]" value="A" required /> @q.OptionA</label>
-                        <label class="option"><input type="radio" name="answers[@q.Id]" value="B" /> @q.OptionB</label>
-                        <label class="option"><input type="radio" name="answers[@q.Id]" value="C" /> @q.OptionC</label>
-                        <label class="option"><input type="radio" name="answers[@q.Id]" value="D" /> @q.OptionD</label>
+                        <h2>@item.QuestionText</h2>
+                        <label class="option"><input type="radio" name="answers[@item.Id]" value="A" required /> <span>@item.OptionA</span></label>
+                        <label class="option"><input type="radio" name="answers[@item.Id]" value="B" /> <span>@item.OptionB</span></label>
+                        <label class="option"><input type="radio" name="answers[@item.Id]" value="C" /> <span>@item.OptionC</span></label>
+                        <label class="option"><input type="radio" name="answers[@item.Id]" value="D" /> <span>@item.OptionD</span></label>
                     </fieldset>
                     index++;
                 }
-
-                <button class="btn btn-primary" type="submit">Submit answers</button>
+                <div class="quiz-submit-row">
+                    <span class="profile-muted">@(isExam ? "Passing this exam may unlock a certificate." : "You can review your score after submission.")</span>
+                    <button class="btn btn-primary" type="submit">@(isExam ? "Submit examination" : "Submit answers")</button>
+                </div>
             </form>
         </div>
     </div>
 </section>
+@section Scripts {
+<script>
+(() => {
+    const timer = document.querySelector('[data-quiz-timer]');
+    const form = document.querySelector('[data-quiz-form]');
+    if (!timer || !form) return;
+
+    let remaining = Number(timer.dataset.minutes || 0) * 60;
+    const render = () => {
+        const min = Math.floor(remaining / 60);
+        const sec = remaining % 60;
+        timer.textContent = '⏱ ' + min + ':' + String(sec).padStart(2, '0');
+        if (remaining <= 60) timer.classList.add('is-warning');
+    };
+    render();
+    const handle = window.setInterval(() => {
+        remaining -= 1;
+        render();
+        if (remaining <= 0) {
+            window.clearInterval(handle);
+            form.submit();
+        }
+    }, 1000);
+})();
+</script>
+}
