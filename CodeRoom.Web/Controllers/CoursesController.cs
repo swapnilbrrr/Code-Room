@@ -1,5 +1,6 @@
 using CodeRoom.Web.Data;
 using CodeRoom.Web.Models;
+using CodeRoom.Web.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -40,6 +41,8 @@ public class CoursesController(ApplicationDbContext db) : Controller
             .ToListAsync();
         ViewData["QuizId"] = quiz?.Id;
         ViewData["CourseResources"] = resources;
+        ViewData["IsEnrolled"] = User.Identity?.IsAuthenticated == true &&
+            await db.Enrollments.AnyAsync(e => e.UserId == User.GetUserId() && e.CourseId == id);
 
         return View(course);
     }
