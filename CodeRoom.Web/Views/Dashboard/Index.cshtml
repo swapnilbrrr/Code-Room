@@ -1,0 +1,29 @@
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<section class="page-shell">
+    <div class="container">
+        <span class="eyebrow">STUDENT DASHBOARD</span>
+        <h1 class="page-title">Keep learning, Swapnil.</h1>
+        <p class="page-intro">Your learning activity and current courses in one place.</p>
+
+        <div class="dashboard-stats">
+            <div class="stat-card"><strong>3</strong><span>Courses enrolled</span></div>
+            <div class="stat-card"><strong>18</strong><span>Lessons completed</span></div>
+            <div class="stat-card"><strong>82%</strong><span>Average quiz score</span></div>
+        </div>
+
+        <div class="content-panel">
+            <div class="panel-heading"><h2>Continue learning</h2><a asp-controller="Courses" asp-action="Index">Browse courses</a></div>
+            <div class="course-progress-row">
+                <div><strong>ASP.NET Core MVC</strong><span>4 of 10 lessons</span></div>
+                <div class="progress-track"><span style="width: 40%"></span></div>
+            </div>
+            <div class="course-progress-row">
+                <div><strong>Security Fundamentals</strong><span>6 of 8 lessons</span></div>
+                <div class="progress-track"><span style="width: 75%"></span></div>
+            </div>
+        </div>
+    </div>
+</section>
