@@ -28,6 +28,14 @@ public class ProfileController(ApplicationDbContext db, IWebHostEnvironment envi
             .OrderBy(a => a.CreatedAt)
             .ToListAsync();
 
+        var isAdmin = user.Role is Roles.Admin or Roles.SuperAdmin;
+        var adminLogs = isAdmin
+            ? await db.AdminAuditLogs
+                .Where(a => a.UserId == user.Id && a.CreatedAt >= DateTime.UtcNow.Date.AddDays(-364))
+                .OrderBy(a => a.CreatedAt)
+                .ToListAsync()
+            : [];
+
         var courses = await db.Enrollments
             .Where(e => e.UserId == user.Id)
             .Include(e => e.Course)
@@ -54,7 +62,11 @@ public class ProfileController(ApplicationDbContext db, IWebHostEnvironment envi
             Bio = user.Bio,
             AvatarUrl = user.AvatarUrl,
             RoleLabel = user.Role,
-            IsAdmin = user.Role is Roles.Admin or Roles.SuperAdmin,
+            IsAdmin = isAdmin,
+            AdminManagedUsers = isAdmin ? await db.Users.CountAsync() : 0,
+            AdminCourseCount = isAdmin ? await db.Courses.CountAsync() : 0,
+            AdminAuditEvents = adminLogs.Count,
+            AdminPublishedAnnouncements = isAdmin ? await db.Announcements.CountAsync(a => a.IsPublished) : 0,
             CoursesEnrolled = courses.Count,
             LessonsCompleted = completedLessons,
             QuizAttempts = await db.QuizAttempts.CountAsync(q => q.UserId == user.Id),
@@ -72,6 +84,16 @@ public class ProfileController(ApplicationDbContext db, IWebHostEnvironment envi
                 .Select(a => new RecentActivityViewModel
                 {
                     ActivityType = a.ActivityType,
+                    Description = a.Description,
+                    CreatedAt = a.CreatedAt
+                })
+                .ToList(),
+            AdminRecentActivity = adminLogs
+                .OrderByDescending(a => a.CreatedAt)
+                .Take(8)
+                .Select(a => new RecentActivityViewModel
+                {
+                    ActivityType = a.Action,
                     Description = a.Description,
                     CreatedAt = a.CreatedAt
                 })
