@@ -9,26 +9,26 @@
             <h1>Learn technology.<br /><span>Build real skills.</span></h1>
             <p>
                 Code-Room brings structured lessons, practical resources, quizzes and progress tracking
-                into one simple learning space for students.
+                into one focused learning space for students who want to build technology skills step by step.
             </p>
 
             <div class="hero-actions">
                 <a class="btn btn-primary btn-lg" asp-controller="Courses" asp-action="Index">Explore courses</a>
-                <a class="text-link" asp-controller="Home" asp-action="About">Learn how Code-Room works <span>→</span></a>
+                <a class="text-link" asp-controller="Account" asp-action="Register">Create your learning account <span>→</span></a>
             </div>
 
             <div class="hero-trust">
                 <div>
                     <strong>Structured</strong>
-                    <span>Courses and lessons</span>
+                    <span>Courses and lesson paths</span>
                 </div>
                 <div>
-                    <strong>Interactive</strong>
-                    <span>Quizzes and practice</span>
+                    <strong>Practical</strong>
+                    <span>Examples, resources and quizzes</span>
                 </div>
                 <div>
                     <strong>Trackable</strong>
-                    <span>Progress and results</span>
+                    <span>Progress and assessment history</span>
                 </div>
             </div>
         </div>
@@ -36,11 +36,11 @@
         <aside class="hero-panel" aria-label="Start learning">
             <span class="panel-kicker">START WITH THE FUNDAMENTALS</span>
             <h2>Choose a direction.</h2>
-            <p>Build a strong base before moving into more advanced technology topics.</p>
+            <p>Start with a focused learning path, practise as you go, and use quizzes to check your understanding.</p>
 
             <a class="path-row" asp-controller="Courses" asp-action="Index">
                 <span class="path-number">01</span>
-                <span><strong>Programming</strong><small>C#, Python and core concepts</small></span>
+                <span><strong>Programming</strong><small>C# and Python foundations</small></span>
                 <span class="path-arrow">→</span>
             </a>
             <a class="path-row" asp-controller="Courses" asp-action="Index">
@@ -72,34 +72,45 @@
     </div>
 </section>
 
+<section class="section">
+    <div class="container">
+        <div class="home-stat-strip">
+            <div class="home-stat"><strong>8</strong><span>Technology courses</span></div>
+            <div class="home-stat"><strong>80+</strong><span>Structured lessons</span></div>
+            <div class="home-stat"><strong>40+</strong><span>Quiz questions</span></div>
+            <div class="home-stat"><strong>4</strong><span>Core learning areas</span></div>
+        </div>
+    </div>
+</section>
+
 <section class="section section-muted">
     <div class="container">
         <div class="section-heading">
             <span class="eyebrow">LEARNING AREAS</span>
-            <h2>Start with what you want to learn.</h2>
-            <p>Browse focused technology subjects and work through them at your own pace.</p>
+            <h2>Build a foundation across modern technology.</h2>
+            <p>Move between programming, web development, cybersecurity and databases without leaving the same learning environment.</p>
         </div>
 
         <div class="area-grid">
             <a class="area-card" asp-controller="Courses" asp-action="Index">
                 <span>01</span>
                 <h3>Programming</h3>
-                <p>Languages, logic and object-oriented fundamentals.</p>
+                <p>Develop logic, syntax, data structures and object-oriented programming skills with C# and Python.</p>
             </a>
             <a class="area-card" asp-controller="Courses" asp-action="Index">
                 <span>02</span>
                 <h3>Web development</h3>
-                <p>Build interfaces and server-side web applications.</p>
+                <p>Understand page structure, responsive styling and server-side MVC application development.</p>
             </a>
             <a class="area-card" asp-controller="Courses" asp-action="Index">
                 <span>03</span>
                 <h3>Cybersecurity</h3>
-                <p>Understand networks, systems and defensive security concepts.</p>
+                <p>Learn the fundamentals of networks, Linux, threats, security controls and incident response.</p>
             </a>
             <a class="area-card" asp-controller="Courses" asp-action="Index">
                 <span>04</span>
                 <h3>Databases</h3>
-                <p>Learn relational data, SQL and database design.</p>
+                <p>Work with relational data, SQL operations, relationships, constraints and database design.</p>
             </a>
         </div>
     </div>
@@ -108,26 +119,72 @@
 <section class="section">
     <div class="container">
         <div class="section-heading">
+            <span class="eyebrow">BUILT FOR ACTIVE LEARNING</span>
+            <h2>More than a list of course pages.</h2>
+            <p>Code-Room connects learning material with the actions students actually take while learning.</p>
+        </div>
+
+        <div class="feature-grid">
+            <article class="feature-card">
+                <span class="feature-number">01</span>
+                <h3>Learn in context</h3>
+                <p>Read lesson explanations, watch supporting tutorials and open reference materials from the same lesson page.</p>
+            </article>
+            <article class="feature-card">
+                <span class="feature-number">02</span>
+                <h3>Practise and assess</h3>
+                <p>Use quizzes to test understanding and keep a record of scored attempts instead of relying on passive reading alone.</p>
+            </article>
+            <article class="feature-card">
+                <span class="feature-number">03</span>
+                <h3>See your progress</h3>
+                <p>Mark lessons complete, review course progress and continue from the part of the learning path you have reached.</p>
+            </article>
+        </div>
+    </div>
+</section>
+
+<section class="section section-muted">
+    <div class="container">
+        <div class="section-heading">
             <span class="eyebrow">HOW IT WORKS</span>
-            <h2>A straightforward learning flow.</h2>
+            <h2>A simple loop that keeps learning moving.</h2>
         </div>
 
         <div class="steps-grid">
             <article class="step">
                 <span>01</span>
                 <h3>Choose a course</h3>
-                <p>Find a topic and start with the level that matches your experience.</p>
+                <p>Pick a topic and start with the level that matches your current experience.</p>
             </article>
             <article class="step">
                 <span>02</span>
-                <h3>Learn and practise</h3>
-                <p>Work through lessons, resources and interactive assessments.</p>
+                <h3>Work through lessons</h3>
+                <p>Read the explanation, use the supporting media and practise the key idea before moving on.</p>
             </article>
             <article class="step">
                 <span>03</span>
-                <h3>Track your progress</h3>
-                <p>Keep your completed lessons and quiz results in one place.</p>
+                <h3>Test your understanding</h3>
+                <p>Complete course quizzes and use your result history to identify topics worth revisiting.</p>
             </article>
+            <article class="step">
+                <span>04</span>
+                <h3>Track your path</h3>
+                <p>Keep course enrolments, completed lessons and learning progress in one dashboard.</p>
+            </article>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="home-cta">
+            <div>
+                <span class="eyebrow">READY TO START?</span>
+                <h2>Build your next technology skill one lesson at a time.</h2>
+                <p>Explore the catalogue, choose a course and turn your learning into measurable progress.</p>
+            </div>
+            <a class="btn btn-primary btn-lg" asp-controller="Courses" asp-action="Index">Browse the catalogue</a>
         </div>
     </div>
 </section>
