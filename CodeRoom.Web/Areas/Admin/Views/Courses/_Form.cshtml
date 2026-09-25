@@ -8,34 +8,53 @@
         <span asp-validation-for="Title" class="field-error"></span>
     </label>
     <label class="form-field">Slug (url-friendly)
-        <input class="input" asp-for="Slug" placeholder="e.g. csharp-fundamentals" />
+        <input class="input" asp-for="Slug" placeholder="e.g. python-fundamentals" />
         <span asp-validation-for="Slug" class="field-error"></span>
     </label>
     <label class="form-field">Category
         <select class="input" asp-for="Category">
             <option value="">Select a category</option>
-            <option value="Programming">Programming</option>
-            <option value="Web Development">Web Development</option>
-            <option value="Cybersecurity">Cybersecurity</option>
-            <option value="Databases">Databases</option>
+            <option>Programming</option>
+            <option>Web Development</option>
+            <option>Cybersecurity</option>
+            <option>Networking</option>
+            <option>Cloud</option>
+            <option>Linux</option>
+            <option>Databases</option>
         </select>
         <span asp-validation-for="Category" class="field-error"></span>
     </label>
     <label class="form-field">Level
         <select class="input" asp-for="Level">
-            <option value="Beginner">Beginner</option>
-            <option value="Intermediate">Intermediate</option>
-            <option value="Advanced">Advanced</option>
+            <option>Beginner</option>
+            <option>Intermediate</option>
+            <option>Advanced</option>
         </select>
         <span asp-validation-for="Level" class="field-error"></span>
+    </label>
+    <label class="form-field">Estimated time (minutes)
+        <input class="input" asp-for="EstimatedMinutes" type="number" min="10" />
+        <span asp-validation-for="EstimatedMinutes" class="field-error"></span>
+    </label>
+    <label class="form-field">Passing score (%)
+        <input class="input" asp-for="PassingScorePercent" type="number" min="50" max="100" />
+        <span asp-validation-for="PassingScorePercent" class="field-error"></span>
     </label>
     <label class="form-field form-field-wide">Description
         <textarea class="input" asp-for="Description" rows="4"></textarea>
         <span asp-validation-for="Description" class="field-error"></span>
     </label>
-    <label class="form-field form-field-wide">Thumbnail URL (optional)
-        <input class="input" asp-for="ThumbnailUrl" />
+    <label class="form-field">Certificate name (optional)
+        <input class="input" asp-for="CertificateName" placeholder="e.g. Code-Room Cloud Foundations Certificate" />
+        <span asp-validation-for="CertificateName" class="field-error"></span>
+    </label>
+    <label class="form-field">Thumbnail URL (optional)
+        <input class="input" asp-for="ThumbnailUrl" type="url" />
         <span asp-validation-for="ThumbnailUrl" class="field-error"></span>
+    </label>
+
+    <label class="checkbox-row">
+        <input asp-for="IsCertification" type="checkbox" /> <span>Certification path</span>
     </label>
     <label class="checkbox-row">
         <input asp-for="IsPublished" type="checkbox" /> <span>Published</span>
