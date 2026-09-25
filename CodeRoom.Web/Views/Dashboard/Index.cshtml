@@ -1,0 +1,218 @@
+@model CodeRoom.Web.ViewModels.Dashboard.PersonalDashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+    var firstName = string.IsNullOrWhiteSpace(Model.FullName) ? "Learner" : Model.FullName.Split(' ')[0];
+}
+
+<section class="page-shell personal-dashboard">
+    <div class="container">
+        <div class="dashboard-hero">
+            <div>
+                <span class="eyebrow">YOUR LEARNING SPACE</span>
+                <h1 class="page-title">Welcome back, @firstName.</h1>
+                <p class="page-intro">Pick up where you left off, see your recent activity and keep your learning streak moving.</p>
+            </div>
+            <div class="dashboard-identity">
+                <div class="profile-avatar">@Model.FullName.Trim()[0].ToString().ToUpperInvariant()</div>
+                <div>
+                    <strong>@@@Model.Username</strong>
+                    <span>@Model.RoleLabel</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-stat-grid">
+            <article class="dashboard-stat">
+                <span>🔥 Learning streak</span>
+                <strong>@Model.LearningStreak <small>days</small></strong>
+                <a asp-controller="Profile" asp-action="Index">View activity →</a>
+            </article>
+            <article class="dashboard-stat">
+                <span>Courses enrolled</span>
+                <strong>@Model.CoursesEnrolled</strong>
+                <span class="dashboard-stat-muted">Your active learning paths</span>
+            </article>
+            <article class="dashboard-stat">
+                <span>Lessons completed</span>
+                <strong>@Model.LessonsCompleted</strong>
+                <span class="dashboard-stat-muted">Keep building momentum</span>
+            </article>
+            <article class="dashboard-stat">
+                <span>Quiz average</span>
+                <strong>@Model.QuizAverage%</strong>
+                <span class="dashboard-stat-muted">@Model.QuizAttempts attempts recorded</span>
+            </article>
+        </div>
+
+        <div class="dashboard-main-grid">
+            <section class="dashboard-panel">
+                <div class="panel-heading">
+                    <div>
+                        <span class="eyebrow">LEARNING</span>
+                        <h2>Continue learning</h2>
+                    </div>
+                    <a class="text-link" asp-controller="Courses" asp-action="Index">Browse courses <span>→</span></a>
+                </div>
+
+                @if (Model.Courses.Count == 0)
+                {
+                    <div class="dashboard-empty">
+                        <strong>Your next course is waiting.</strong>
+                        <p>Explore the catalogue and enroll in something that matches your goals.</p>
+                        <a class="btn btn-primary" asp-controller="Courses" asp-action="Index">Explore courses</a>
+                    </div>
+                }
+                else
+                {
+                    <div class="continue-course-list">
+                        @foreach (var item in Model.Courses)
+                        {
+                            <article class="continue-course">
+                                <div class="continue-course-copy">
+                                    <span class="course-tag">@item.Course.Category</span>
+                                    <h3>@item.Course.Title</h3>
+                                    <p>@item.CompletedLessons of @item.TotalLessons lessons complete</p>
+                                </div>
+                                <div class="progress-wrap">
+                                    <div class="progress-track"><span style="width:@item.ProgressPercent%"></span></div>
+                                    <strong>@item.ProgressPercent%</strong>
+                                </div>
+                                <a class="btn btn-secondary" asp-controller="Lessons" asp-action="Index" asp-route-id="@item.Course.Id">Continue</a>
+                            </article>
+                        }
+                    </div>
+                }
+            </section>
+
+            <section class="dashboard-panel dashboard-activity-panel">
+                <div class="panel-heading">
+                    <div>
+                        <span class="eyebrow">RECENT ACTIVITY</span>
+                        <h2>What you've been doing</h2>
+                    </div>
+                    <a class="text-link" asp-controller="Profile" asp-action="Index">Profile <span>→</span></a>
+                </div>
+
+                @if (Model.RecentActivity.Count == 0)
+                {
+                    <p class="dashboard-muted">Start a lesson, quiz or course and your activity will appear here.</p>
+                }
+                else
+                {
+                    <div class="activity-list">
+                        @foreach (var item in Model.RecentActivity)
+                        {
+                            <div class="activity-item">
+                                <span class="activity-dot"></span>
+                                <div>
+                                    <strong>@item.Description</strong>
+                                    <time>@item.CreatedAt.ToLocalTime().ToString("dd MMM, HH:mm")</time>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </section>
+        </div>
+
+        <section class="dashboard-panel dashboard-calendar-panel">
+            <div class="panel-heading">
+                <div>
+                    <span class="eyebrow">CONSISTENCY</span>
+                    <h2>Your learning activity</h2>
+                </div>
+                <a class="text-link" asp-controller="Profile" asp-action="Index">Full profile <span>→</span></a>
+            </div>
+
+            <div class="activity-calendar-shell">
+                <div class="activity-legend">
+                    <span>Less</span>
+                    <i class="activity-level level-0"></i>
+                    <i class="activity-level level-1"></i>
+                    <i class="activity-level level-2"></i>
+                    <i class="activity-level level-3"></i>
+                    <i class="activity-level level-4"></i>
+                    <span>More</span>
+                </div>
+                <div class="activity-grid" aria-label="Learning activity calendar">
+                    @foreach (var day in Model.ActivityDays)
+                    {
+                        <span class="activity-cell level-@day.Level" title="@day.Date.ToString("dd MMM yyyy"): @day.Count activities"></span>
+                    }
+                </div>
+            </div>
+        </section>
+
+        @if (Model.IsAdmin)
+        {
+            <section class="admin-workspace-callout">
+                <div>
+                    <span class="eyebrow">ADMIN WORKSPACE</span>
+                    <h2>Manage the platform separately from your personal dashboard.</h2>
+                    <p>Your dashboard stays focused on your account. Use the Admin Console for users, courses, lessons, quizzes, resources and announcements.</p>
+                </div>
+                <a class="btn btn-primary" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Open Admin Console</a>
+            </section>
+        }
+
+        <div class="dashboard-bottom-grid">
+            <section class="dashboard-panel">
+                <div class="panel-heading">
+                    <div>
+                        <span class="eyebrow">UPDATES</span>
+                        <h2>Announcements</h2>
+                    </div>
+                    <a class="text-link" asp-controller="Notifications" asp-action="Index">See all <span>→</span></a>
+                </div>
+                @if (Model.Announcements.Count == 0)
+                {
+                    <p class="dashboard-muted">No announcements yet.</p>
+                }
+                else
+                {
+                    <div class="announcement-list">
+                        @foreach (var announcement in Model.Announcements)
+                        {
+                            <article class="announcement-item">
+                                <span class="announcement-date">@announcement.PublishedAt.ToLocalTime().ToString("dd MMM")</span>
+                                <div>
+                                    <h4>@announcement.Title</h4>
+                                    <p>@announcement.Message</p>
+                                </div>
+                            </article>
+                        }
+                    </div>
+                }
+            </section>
+
+            <section class="dashboard-panel">
+                <div class="panel-heading">
+                    <div>
+                        <span class="eyebrow">QUIZ HISTORY</span>
+                        <h2>Recent attempts</h2>
+                    </div>
+                </div>
+                @if (Model.RecentAttempts.Count == 0)
+                {
+                    <p class="dashboard-muted">No quiz attempts yet. Complete a lesson and take the course quiz.</p>
+                }
+                else
+                {
+                    <div class="quiz-history-list">
+                        @foreach (var attempt in Model.RecentAttempts)
+                        {
+                            var percentage = attempt.TotalQuestions == 0 ? 0 : (int)Math.Round(attempt.Score * 100.0 / attempt.TotalQuestions);
+                            <div class="quiz-history-row">
+                                <div>
+                                    <strong>@attempt.Quiz.Title</strong>
+                                    <span>@attempt.AttemptedAt.ToLocalTime().ToString("dd MMM yyyy")</span>
+                                </div>
+                                <strong>@percentage%</strong>
+                            </div>
+                        }
+                    </div>
+                }
+            </section>
+        </div>
+    </div>
+</section>
