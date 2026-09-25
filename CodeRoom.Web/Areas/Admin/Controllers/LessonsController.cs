@@ -51,6 +51,7 @@ public class LessonsController(ApplicationDbContext db) : Controller
             return View(model);
         }
 
+        await AssignModuleAsync(model);
         db.Lessons.Add(model);
         await db.SaveChangesAsync();
         await AdminAuditService.RecordAsync(db, User.GetUserId(), "Created", "Lesson", model.Title, $"Created lesson {model.Title}.");
@@ -102,6 +103,8 @@ public class LessonsController(ApplicationDbContext db) : Controller
         lesson.DurationMinutes = model.DurationMinutes;
         lesson.Order = model.Order;
         lesson.IsPublished = model.IsPublished;
+        lesson.CourseModuleId = null;
+        await AssignModuleAsync(lesson);
 
         await db.SaveChangesAsync();
         await AdminAuditService.RecordAsync(db, User.GetUserId(), "Updated", "Lesson", lesson.Title, $"Updated lesson {lesson.Title}.");
@@ -123,6 +126,37 @@ public class LessonsController(ApplicationDbContext db) : Controller
             TempData["Success"] = "Lesson deleted.";
         }
         return RedirectToAction(nameof(Index));
+    }
+
+    private async Task AssignModuleAsync(Lesson lesson)
+    {
+        var module = await db.CourseModules
+            .Where(m => m.CourseId == lesson.CourseId)
+            .OrderBy(m => m.Order)
+            .ThenBy(m => m.Id)
+            .ToListAsync();
+
+        if (module.Count == 0)
+        {
+            var newModule = new CourseModule
+            {
+                CourseId = lesson.CourseId,
+                Title = "Module 1 — Foundations",
+                Description = "Foundational concepts and guided practice.",
+                Order = 1
+            };
+            db.CourseModules.Add(newModule);
+            await db.SaveChangesAsync();
+            lesson.CourseModule = newModule;
+            return;
+        }
+
+        var target = module
+            .OrderBy(m => m.Lessons.Count)
+            .ThenBy(m => m.Order)
+            .First();
+
+        lesson.CourseModule = target;
     }
 
     private async Task<SelectList> CourseSelectAsync(int? selected) =>
