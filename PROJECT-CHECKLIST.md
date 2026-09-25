@@ -11,11 +11,12 @@ The project is submission-ready when:
 - [ ] Admin functionality supports required CRUD and content management.
 - [ ] Client-side and server-side validation are present on relevant forms.
 - [ ] MySQL + Entity Framework Core persistence works from a clean setup.
+- [ ] A fresh MySQL database can be prepared from the submitted project without the developer's personal database.
 - [ ] Responsive UI works on desktop and mobile.
 - [ ] Security basics are implemented: password hashing, authorization, validation, safe configuration, anti-forgery protection where applicable.
 - [ ] Automated tests and build verification pass.
 - [ ] A final manual test pass covers the main user journeys.
-- [ ] README contains setup/run instructions suitable for the group.
+- [ ] README contains setup/run instructions suitable for the group and marker.
 
 ## Phase 0 — Project Foundation
 
@@ -44,51 +45,54 @@ The project is submission-ready when:
 - [x] Admin dashboard page.
 - [x] About page.
 - [x] FAQ page.
-- [ ] Replace remaining static/demo content with database-backed content.
+- [x] Database-backed course, lesson, quiz and student flows implemented.
+- [ ] Replace remaining static/demo content with database-backed content where required.
 
 ## Phase 2 — Database & Persistence
 
-- [ ] Configure MySQL safely through environment/user secrets.
-- [ ] Create EF Core migrations.
-- [ ] Create database.
-- [ ] Seed realistic demo courses, lessons, quizzes and resources.
-- [ ] Verify relationships and constraints.
-- [ ] Verify clean database setup from scratch.
+- [x] Remove committed database credentials.
+- [x] Add local user-secrets support.
+- [x] Add reproducible MySQL database setup script.
+- [x] Configure application startup to require a valid database connection.
+- [x] Seed demo users, courses, lessons, quizzes, resources and announcements.
+- [ ] Verify relationships and constraints against a clean MySQL database.
+- [ ] Verify clean database setup from scratch on the development laptop.
+- [ ] Verify the full database setup from the final submission ZIP on a second environment.
 
 ## Phase 3 — Authentication & Authorization
 
-- [ ] Registration flow.
-- [ ] Secure password hashing.
-- [ ] Login/logout flow.
-- [ ] Session/cookie authentication.
-- [ ] Student authorization.
-- [ ] Admin authorization.
-- [ ] Unauthorized/forbidden handling.
-- [ ] Validation and anti-forgery protection.
+- [x] Registration flow.
+- [x] Secure password hashing.
+- [x] Login/logout flow.
+- [x] Cookie authentication.
+- [x] Student authorization.
+- [x] Admin authorization.
+- [x] Unauthorized/forbidden handling.
+- [x] Validation and anti-forgery protection.
 
 ## Phase 4 — Core Learning Platform
 
-- [ ] Course CRUD.
-- [ ] Lesson CRUD.
-- [ ] Resource management.
-- [ ] Course enrollment.
-- [ ] Lesson completion/progress.
-- [ ] Course progress calculation.
-- [ ] Quiz/question CRUD.
-- [ ] Quiz submission and scoring.
-- [ ] Quiz attempt history.
-- [ ] Dashboard statistics.
-- [ ] Announcements.
+- [x] Course CRUD.
+- [x] Lesson CRUD.
+- [x] Resource management.
+- [x] Course enrollment.
+- [x] Lesson completion/progress.
+- [x] Quiz/question CRUD.
+- [x] Quiz submission and scoring.
+- [x] Quiz attempt history.
+- [x] Dashboard statistics.
+- [x] Announcements.
+- [ ] Verify each major CRUD workflow manually.
 
 ## Phase 5 — Added Features (Scope Controlled)
 
-- [ ] Course search.
-- [ ] Category/level filtering.
-- [ ] Progress indicators.
-- [ ] Quiz history.
-- [ ] Resource/download section.
+- [x] Course search.
+- [x] Category/level filtering.
+- [x] Progress indicators.
+- [x] Quiz history.
+- [ ] Resource/download experience for students.
 - [ ] Student dashboard analytics.
-- [ ] Dark/light theme toggle.
+- [x] Dark/light theme toggle.
 - [ ] Responsive/mobile polish.
 
 Optional only if all required functionality is stable:
@@ -106,9 +110,10 @@ Optional only if all required functionality is stable:
 - [ ] Responsive UI test pass.
 - [ ] Accessibility/basic usability review.
 - [ ] Remove placeholder links/content.
-- [ ] Remove development secrets.
+- [x] Remove committed development database secrets.
 - [ ] Automated build and test verification passes.
-- [ ] Final clean clone/Codespaces setup verified.
+- [ ] Final clean clone setup verified.
+- [ ] Final submission ZIP tested from scratch.
 - [ ] Submission-ready README.
 
 ## Status Legend
