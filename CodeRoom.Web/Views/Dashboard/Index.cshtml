@@ -1,81 +1,74 @@
 @model CodeRoom.Web.ViewModels.Dashboard.PersonalDashboardViewModel
 @{
     ViewData["Title"] = "Dashboard";
-    var firstName = string.IsNullOrWhiteSpace(Model.FullName) ? "Learner" : Model.FullName.Split(' ')[0];
+    var levelWidth = Math.Clamp((Model.LevelProgress / 250.0) * 100.0, 0, 100);
 }
 
-<section class="page-shell personal-dashboard">
+<section class="page-shell dashboard-page">
     <div class="container">
         <div class="dashboard-hero">
             <div>
-                <span class="eyebrow">YOUR LEARNING SPACE</span>
-                <h1 class="page-title">Welcome back, @firstName.</h1>
-                <p class="page-intro">Pick up where you left off, see your recent activity and keep your learning streak moving.</p>
+                <span class="eyebrow">PERSONAL DASHBOARD</span>
+                <h1 class="page-title">Welcome back, @Model.FullName.Split(' ')[0].</h1>
+                <p class="page-intro">Pick up where you left off, keep your streak alive and explore your next skill.</p>
             </div>
             <div class="dashboard-identity">
-                <div class="profile-avatar">@Model.FullName.Trim()[0].ToString().ToUpperInvariant()</div>
-                <div>
-                    <strong>@@@Model.Username</strong>
-                    <span>@Model.RoleLabel</span>
-                </div>
+                <span>@@@Model.Username</span>
+                <strong>Student</strong>
             </div>
+        </div>
+
+        <div class="dashboard-xp-card">
+            <div>
+                <span class="eyebrow">LEVEL @Model.Level</span>
+                <strong>@Model.Xp XP</strong>
+            </div>
+            <div class="dashboard-xp-progress">
+                <div class="xp-bar"><span style="width:@levelWidth.ToString("0")%"></span></div>
+                <small>@Model.LevelProgress / 250 XP to next level</small>
+            </div>
+            <a class="text-link" asp-controller="Profile" asp-action="Index">View profile →</a>
         </div>
 
         <div class="dashboard-stat-grid">
-            <article class="dashboard-stat">
-                <span>🔥 Learning streak</span>
-                <strong>@Model.LearningStreak <small>days</small></strong>
-                <a asp-controller="Profile" asp-action="Index">View activity →</a>
-            </article>
-            <article class="dashboard-stat">
-                <span>Courses enrolled</span>
-                <strong>@Model.CoursesEnrolled</strong>
-                <span class="dashboard-stat-muted">Your active learning paths</span>
-            </article>
-            <article class="dashboard-stat">
-                <span>Lessons completed</span>
-                <strong>@Model.LessonsCompleted</strong>
-                <span class="dashboard-stat-muted">Keep building momentum</span>
-            </article>
-            <article class="dashboard-stat">
-                <span>Quiz average</span>
-                <strong>@Model.QuizAverage%</strong>
-                <span class="dashboard-stat-muted">@Model.QuizAttempts attempts recorded</span>
-            </article>
+            <article class="dashboard-stat"><span>Courses</span><strong>@Model.CoursesEnrolled</strong><small>paths started</small></article>
+            <article class="dashboard-stat"><span>Lessons</span><strong>@Model.LessonsCompleted</strong><small>completed</small></article>
+            <article class="dashboard-stat"><span>Quiz average</span><strong>@Model.QuizAverage%</strong><small>across attempts</small></article>
+            <article class="dashboard-stat"><span>Streak</span><strong>🔥 @Model.LearningStreak</strong><small>days learning</small></article>
+            <article class="dashboard-stat"><span>Certificates</span><strong>@Model.CertificateCount</strong><small>earned</small></article>
         </div>
 
         <div class="dashboard-main-grid">
-            <section class="dashboard-panel">
+            <section class="dashboard-panel dashboard-courses-panel">
                 <div class="panel-heading">
                     <div>
-                        <span class="eyebrow">LEARNING</span>
-                        <h2>Continue learning</h2>
+                        <span class="eyebrow">CONTINUE LEARNING</span>
+                        <h2>Pick up where you left off</h2>
                     </div>
-                    <a class="text-link" asp-controller="Courses" asp-action="Index">Browse courses <span>→</span></a>
+                    <a class="text-link" asp-controller="Courses" asp-action="Index">Explore all →</a>
                 </div>
 
                 @if (Model.Courses.Count == 0)
                 {
-                    <div class="dashboard-empty">
-                        <strong>Your next course is waiting.</strong>
-                        <p>Explore the catalogue and enroll in something that matches your goals.</p>
+                    <div class="empty-state compact">
+                        <div class="empty-state-icon">🧭</div>
+                        <h3>Your learning path is waiting.</h3>
+                        <p>Choose a course and your dashboard will start tracking your journey.</p>
                         <a class="btn btn-primary" asp-controller="Courses" asp-action="Index">Explore courses</a>
                     </div>
                 }
                 else
                 {
-                    <div class="continue-course-list">
+                    <div class="dashboard-course-list">
                         @foreach (var item in Model.Courses)
                         {
-                            <article class="continue-course">
-                                <div class="continue-course-copy">
-                                    <span class="course-tag">@item.Course.Category</span>
+                            var percent = item.TotalLessons == 0 ? 0 : (int)Math.Round(item.CompletedLessons * 100.0 / item.TotalLessons);
+                            <article class="dashboard-course-card">
+                                <div>
+                                    <span class="course-card-meta">@item.Course.Category · @item.Course.Level</span>
                                     <h3>@item.Course.Title</h3>
-                                    <p>@item.CompletedLessons of @item.TotalLessons lessons complete</p>
-                                </div>
-                                <div class="progress-wrap">
-                                    <div class="progress-track"><span style="width:@item.ProgressPercent%"></span></div>
-                                    <strong>@item.ProgressPercent%</strong>
+                                    <p>@item.CompletedLessons of @item.TotalLessons lessons completed</p>
+                                    <div class="progress-track"><span style="width:@percent%"></span></div>
                                 </div>
                                 <a class="btn btn-secondary" asp-controller="Lessons" asp-action="Index" asp-route-id="@item.Course.Id">Continue</a>
                             </article>
@@ -84,18 +77,67 @@
                 }
             </section>
 
-            <section class="dashboard-panel dashboard-activity-panel">
+            <section class="dashboard-panel dashboard-recommendations">
                 <div class="panel-heading">
                     <div>
-                        <span class="eyebrow">RECENT ACTIVITY</span>
-                        <h2>What you've been doing</h2>
+                        <span class="eyebrow">FOR YOU</span>
+                        <h2>Recommended next</h2>
                     </div>
-                    <a class="text-link" asp-controller="Profile" asp-action="Index">Profile <span>→</span></a>
                 </div>
 
+                @if (Model.RecommendedCourses.Count == 0)
+                {
+                    <p class="profile-empty">Complete a course and we'll keep building your next-step suggestions.</p>
+                }
+                else
+                {
+                    <div class="recommendation-list">
+                        @foreach (var item in Model.RecommendedCourses)
+                        {
+                            <a class="recommendation-card" asp-controller="Courses" asp-action="Details" asp-route-id="@item.Course.Id">
+                                <span class="recommendation-icon">@(item.Course.IsCertification ? "🎓" : "✦")</span>
+                                <span>
+                                    <strong>@item.Course.Title</strong>
+                                    <small>@item.Reason</small>
+                                </span>
+                                <span>→</span>
+                            </a>
+                        }
+                    </div>
+                }
+            </section>
+        </div>
+
+        <div class="dashboard-main-grid">
+            <section class="dashboard-panel">
+                <div class="panel-heading">
+                    <div>
+                        <span class="eyebrow">ACTIVITY</span>
+                        <h2>Your learning rhythm</h2>
+                    </div>
+                    <span class="profile-muted">365 days</span>
+                </div>
+                <div class="activity-grid dashboard-heatmap" aria-label="Learning activity calendar">
+                    @foreach (var day in Model.ActivityDays)
+                    {
+                        <span class="activity-cell level-@day.Level" title="@day.Date.ToString("dd MMM yyyy"): @day.Count activities"></span>
+                    }
+                </div>
+                <div class="activity-legend">
+                    <span>Less</span><i class="activity-level level-0"></i><i class="activity-level level-1"></i><i class="activity-level level-2"></i><i class="activity-level level-3"></i><i class="activity-level level-4"></i><span>More</span>
+                </div>
+            </section>
+
+            <section class="dashboard-panel">
+                <div class="panel-heading">
+                    <div>
+                        <span class="eyebrow">RECENT</span>
+                        <h2>Learning activity</h2>
+                    </div>
+                </div>
                 @if (Model.RecentActivity.Count == 0)
                 {
-                    <p class="dashboard-muted">Start a lesson, quiz or course and your activity will appear here.</p>
+                    <p class="profile-empty">Complete a lesson or quiz to start your activity feed.</p>
                 }
                 else
                 {
@@ -104,10 +146,7 @@
                         {
                             <div class="activity-item">
                                 <span class="activity-dot"></span>
-                                <div>
-                                    <strong>@item.Description</strong>
-                                    <time>@item.CreatedAt.ToLocalTime().ToString("dd MMM, HH:mm")</time>
-                                </div>
+                                <div><strong>@item.Description</strong><time>@item.CreatedAt.ToLocalTime().ToString("dd MMM, HH:mm")</time></div>
                             </div>
                         }
                     </div>
@@ -115,104 +154,50 @@
             </section>
         </div>
 
-        <section class="dashboard-panel dashboard-calendar-panel">
-            <div class="panel-heading">
-                <div>
-                    <span class="eyebrow">CONSISTENCY</span>
-                    <h2>Your learning activity</h2>
-                </div>
-                <a class="text-link" asp-controller="Profile" asp-action="Index">Full profile <span>→</span></a>
-            </div>
-
-            <div class="activity-calendar-shell">
-                <div class="activity-legend">
-                    <span>Less</span>
-                    <i class="activity-level level-0"></i>
-                    <i class="activity-level level-1"></i>
-                    <i class="activity-level level-2"></i>
-                    <i class="activity-level level-3"></i>
-                    <i class="activity-level level-4"></i>
-                    <span>More</span>
-                </div>
-                <div class="activity-grid" aria-label="Learning activity calendar">
-                    @foreach (var day in Model.ActivityDays)
-                    {
-                        <span class="activity-cell level-@day.Level" title="@day.Date.ToString("dd MMM yyyy"): @day.Count activities"></span>
-                    }
-                </div>
-            </div>
-        </section>
-
-        @if (Model.IsAdmin)
-        {
-            <section class="admin-workspace-callout">
-                <div>
-                    <span class="eyebrow">ADMIN WORKSPACE</span>
-                    <h2>Manage the platform separately from your personal dashboard.</h2>
-                    <p>Your dashboard stays focused on your account. Use the Admin Console for users, courses, lessons, quizzes, resources and announcements.</p>
-                </div>
-                <a class="btn btn-primary" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Open Admin Console</a>
-            </section>
-        }
-
-        <div class="dashboard-bottom-grid">
+        <div class="dashboard-main-grid">
             <section class="dashboard-panel">
                 <div class="panel-heading">
-                    <div>
-                        <span class="eyebrow">UPDATES</span>
-                        <h2>Announcements</h2>
-                    </div>
-                    <a class="text-link" asp-controller="Notifications" asp-action="Index">See all <span>→</span></a>
-                </div>
-                @if (Model.Announcements.Count == 0)
-                {
-                    <p class="dashboard-muted">No announcements yet.</p>
-                }
-                else
-                {
-                    <div class="announcement-list">
-                        @foreach (var announcement in Model.Announcements)
-                        {
-                            <article class="announcement-item">
-                                <span class="announcement-date">@announcement.PublishedAt.ToLocalTime().ToString("dd MMM")</span>
-                                <div>
-                                    <h4>@announcement.Title</h4>
-                                    <p>@announcement.Message</p>
-                                </div>
-                            </article>
-                        }
-                    </div>
-                }
-            </section>
-
-            <section class="dashboard-panel">
-                <div class="panel-heading">
-                    <div>
-                        <span class="eyebrow">QUIZ HISTORY</span>
-                        <h2>Recent attempts</h2>
-                    </div>
+                    <div><span class="eyebrow">ASSESSMENTS</span><h2>Quiz history</h2></div>
                 </div>
                 @if (Model.RecentAttempts.Count == 0)
                 {
-                    <p class="dashboard-muted">No quiz attempts yet. Complete a lesson and take the course quiz.</p>
+                    <p class="profile-empty">No assessments yet. Take your first quiz from a course.</p>
                 }
                 else
                 {
-                    <div class="quiz-history-list">
+                    <div class="attempt-list">
                         @foreach (var attempt in Model.RecentAttempts)
                         {
-                            var percentage = attempt.TotalQuestions == 0 ? 0 : (int)Math.Round(attempt.Score * 100.0 / attempt.TotalQuestions);
-                            <div class="quiz-history-row">
-                                <div>
-                                    <strong>@attempt.Quiz.Title</strong>
-                                    <span>@attempt.AttemptedAt.ToLocalTime().ToString("dd MMM yyyy")</span>
-                                </div>
-                                <strong>@percentage%</strong>
+                            var percent = attempt.TotalQuestions == 0 ? 0 : (int)Math.Round(attempt.Score * 100.0 / attempt.TotalQuestions);
+                            <div class="attempt-row">
+                                <div><strong>@attempt.Quiz.Title</strong><small>@attempt.AttemptedAt.ToLocalTime().ToString("dd MMM yyyy")</small></div>
+                                <span class="score-pill">@percent%</span>
                             </div>
                         }
                     </div>
                 }
             </section>
+
+            <section class="dashboard-panel">
+                <div class="panel-heading">
+                    <div><span class="eyebrow">NEWS</span><h2>Announcements</h2></div>
+                </div>
+                <div class="announcement-list">
+                    @foreach (var announcement in Model.Announcements)
+                    {
+                        <article class="announcement-card">
+                            <strong>@announcement.Title</strong>
+                            <p>@announcement.Message</p>
+                            <time>@announcement.PublishedAt.ToLocalTime().ToString("dd MMM yyyy")</time>
+                        </article>
+                    }
+                </div>
+            </section>
+        </div>
+
+        <div class="dashboard-footer-actions">
+            <a class="btn btn-secondary" asp-controller="Challenges" asp-action="Index" asp-route-id="1">Practice challenges</a>
+            <a class="btn btn-secondary" asp-controller="Certificates" asp-action="Index">Certificates</a>
         </div>
     </div>
 </section>
