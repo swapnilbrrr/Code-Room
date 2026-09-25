@@ -15,27 +15,39 @@
 }
 <header class="site-header">
     <nav class="navbar container" aria-label="Primary navigation">
-        <a class="brand" asp-area="" asp-area="" asp-controller="Home" asp-action="Index" aria-label="Code-Room home">
-            <img class="logo-light" src="~/images/code-room-logo.svg" alt="Code-Room" /><img class="logo-dark" src="~/images/code-room-logo-dark.svg" alt="Code-Room" />
+        <a class="brand" asp-area="" asp-controller="Home" asp-action="Index" aria-label="Code-Room home">
+            <img class="logo-light" src="~/images/code-room-logo.svg" alt="Code-Room" />
+            <img class="logo-dark" src="~/images/code-room-logo-dark.svg" alt="Code-Room" />
         </a>
 
         <div class="nav-links">
-            <a asp-area="" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-            <a asp-area="" asp-area="" asp-controller="Courses" asp-action="Index">Courses</a>
+            <a asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+            <a asp-area="" asp-controller="Courses" asp-action="Index">Courses</a>
+
             @if (isAuthenticated)
             {
-                <a asp-area="" asp-controller="Student" asp-action="Index">Dashboard</a>
+                if (isAdmin)
+                {
+                    <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Dashboard</a>
+                }
+                else
+                {
+                    <a asp-area="" asp-controller="Student" asp-action="Index">Dashboard</a>
+                }
             }
+
             @if (isAdmin)
             {
                 <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Admin</a>
             }
-            <a asp-area="" asp-area="" asp-controller="Home" asp-action="About">About</a>
-            <a asp-area="" asp-area="" asp-controller="Home" asp-action="Faq">FAQ</a>
+
+            <a asp-area="" asp-controller="Home" asp-action="About">About</a>
+            <a asp-area="" asp-controller="Home" asp-action="Faq">FAQ</a>
         </div>
 
         <div class="nav-actions">
             <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode" title="Switch to dark mode">☾</button>
+
             @if (isAuthenticated)
             {
                 <span class="nav-user desktop-action" title="@displayName">Hi, @displayName.Split(' ')[0]</span>
@@ -46,27 +58,39 @@
             }
             else
             {
-                <a class="btn btn-ghost desktop-action" asp-area="" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
-                <a class="btn btn-primary desktop-action" asp-area="" asp-area="" asp-controller="Account" asp-action="Register">Get Started</a>
+                <a class="btn btn-ghost desktop-action" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
+                <a class="btn btn-primary desktop-action" asp-area="" asp-controller="Account" asp-action="Register">Get Started</a>
             }
+
             <button class="mobile-toggle" type="button" data-mobile-toggle aria-expanded="false" aria-controls="mobile-navigation" aria-label="Open navigation">☰</button>
         </div>
     </nav>
 
     <div id="mobile-navigation" class="mobile-navigation" data-mobile-menu>
         <div class="container">
-            <a asp-area="" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-            <a asp-area="" asp-area="" asp-controller="Courses" asp-action="Index">Courses</a>
+            <a asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+            <a asp-area="" asp-controller="Courses" asp-action="Index">Courses</a>
+
             @if (isAuthenticated)
             {
-                <a asp-area="" asp-controller="Student" asp-action="Index">Dashboard</a>
+                if (isAdmin)
+                {
+                    <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Dashboard</a>
+                }
+                else
+                {
+                    <a asp-area="" asp-controller="Student" asp-action="Index">Dashboard</a>
+                }
             }
+
             @if (isAdmin)
             {
                 <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Admin</a>
             }
-            <a asp-area="" asp-area="" asp-controller="Home" asp-action="About">About</a>
-            <a asp-area="" asp-area="" asp-controller="Home" asp-action="Faq">FAQ</a>
+
+            <a asp-area="" asp-controller="Home" asp-action="About">About</a>
+            <a asp-area="" asp-controller="Home" asp-action="Faq">FAQ</a>
+
             @if (isAuthenticated)
             {
                 <form asp-area="" asp-controller="Account" asp-action="Logout" method="post">
@@ -76,8 +100,8 @@
             }
             else
             {
-                <a asp-area="" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
-                <a class="mobile-primary" asp-area="" asp-area="" asp-controller="Account" asp-action="Register">Get Started</a>
+                <a asp-area="" asp-controller="Account" asp-action="Login">Login</a>
+                <a class="mobile-primary" asp-area="" asp-controller="Account" asp-action="Register">Get Started</a>
             }
         </div>
     </div>
@@ -90,25 +114,38 @@
 <footer class="site-footer">
     <div class="container footer-inner">
         <div class="footer-brand">
-            <img class="logo-light" src="~/images/code-room-logo.svg" alt="Code-Room" /><img class="logo-dark" src="~/images/code-room-logo-dark.svg" alt="Code-Room" />
+            <img class="logo-light" src="~/images/code-room-logo.svg" alt="Code-Room" />
+            <img class="logo-dark" src="~/images/code-room-logo-dark.svg" alt="Code-Room" />
             <p>Learn. Code. Grow.</p>
         </div>
 
         <div class="footer-links">
             <div>
                 <h2>Explore</h2>
-                <a asp-area="" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                <a asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                 <a asp-area="" asp-controller="Courses" asp-action="Index">Courses</a>
             </div>
+
             <div>
                 <h2>Information</h2>
                 <a asp-area="" asp-controller="Home" asp-action="About">About</a>
                 <a asp-area="" asp-controller="Home" asp-action="Faq">FAQ</a>
             </div>
+
             <div>
                 <h2>Account</h2>
-                <a asp-area="" asp-controller="Account" asp-action="Login">Login</a>
-                <a asp-area="" asp-controller="Account" asp-action="Register">Register</a>
+                @if (isAuthenticated)
+                {
+                    <form class="logout-form" asp-area="" asp-controller="Account" asp-action="Logout" method="post">
+                        @Html.AntiForgeryToken()
+                        <button type="submit">Logout</button>
+                    </form>
+                }
+                else
+                {
+                    <a asp-area="" asp-controller="Account" asp-action="Login">Login</a>
+                    <a asp-area="" asp-controller="Account" asp-action="Register">Register</a>
+                }
             </div>
         </div>
     </div>
