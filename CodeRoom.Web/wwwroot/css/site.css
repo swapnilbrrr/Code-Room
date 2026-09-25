@@ -2374,3 +2374,94 @@ main {
         width: 100%;
     }
 }
+
+
+/* Final compact header/footer sizing */
+.navbar {
+    min-height: 58px;
+    gap: 16px;
+}
+
+.brand img {
+    width: auto;
+    height: 50px;
+    max-width: 50px;
+    object-fit: contain;
+}
+
+.nav-links {
+    gap: 17px;
+}
+
+.nav-links a {
+    font-size: .86rem;
+}
+
+.nav-actions .btn {
+    min-height: 32px;
+    padding: 5px 10px;
+    font-size: .8rem;
+}
+
+.theme-toggle,
+.mobile-toggle {
+    width: 32px;
+    height: 32px;
+}
+
+.footer-inner {
+    gap: 18px;
+    padding: 14px 0 12px;
+}
+
+.footer-brand img {
+    width: auto;
+    height: 52px;
+    max-width: 52px;
+    object-fit: contain;
+}
+
+.footer-brand p {
+    margin-top: 2px;
+    font-size: .72rem;
+}
+
+.footer-links {
+    gap: 22px;
+}
+
+.footer-links div {
+    gap: 4px;
+}
+
+.footer-links h2 {
+    margin-bottom: 3px;
+    font-size: .76rem;
+}
+
+.footer-links a,
+.footer-links button {
+    font-size: .75rem;
+}
+
+.footer-bottom .container {
+    min-height: 34px;
+    gap: 5px 18px;
+    font-size: .68rem;
+}
+
+@media (max-width: 760px) {
+    .brand img {
+        height: 42px;
+        max-width: 42px;
+    }
+
+    .footer-brand img {
+        height: 44px;
+        max-width: 44px;
+    }
+
+    .footer-inner {
+        padding: 12px 0 10px;
+    }
+}
