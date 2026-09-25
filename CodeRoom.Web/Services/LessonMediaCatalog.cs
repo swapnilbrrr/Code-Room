@@ -9,6 +9,7 @@ public static class LessonMediaCatalog
         "HTML & CSS Foundations" => "https://www.youtube.com/embed/a_iQb1lnAEQ",
         "ASP.NET Core MVC" => "https://www.youtube.com/embed/6SAFgcMie4U",
         "Linux Fundamentals" => "https://www.youtube.com/embed/pkZEKIXe3u4",
+        "Cybersecurity Foundations" => "https://www.youtube.com/embed/Q_hwxazyXQY",
         "Database Fundamentals" => "https://www.youtube.com/embed/HXV3zeQKqGY",
         _ => null
     };
