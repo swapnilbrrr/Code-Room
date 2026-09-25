@@ -1,0 +1,45 @@
+@{
+    ViewData["Title"] = "Courses";
+}
+
+<section class="page-shell">
+    <div class="container">
+        <span class="eyebrow">LEARNING LIBRARY</span>
+        <h1 class="page-title">Explore courses</h1>
+        <p class="page-intro">Build practical technology skills through structured courses and guided lessons.</p>
+
+        <div class="toolbar">
+            <input class="input" type="search" placeholder="Search courses..." aria-label="Search courses" />
+            <select class="input" aria-label="Filter by level">
+                <option>All levels</option>
+                <option>Beginner</option>
+                <option>Intermediate</option>
+                <option>Advanced</option>
+            </select>
+        </div>
+
+        <div class="course-grid">
+            <article class="course-card">
+                <span class="course-tag">Programming</span>
+                <h2>C# Fundamentals</h2>
+                <p>Learn variables, control flow, methods, classes and object-oriented programming.</p>
+                <div class="course-meta"><span>Beginner</span><span>12 lessons</span></div>
+                <a class="btn btn-secondary" asp-action="Details" asp-route-id="1">View course</a>
+            </article>
+            <article class="course-card">
+                <span class="course-tag">Web Development</span>
+                <h2>ASP.NET Core MVC</h2>
+                <p>Understand MVC architecture, routing, Razor views and building web applications.</p>
+                <div class="course-meta"><span>Intermediate</span><span>10 lessons</span></div>
+                <a class="btn btn-secondary" asp-action="Details" asp-route-id="2">View course</a>
+            </article>
+            <article class="course-card">
+                <span class="course-tag">Cybersecurity</span>
+                <h2>Security Fundamentals</h2>
+                <p>Explore core security concepts, common threats, defensive controls and safe practices.</p>
+                <div class="course-meta"><span>Beginner</span><span>8 lessons</span></div>
+                <a class="btn btn-secondary" asp-action="Details" asp-route-id="3">View course</a>
+            </article>
+        </div>
+    </div>
+</section>
