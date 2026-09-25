@@ -1,0 +1,46 @@
+@model CodeRoom.Web.ViewModels.Admin.ChallengeFormViewModel
+
+<div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+
+<div class="form-grid">
+    <label class="form-field form-field-wide">Course
+        <select class="input" asp-for="CourseId" asp-items="ViewBag.Courses">
+            <option value="">Select a course</option>
+        </select>
+        <span asp-validation-for="CourseId" class="field-error"></span>
+    </label>
+    <label class="form-field form-field-wide">Lesson ID (optional)
+        <input class="input" asp-for="LessonId" type="number" min="1" placeholder="Link to a specific lesson" />
+        <span asp-validation-for="LessonId" class="field-error"></span>
+    </label>
+    <label class="form-field form-field-wide">Title
+        <input class="input" asp-for="Title" />
+        <span asp-validation-for="Title" class="field-error"></span>
+    </label>
+    <label class="form-field form-field-wide">Instructions
+        <textarea class="input" asp-for="Instructions" rows="7"></textarea>
+        <span asp-validation-for="Instructions" class="field-error"></span>
+    </label>
+    <label class="form-field">Validation mode
+        <select class="input" asp-for="ValidationMode">
+            <option value="Exact">Exact answer</option>
+            <option value="Contains">Contains phrase</option>
+        </select>
+    </label>
+    <label class="form-field">XP points
+        <input class="input" asp-for="Points" type="number" min="5" max="500" />
+        <span asp-validation-for="Points" class="field-error"></span>
+    </label>
+    <label class="form-field form-field-wide">Expected answer
+        <textarea class="input" asp-for="ExpectedAnswer" rows="3"></textarea>
+        <span asp-validation-for="ExpectedAnswer" class="field-error"></span>
+    </label>
+    <label class="form-field form-field-wide">Starter code (optional)
+        <textarea class="input" asp-for="StarterCode" rows="5" placeholder="Optional code or command starter."></textarea>
+        <span asp-validation-for="StarterCode" class="field-error"></span>
+    </label>
+    <label class="form-field form-field-wide">Hint (optional)
+        <textarea class="input" asp-for="Hint" rows="3"></textarea>
+        <span asp-validation-for="Hint" class="field-error"></span>
+    </label>
+</div>
