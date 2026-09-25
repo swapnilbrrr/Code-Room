@@ -1,30 +1,59 @@
-@model int
+@model CodeRoom.Web.ViewModels.Learning.LessonViewModel
 @{
-    ViewData["Title"] = "Lesson";
+    ViewData["Title"] = Model.Current.Title;
 }
 
 <section class="page-shell">
     <div class="container lesson-layout">
         <main class="content-panel lesson-content">
-            <span class="eyebrow">LESSON 01</span>
-            <h1>Understanding MVC</h1>
-            <p>MVC separates application responsibilities into models, views and controllers so each part has a clear purpose.</p>
-            <h2>Model</h2>
-            <p>The model represents application data and the rules around that data.</p>
-            <h2>View</h2>
-            <p>The view presents information to the user through Razor markup.</p>
-            <h2>Controller</h2>
-            <p>The controller receives requests, coordinates application logic and selects the appropriate response.</p>
-            <button class="btn btn-primary" type="button">Mark lesson complete</button>
+            <span class="eyebrow">LESSON @Model.Current.Order.ToString("D2") · @Model.Course.Title</span>
+            <h1>@Model.Current.Title</h1>
+
+            @if (!string.IsNullOrWhiteSpace(Model.Current.VideoUrl))
+            {
+                <p><a class="btn btn-secondary" href="@Model.Current.VideoUrl" target="_blank" rel="noopener">Watch video</a></p>
+            }
+
+            <p>@Model.Current.Content</p>
+
+            @if (!string.IsNullOrWhiteSpace(Model.Current.ResourceUrl))
+            {
+                <p><a href="@Model.Current.ResourceUrl" target="_blank" rel="noopener">Download lesson resource</a></p>
+            }
+
+            <div class="lesson-actions">
+                @if (Model.IsCurrentCompleted)
+                {
+                    <span class="status-pill status-done">✓ Completed</span>
+                }
+                else
+                {
+                    <form asp-action="Complete" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="lessonId" value="@Model.Current.Id" />
+                        <input type="hidden" name="courseId" value="@Model.Course.Id" />
+                        <button class="btn btn-primary" type="submit">Mark lesson complete</button>
+                    </form>
+                }
+
+                @if (Model.QuizId is not null)
+                {
+                    <a class="btn btn-secondary" asp-controller="Quiz" asp-action="Index" asp-route-id="@Model.QuizId">Take the quiz</a>
+                }
+            </div>
         </main>
+
         <aside class="content-panel lesson-sidebar">
             <h3>Course progress</h3>
-            <div class="progress-track"><span style="width: 10%"></span></div>
-            <small>1 of 10 lessons completed</small>
+            <div class="progress-track"><span style="width: @(Model.ProgressPercent)%"></span></div>
+            <small>@Model.CompletedCount of @Model.TotalCount lessons completed</small>
             <hr />
-            <a href="#" class="lesson-link active">01. Understanding MVC</a>
-            <a href="#" class="lesson-link">02. Controllers & Routes</a>
-            <a href="#" class="lesson-link">03. Razor Views</a>
+            @foreach (var lesson in Model.Lessons)
+            {
+                var active = lesson.Id == Model.Current.Id ? "active" : "";
+                var done = Model.CompletedLessonIds.Contains(lesson.Id) ? "✓ " : "";
+                <a class="lesson-link @active" asp-action="Index" asp-route-id="@Model.Course.Id" asp-route-lessonId="@lesson.Id">@done@lesson.Order.ToString("D2"). @lesson.Title</a>
+            }
         </aside>
     </div>
 </section>

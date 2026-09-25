@@ -1,0 +1,35 @@
+@model CodeRoom.Web.Models.Question
+
+<div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+
+<div class="form-grid">
+    <label class="form-field form-field-wide">Question
+        <input class="input" asp-for="QuestionText" />
+        <span asp-validation-for="QuestionText" class="field-error"></span>
+    </label>
+    <label class="form-field">Option A
+        <input class="input" asp-for="OptionA" />
+        <span asp-validation-for="OptionA" class="field-error"></span>
+    </label>
+    <label class="form-field">Option B
+        <input class="input" asp-for="OptionB" />
+        <span asp-validation-for="OptionB" class="field-error"></span>
+    </label>
+    <label class="form-field">Option C
+        <input class="input" asp-for="OptionC" />
+        <span asp-validation-for="OptionC" class="field-error"></span>
+    </label>
+    <label class="form-field">Option D
+        <input class="input" asp-for="OptionD" />
+        <span asp-validation-for="OptionD" class="field-error"></span>
+    </label>
+    <label class="form-field">Correct option
+        <select class="input" asp-for="CorrectOption">
+            <option value="A">A</option>
+            <option value="B">B</option>
+            <option value="C">C</option>
+            <option value="D">D</option>
+        </select>
+        <span asp-validation-for="CorrectOption" class="field-error"></span>
+    </label>
+</div>

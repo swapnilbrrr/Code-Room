@@ -1,0 +1,23 @@
+@model CodeRoom.Web.Models.Quiz
+@{
+    ViewData["Title"] = "New Quiz";
+}
+
+<section class="page-shell">
+    <div class="container narrow">
+        <span class="eyebrow">QUIZZES</span>
+        <h1 class="page-title">New quiz</h1>
+        <div class="content-panel">
+            <form asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+                <partial name="_Form" model="Model" />
+                <div class="form-actions">
+                    <a class="btn btn-ghost" asp-action="Index">Cancel</a>
+                    <button class="btn btn-primary" type="submit">Create quiz</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

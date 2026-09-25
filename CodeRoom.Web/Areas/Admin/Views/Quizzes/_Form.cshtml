@@ -1,0 +1,23 @@
+@model CodeRoom.Web.Models.Quiz
+@{
+    var courses = ViewBag.Courses as Microsoft.AspNetCore.Mvc.Rendering.SelectList;
+}
+
+<div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+
+<div class="form-grid">
+    <label class="form-field">Course
+        <select class="input" asp-for="CourseId" asp-items="courses">
+            <option value="">Select a course</option>
+        </select>
+        <span asp-validation-for="CourseId" class="field-error"></span>
+    </label>
+    <label class="form-field">Title
+        <input class="input" asp-for="Title" />
+        <span asp-validation-for="Title" class="field-error"></span>
+    </label>
+    <label class="form-field form-field-wide">Description
+        <textarea class="input" asp-for="Description" rows="3"></textarea>
+        <span asp-validation-for="Description" class="field-error"></span>
+    </label>
+</div>

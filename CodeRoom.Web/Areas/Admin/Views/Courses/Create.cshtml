@@ -1,0 +1,24 @@
+@model CodeRoom.Web.Models.Course
+@{
+    ViewData["Title"] = "New Course";
+}
+
+<section class="page-shell">
+    <div class="container narrow">
+        <span class="eyebrow">COURSES</span>
+        <h1 class="page-title">New course</h1>
+
+        <div class="content-panel">
+            <form asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+                <partial name="_Form" model="Model" />
+                <div class="form-actions">
+                    <a class="btn btn-ghost" asp-action="Index">Cancel</a>
+                    <button class="btn btn-primary" type="submit">Create course</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

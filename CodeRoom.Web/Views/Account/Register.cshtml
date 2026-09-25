@@ -1,3 +1,4 @@
+@model CodeRoom.Web.ViewModels.Account.RegisterViewModel
 @{
     ViewData["Title"] = "Register";
 }
@@ -7,12 +8,37 @@
         <span class="eyebrow">GET STARTED</span>
         <h1>Create your account</h1>
         <p>Join Code-Room and start learning at your own pace.</p>
-        <form>
-            <label>Full name<input class="input" type="text" required /></label>
-            <label>Email<input class="input" type="email" required /></label>
-            <label>Password<input class="input" type="password" minlength="8" required /></label>
+
+        <form asp-action="Register" method="post">
+            <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+
+            <label>Full name
+                <input class="input" asp-for="FullName" type="text" autocomplete="name" />
+                <span asp-validation-for="FullName" class="field-error"></span>
+            </label>
+
+            <label>Email
+                <input class="input" asp-for="Email" type="email" autocomplete="email" />
+                <span asp-validation-for="Email" class="field-error"></span>
+            </label>
+
+            <label>Password
+                <input class="input" asp-for="Password" type="password" autocomplete="new-password" />
+                <span asp-validation-for="Password" class="field-error"></span>
+            </label>
+
+            <label>Confirm password
+                <input class="input" asp-for="ConfirmPassword" type="password" autocomplete="new-password" />
+                <span asp-validation-for="ConfirmPassword" class="field-error"></span>
+            </label>
+
             <button class="btn btn-primary btn-full" type="submit">Create account</button>
         </form>
+
         <p class="auth-footer">Already registered? <a asp-action="Login">Sign in</a></p>
     </div>
 </section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

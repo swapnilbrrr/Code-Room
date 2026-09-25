@@ -8,6 +8,11 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 <body>
+@{
+    var isAuthenticated = User.Identity?.IsAuthenticated ?? false;
+    var isAdmin = User.IsInRole(Roles.Admin) || User.IsInRole(Roles.SuperAdmin);
+    var displayName = isAuthenticated ? User.GetDisplayName() : string.Empty;
+}
 <header class="site-header">
     <nav class="navbar container" aria-label="Primary navigation">
         <a class="brand" asp-controller="Home" asp-action="Index" aria-label="Code-Room home">
@@ -17,14 +22,33 @@
         <div class="nav-links">
             <a asp-controller="Home" asp-action="Index">Home</a>
             <a asp-controller="Courses" asp-action="Index">Courses</a>
+            @if (isAuthenticated)
+            {
+                <a asp-controller="Student" asp-action="Index">Dashboard</a>
+            }
+            @if (isAdmin)
+            {
+                <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Admin</a>
+            }
             <a asp-controller="Home" asp-action="About">About</a>
             <a asp-controller="Home" asp-action="Faq">FAQ</a>
         </div>
 
         <div class="nav-actions">
             <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode" title="Switch to dark mode">☾</button>
-            <a class="btn btn-ghost desktop-action" asp-controller="Account" asp-action="Login">Login</a>
-            <a class="btn btn-primary desktop-action" asp-controller="Account" asp-action="Register">Get Started</a>
+            @if (isAuthenticated)
+            {
+                <span class="nav-user desktop-action" title="@displayName">Hi, @displayName.Split(' ')[0]</span>
+                <form class="logout-form desktop-action" asp-controller="Account" asp-action="Logout" method="post">
+                    @Html.AntiForgeryToken()
+                    <button class="btn btn-ghost" type="submit">Logout</button>
+                </form>
+            }
+            else
+            {
+                <a class="btn btn-ghost desktop-action" asp-controller="Account" asp-action="Login">Login</a>
+                <a class="btn btn-primary desktop-action" asp-controller="Account" asp-action="Register">Get Started</a>
+            }
             <button class="mobile-toggle" type="button" data-mobile-toggle aria-expanded="false" aria-controls="mobile-navigation" aria-label="Open navigation">☰</button>
         </div>
     </nav>
@@ -33,10 +57,28 @@
         <div class="container">
             <a asp-controller="Home" asp-action="Index">Home</a>
             <a asp-controller="Courses" asp-action="Index">Courses</a>
+            @if (isAuthenticated)
+            {
+                <a asp-controller="Student" asp-action="Index">Dashboard</a>
+            }
+            @if (isAdmin)
+            {
+                <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Admin</a>
+            }
             <a asp-controller="Home" asp-action="About">About</a>
             <a asp-controller="Home" asp-action="Faq">FAQ</a>
-            <a asp-controller="Account" asp-action="Login">Login</a>
-            <a class="mobile-primary" asp-controller="Account" asp-action="Register">Get Started</a>
+            @if (isAuthenticated)
+            {
+                <form asp-controller="Account" asp-action="Logout" method="post">
+                    @Html.AntiForgeryToken()
+                    <button class="mobile-primary" type="submit" style="width:100%;border:0;cursor:pointer;">Logout</button>
+                </form>
+            }
+            else
+            {
+                <a asp-controller="Account" asp-action="Login">Login</a>
+                <a class="mobile-primary" asp-controller="Account" asp-action="Register">Get Started</a>
+            }
         </div>
     </div>
 </header>

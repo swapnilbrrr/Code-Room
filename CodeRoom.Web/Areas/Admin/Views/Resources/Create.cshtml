@@ -1,0 +1,23 @@
+@model CodeRoom.Web.Models.Resource
+@{
+    ViewData["Title"] = "New Resource";
+}
+
+<section class="page-shell">
+    <div class="container narrow">
+        <span class="eyebrow">RESOURCES</span>
+        <h1 class="page-title">New resource</h1>
+        <div class="content-panel">
+            <form asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+                <partial name="_Form" model="Model" />
+                <div class="form-actions">
+                    <a class="btn btn-ghost" asp-action="Index">Cancel</a>
+                    <button class="btn btn-primary" type="submit">Create resource</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

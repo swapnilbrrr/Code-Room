@@ -1,3 +1,4 @@
+@model CodeRoom.Web.ViewModels.Account.LoginViewModel
 @{
     ViewData["Title"] = "Login";
 }
@@ -7,11 +8,33 @@
         <span class="eyebrow">WELCOME BACK</span>
         <h1>Sign in to Code-Room</h1>
         <p>Continue your learning journey.</p>
-        <form>
-            <label>Email<input class="input" type="email" required /></label>
-            <label>Password<input class="input" type="password" required /></label>
+
+        <form asp-action="Login" method="post">
+            <input type="hidden" asp-for="ReturnUrl" />
+            <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+
+            <label>Email
+                <input class="input" asp-for="Email" type="email" autocomplete="email" />
+                <span asp-validation-for="Email" class="field-error"></span>
+            </label>
+
+            <label>Password
+                <input class="input" asp-for="Password" type="password" autocomplete="current-password" />
+                <span asp-validation-for="Password" class="field-error"></span>
+            </label>
+
+            <label class="checkbox-row">
+                <input asp-for="RememberMe" type="checkbox" /> <span>Remember me</span>
+            </label>
+
             <button class="btn btn-primary btn-full" type="submit">Sign in</button>
         </form>
+
         <p class="auth-footer">New to Code-Room? <a asp-action="Register">Create an account</a></p>
+        <p class="auth-hint">Demo admin: <strong>admin@coderoom.test</strong> / <strong>Admin@123</strong></p>
     </div>
 </section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

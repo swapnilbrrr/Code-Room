@@ -1668,3 +1668,347 @@ main {
         grid-template-columns: 1fr;
     }
 }
+
+/* ============================================================
+   Backend additions: auth, forms, admin CRUD, dashboards
+   (additive only — reuses existing design tokens)
+   ============================================================ */
+
+.container.narrow {
+    width: min(720px, calc(100% - 40px));
+}
+
+/* Buttons: small + danger variants */
+.btn-sm {
+    min-height: 34px;
+    padding: 5px 12px;
+    font-size: .82rem;
+    border-radius: 8px;
+}
+
+.btn-danger {
+    color: #fff;
+    background: #d64550;
+    border-color: #d64550;
+}
+
+.btn-danger:hover {
+    background: #b7303b;
+    border-color: #b7303b;
+}
+
+/* Flash / alert messages */
+.alert {
+    padding: 13px 16px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 18px;
+    font-weight: 600;
+    font-size: .95rem;
+}
+
+.alert-success {
+    color: #12683f;
+    background: color-mix(in srgb, #2fbf71 16%, var(--surface));
+    border-color: color-mix(in srgb, #2fbf71 45%, var(--border));
+}
+
+.alert-danger {
+    color: #a11722;
+    background: color-mix(in srgb, #d64550 15%, var(--surface));
+    border-color: color-mix(in srgb, #d64550 45%, var(--border));
+}
+
+/* Forms */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+}
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    font-weight: 600;
+    font-size: .9rem;
+    color: var(--heading);
+}
+
+.form-field-wide {
+    grid-column: 1 / -1;
+}
+
+.form-field textarea.input {
+    min-height: auto;
+    resize: vertical;
+    line-height: 1.5;
+}
+
+.checkbox-row {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    color: var(--heading);
+}
+
+.checkbox-row input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--accent);
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 22px;
+}
+
+.field-error {
+    color: #d64550;
+    font-size: .82rem;
+    font-weight: 600;
+}
+
+.validation-summary {
+    color: #a11722;
+    font-size: .9rem;
+    margin-bottom: 8px;
+}
+
+.validation-summary ul {
+    margin: 0;
+    padding-left: 18px;
+}
+
+.validation-summary:empty {
+    display: none;
+}
+
+.auth-hint {
+    margin-top: 16px;
+    color: var(--muted);
+    font-size: .92rem;
+}
+
+/* Admin CRUD header + data tables */
+.admin-crud-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 26px;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: .92rem;
+}
+
+.data-table thead th {
+    text-align: left;
+    padding: 12px 14px;
+    color: var(--muted);
+    font-size: .74rem;
+    font-weight: 800;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+}
+
+.data-table tbody td {
+    padding: 13px 14px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    vertical-align: middle;
+}
+
+.data-table tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.data-table tbody tr:hover {
+    background: var(--surface-muted);
+}
+
+.row-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.row-actions form {
+    margin: 0;
+}
+
+/* Status + role pills */
+.role-pill,
+.status-pill {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: .74rem;
+    font-weight: 700;
+    border: 1px solid var(--border);
+    background: var(--surface-muted);
+    color: var(--muted);
+}
+
+.role-superadmin {
+    color: #7b2ff7;
+    background: color-mix(in srgb, #7b2ff7 14%, var(--surface));
+    border-color: color-mix(in srgb, #7b2ff7 40%, var(--border));
+}
+
+.role-admin {
+    color: var(--accent);
+    background: var(--accent-soft);
+    border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
+}
+
+.status-done {
+    color: #12683f;
+    background: color-mix(in srgb, #2fbf71 16%, var(--surface));
+    border-color: color-mix(in srgb, #2fbf71 45%, var(--border));
+}
+
+/* Lesson viewer + quiz */
+.lesson-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.quiz-question {
+    padding: 20px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--surface);
+    margin-bottom: 16px;
+}
+
+.quiz-question legend,
+.quiz-question > p:first-child {
+    font-weight: 700;
+    color: var(--heading);
+    margin: 0 0 12px;
+}
+
+.quiz-question label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: border-color .15s ease, background .15s ease;
+}
+
+.quiz-question label:hover {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+}
+
+.quiz-question input[type="radio"] {
+    accent-color: var(--accent);
+    width: 17px;
+    height: 17px;
+}
+
+.result-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 22px;
+}
+
+/* Filter bar (course catalogue) */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 20px 0 26px;
+}
+
+.filter-bar .input,
+.filter-bar select {
+    width: auto;
+    min-width: 170px;
+}
+
+/* Student dashboard columns */
+.dashboard-columns {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 22px;
+    margin-top: 24px;
+}
+
+.announcement-item {
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.announcement-item:last-child {
+    border-bottom: 0;
+}
+
+.announcement-item h4 {
+    margin: 0 0 4px;
+    color: var(--heading);
+}
+
+.announcement-item time {
+    color: var(--muted);
+    font-size: .82rem;
+}
+
+/* Auth-aware nav */
+.nav-user {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 700;
+    color: var(--heading);
+}
+
+.logout-form {
+    display: inline;
+    margin: 0;
+}
+
+.logout-form button {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font: inherit;
+    color: inherit;
+}
+
+@media (max-width: 760px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-columns {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-crud-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .data-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+}

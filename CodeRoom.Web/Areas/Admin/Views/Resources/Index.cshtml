@@ -1,0 +1,50 @@
+@model IReadOnlyList<CodeRoom.Web.Models.Resource>
+@{
+    ViewData["Title"] = "Manage Resources";
+    var courseNames = ViewBag.CourseNames as Dictionary<int, string> ?? new();
+}
+
+<section class="page-shell">
+    <div class="container">
+        <div class="admin-crud-header">
+            <div>
+                <span class="eyebrow">RESOURCES</span>
+                <h1 class="page-title">Manage resources</h1>
+            </div>
+            <a class="btn btn-primary" asp-action="Create">+ New resource</a>
+        </div>
+
+        @if (TempData["Success"] is string ok)
+        {
+            <div class="alert alert-success">@ok</div>
+        }
+
+        <div class="content-panel">
+            <table class="data-table">
+                <thead><tr><th>Title</th><th>Type</th><th>Course</th><th>URL</th><th>Actions</th></tr></thead>
+                <tbody>
+                @foreach (var r in Model)
+                {
+                    <tr>
+                        <td>@r.Title</td>
+                        <td>@r.Type</td>
+                        <td>@(r.CourseId is int cid && courseNames.ContainsKey(cid) ? courseNames[cid] : "General")</td>
+                        <td><a href="@r.Url" target="_blank" rel="noopener">Open</a></td>
+                        <td class="row-actions">
+                            <a class="btn btn-secondary btn-sm" asp-action="Edit" asp-route-id="@r.Id">Edit</a>
+                            <form asp-action="Delete" asp-route-id="@r.Id" method="post" onsubmit="return confirm('Delete this resource?');">
+                                @Html.AntiForgeryToken()
+                                <button class="btn btn-danger btn-sm" type="submit">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+                @if (Model.Count == 0)
+                {
+                    <tr><td colspan="5">No resources yet.</td></tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>

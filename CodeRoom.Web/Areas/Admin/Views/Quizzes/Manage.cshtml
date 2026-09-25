@@ -1,0 +1,50 @@
+@model CodeRoom.Web.Models.Quiz
+@{
+    ViewData["Title"] = "Quiz Questions";
+}
+
+<section class="page-shell">
+    <div class="container">
+        <div class="admin-crud-header">
+            <div>
+                <span class="eyebrow">@Model.Course?.Title</span>
+                <h1 class="page-title">@Model.Title — questions</h1>
+            </div>
+            <div class="row-actions">
+                <a class="btn btn-ghost" asp-action="Index">Back to quizzes</a>
+                <a class="btn btn-primary" asp-action="CreateQuestion" asp-route-quizId="@Model.Id">+ Add question</a>
+            </div>
+        </div>
+
+        @if (TempData["Success"] is string ok)
+        {
+            <div class="alert alert-success">@ok</div>
+        }
+
+        <div class="content-panel">
+            <table class="data-table">
+                <thead><tr><th>Question</th><th>Correct</th><th>Actions</th></tr></thead>
+                <tbody>
+                @foreach (var q in Model.Questions)
+                {
+                    <tr>
+                        <td>@q.QuestionText</td>
+                        <td>@q.CorrectOption</td>
+                        <td class="row-actions">
+                            <a class="btn btn-secondary btn-sm" asp-action="EditQuestion" asp-route-id="@q.Id">Edit</a>
+                            <form asp-action="DeleteQuestion" asp-route-id="@q.Id" method="post" onsubmit="return confirm('Delete this question?');">
+                                @Html.AntiForgeryToken()
+                                <button class="btn btn-danger btn-sm" type="submit">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+                @if (Model.Questions.Count == 0)
+                {
+                    <tr><td colspan="3">No questions yet. Add the first one.</td></tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
