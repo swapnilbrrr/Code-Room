@@ -1,0 +1,115 @@
+@model CodeRoom.Web.ViewModels.Profile.ProfileViewModel
+@{
+    ViewData["Title"] = "Profile";
+    var initial = string.IsNullOrWhiteSpace(Model.FullName) ? "C" : Model.FullName.Trim()[0].ToString().ToUpperInvariant();
+}
+
+<section class="page-shell profile-page">
+    <div class="container">
+        <div class="profile-hero">
+            <div class="profile-identity">
+                <div class="profile-avatar profile-avatar-large">@initial</div>
+                <div>
+                    <span class="eyebrow">CODE-ROOM PROFILE</span>
+                    <h1 class="page-title">@Model.FullName</h1>
+                    <p class="profile-handle">@@@Model.Username · @Model.RoleLabel</p>
+                    @if (!string.IsNullOrWhiteSpace(Model.Bio))
+                    {
+                        <p class="profile-bio">@Model.Bio</p>
+                    }
+                    else
+                    {
+                        <p class="profile-bio">Build your learning identity as you learn, practise and grow.</p>
+                    }
+                </div>
+            </div>
+            <div class="profile-actions">
+                <a class="btn btn-secondary" asp-controller="Dashboard" asp-action="Index">Dashboard</a>
+                <a class="btn btn-primary" asp-controller="Profile" asp-action="Settings">Edit profile</a>
+            </div>
+        </div>
+
+        <div class="profile-stat-grid">
+            <article class="profile-stat"><strong>@Model.CoursesEnrolled</strong><span>Courses enrolled</span></article>
+            <article class="profile-stat"><strong>@Model.LessonsCompleted</strong><span>Lessons completed</span></article>
+            <article class="profile-stat"><strong>@Model.QuizAttempts</strong><span>Quiz attempts</span></article>
+            <article class="profile-stat"><strong>@Model.LearningStreak</strong><span>Day learning streak</span></article>
+            <article class="profile-stat"><strong>@Model.ProgressPercent%</strong><span>Overall progress</span></article>
+        </div>
+
+        <div class="profile-main-grid">
+            <section class="profile-panel profile-activity-panel">
+                <div class="panel-heading">
+                    <div>
+                        <span class="eyebrow">ACTIVITY</span>
+                        <h2>Learning history</h2>
+                    </div>
+                    <span class="profile-muted">Last 365 days</span>
+                </div>
+
+                <div class="activity-legend">
+                    <span>Less</span>
+                    <i class="activity-level level-0"></i>
+                    <i class="activity-level level-1"></i>
+                    <i class="activity-level level-2"></i>
+                    <i class="activity-level level-3"></i>
+                    <i class="activity-level level-4"></i>
+                    <span>More</span>
+                </div>
+
+                <div class="activity-grid" aria-label="Learning activity calendar">
+                    @foreach (var day in Model.ActivityDays)
+                    {
+                        <span class="activity-cell level-@day.Level" title="@day.Date.ToString("dd MMM yyyy"): @day.Count activities"></span>
+                    }
+                </div>
+            </section>
+
+            <section class="profile-panel">
+                <div class="panel-heading">
+                    <div>
+                        <span class="eyebrow">RECENT</span>
+                        <h2>Recent activity</h2>
+                    </div>
+                </div>
+
+                @if (Model.RecentActivity.Count == 0)
+                {
+                    <p class="profile-empty">Your activity will appear here as you start learning.</p>
+                }
+                else
+                {
+                    <div class="activity-list">
+                        @foreach (var item in Model.RecentActivity)
+                        {
+                            <div class="activity-item">
+                                <span class="activity-dot"></span>
+                                <div>
+                                    <strong>@item.Description</strong>
+                                    <time>@item.CreatedAt.ToLocalTime().ToString("dd MMM, HH:mm")</time>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </section>
+        </div>
+
+        <section class="profile-panel profile-about">
+            <div class="panel-heading">
+                <div>
+                    <span class="eyebrow">ACCOUNT</span>
+                    <h2>Profile details</h2>
+                </div>
+                <a class="text-link" asp-action="Settings">Settings <span>→</span></a>
+            </div>
+
+            <div class="profile-detail-grid">
+                <div><span>Email</span><strong>@Model.Email</strong></div>
+                <div><span>Username</span><strong>@@@Model.Username</strong></div>
+                <div><span>Role</span><strong>@Model.RoleLabel</strong></div>
+                <div><span>Progress</span><strong>@Model.ProgressPercent% complete</strong></div>
+            </div>
+        </section>
+    </div>
+</section>
