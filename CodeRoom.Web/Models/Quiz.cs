@@ -16,6 +16,18 @@ public class Quiz
     [StringLength(500)]
     public string Description { get; set; } = string.Empty;
 
+    [Required, StringLength(30)]
+    public string AssessmentType { get; set; } = "Quiz";
+
+    [Range(0, 180)]
+    public int TimeLimitMinutes { get; set; }
+
+    [Range(0, 100)]
+    public int PassingScorePercent { get; set; } = 70;
+
+    public bool IsCertificationExam { get; set; }
+
     public Course Course { get; set; } = null!;
     public ICollection<Question> Questions { get; set; } = [];
+    public ICollection<QuizAttempt> Attempts { get; set; } = [];
 }
