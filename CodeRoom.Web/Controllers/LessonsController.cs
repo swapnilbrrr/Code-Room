@@ -27,6 +27,20 @@ public class LessonsController(ApplicationDbContext db) : Controller
             ? course.Lessons.First()
             : course.Lessons.FirstOrDefault(l => l.Id == lessonId) ?? course.Lessons.First();
 
+        current.Content = LessonContentBuilder.EnsureRichContent(
+            current.Content,
+            course.Title,
+            current.Title,
+            current.Order);
+
+        current.VideoUrl ??= current.Order == 1
+            ? LessonMediaCatalog.VideoFor(course.Title)
+            : null;
+
+        current.ResourceUrl ??= current.Order == 1
+            ? LessonMediaCatalog.ResourceFor(course.Title)
+            : null;
+
         var userId = User.GetUserId();
         var completed = await db.Progress
             .Where(p => p.UserId == userId && p.IsCompleted && p.Lesson.CourseId == id)
