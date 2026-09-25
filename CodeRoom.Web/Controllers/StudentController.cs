@@ -43,15 +43,12 @@ public class StudentController(ApplicationDbContext db) : Controller
             var totalEnrollments = await db.Enrollments.CountAsync(e => e.UserId == userId);
             if (totalEnrollments == 1)
             {
-                await LearningActivityService.RecordAsync(
-                    db,
-                    userId,
-                    "AchievementUnlocked",
-                    "Unlocked the First Course achievement",
-                    "Achievement unlocked",
-                    "You enrolled in your first Code-Room course. Nice start!",
-                    "/Profile",
-                    "AchievementUnlocked");
+                await LearningActivityService.TryAwardAchievementAsync(db, userId, "first-course");
+            }
+
+            if (string.Equals(course.Category, "Cloud", StringComparison.OrdinalIgnoreCase))
+            {
+                await LearningActivityService.TryAwardAchievementAsync(db, userId, "cloud-path");
             }
 
             await LearningActivityService.TryRecordStreakMilestoneAsync(db, userId);
