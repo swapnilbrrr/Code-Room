@@ -2,6 +2,9 @@ namespace CodeRoom.Web.Services;
 
 public static class LessonContentBuilder
 {
+    public static string Build(string courseTitle, string lessonTitle, int lessonNumber) =>
+        EnsureRichContent(null, courseTitle, lessonTitle, lessonNumber);
+
     public static string EnsureRichContent(string? existingContent, string courseTitle, string lessonTitle, int lessonNumber)
     {
         if (!string.IsNullOrWhiteSpace(existingContent) && existingContent.Trim().Length >= 260)
@@ -9,7 +12,7 @@ public static class LessonContentBuilder
             return existingContent.Trim();
         }
 
-        var focus = GetFocus(lessonTitle);
+        var focus = GetFocus(courseTitle, lessonTitle);
         var practice = GetPractice(lessonTitle);
 
         return
@@ -20,7 +23,7 @@ public static class LessonContentBuilder
             $"That hands-on step turns the lesson into a skill you can reuse in later projects.";
     }
 
-    private static string GetFocus(string title) => title switch
+    private static string GetFocus(string courseTitle, string title) => title switch
     {
         "Introduction to C#" => "C# is a statically typed, object-oriented language used on the .NET platform. This lesson establishes the role of source files, namespaces, statements, methods and the program entry point.",
         "Variables & Data Types" => "Variables hold values that a program can work with, while data types describe the kind of value being stored. In C#, choosing an appropriate type helps the compiler catch mistakes early and makes the program's intent clearer.",
