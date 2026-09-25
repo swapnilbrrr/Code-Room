@@ -26,8 +26,16 @@ public class NotificationBellViewComponent(ApplicationDbContext db) : ViewCompon
         var announcements = await db.Announcements
             .Where(a => a.IsPublished)
             .OrderByDescending(a => a.PublishedAt)
-            .Take(3)
+            .Take(5)
             .ToListAsync();
+
+        announcements = announcements
+            .Where(a => !notifications.Any(n =>
+                n.Type == "Announcement" &&
+                n.Title == a.Title &&
+                n.Message == a.Message))
+            .Take(3)
+            .ToList();
 
         var items = notifications
             .Select(n => new NotificationItemViewModel
