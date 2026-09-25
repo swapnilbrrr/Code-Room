@@ -1,0 +1,54 @@
+@model CodeRoom.Web.ViewModels.Notifications.NotificationBellViewModel
+
+<div class="notification-menu">
+    <button class="icon-button notification-trigger" type="button" data-notification-toggle aria-expanded="false" aria-controls="notification-popover" aria-label="Open notifications" title="Notifications">
+        <span class="notification-bell">♧</span>
+        @if (Model.UnreadCount > 0)
+        {
+            <span class="notification-count">@Model.UnreadCount</span>
+        }
+    </button>
+
+    <div id="notification-popover" class="notification-popover" data-notification-menu hidden>
+        <div class="notification-popover-header">
+            <div>
+                <strong>Notifications</strong>
+                <span>@(Model.UnreadCount == 0 ? "All caught up" : $"{Model.UnreadCount} unread")</span>
+            </div>
+            @if (Model.UnreadCount > 0)
+            {
+                <form asp-controller="Notifications" asp-action="MarkAllRead" method="post">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="notification-mark-read">Mark read</button>
+                </form>
+            }
+        </div>
+
+        <div class="notification-popover-list">
+            @if (Model.Items.Count == 0)
+            {
+                <div class="notification-empty">No new updates yet.</div>
+            }
+            else
+            {
+                @foreach (var item in Model.Items)
+                {
+                    <a class="notification-item @(item.IsRead ? "" : "is-unread")" href="@item.LinkUrl">
+                        <span class="notification-item-icon">@(item.IsAnnouncement ? "📢" : item.Type == "StreakMilestone" ? "🔥" : item.Type == "AchievementUnlocked" ? "🏆" : "•")</span>
+                        <span class="notification-item-copy">
+                            <strong>@item.Title</strong>
+                            <span>@item.Message</span>
+                            <small>@item.CreatedAt.ToLocalTime().ToString("dd MMM, HH:mm")</small>
+                        </span>
+                        @if (!item.IsRead)
+                        {
+                            <i class="notification-unread-dot"></i>
+                        }
+                    </a>
+                }
+            }
+        </div>
+
+        <a class="notification-view-all" asp-controller="Notifications" asp-action="Index">View all notifications →</a>
+    </div>
+</div>
