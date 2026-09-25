@@ -21,7 +21,5 @@ public class QuizResultViewModel
     public int PassingScorePercent { get; set; } = 70;
     public bool IsCertificationExam { get; set; }
     public Certificate? Certificate { get; set; }
-    public bool Passed => IsCertificationExam || !string.Equals(AssessmentType, "Quiz", StringComparison.OrdinalIgnoreCase)
-        ? Percent >= PassingScorePercent
-        : true;
+    public bool Passed => Percent >= PassingScorePercent;
 }
