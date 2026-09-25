@@ -166,11 +166,16 @@ The first successful startup seeds these fictional demonstration accounts:
 
 | Role | Name | Email |
 | --- | --- | --- |
-| Super Administrator | Maya Sharma | `platform.admin@coderoom.test` |
-| Administrator | Rohan Thapa | `content.manager@coderoom.test` |
-| Student | Aarav Karki | `aarav.learner@coderoom.test` |
+| Super Administrator | Swapnil Katuwal | `swapnil.katuwal@coderoom.com` |
+| Administrator | Chandra Shrestha | `chandra.shrestha@coderoom.com` |
+| Student | Bijay Khadka | `bijay.khadka@coderoom.com` |
+| Student | Babin Aryal | `babin.aryal@coderoom.com` |
+| Student | Anisha Gurung | `anisha.gurung@coderoom.com` |
+| Student | Nischal Bhandari | `nischal.bhandari@coderoom.com` |
+| Student | Suman Adhikari | `suman.adhikari@coderoom.com` |
+| Student | Prerana Rai | `prerana.rai@coderoom.com` |
 
-These accounts are for local project demonstration and evaluation only. Do not reuse their credentials for a real deployment.
+The demo accounts are fictional accounts for local evaluation. Their passwords are defined in the seed process and should never be reused for real services.
 
 ## Database Setup Model
 
