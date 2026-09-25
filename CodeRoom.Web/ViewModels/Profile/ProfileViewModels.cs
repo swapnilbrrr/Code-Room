@@ -52,6 +52,9 @@ public class ProfileSettingsViewModel
     [Display(Name = "Avatar URL")]
     public string? AvatarUrl { get; set; }
 
+    [Display(Name = "Upload avatar")]
+    public IFormFile? AvatarFile { get; set; }
+
     [StringLength(20)]
     [Display(Name = "Theme")]
     public string ThemePreference { get; set; } = "system";
