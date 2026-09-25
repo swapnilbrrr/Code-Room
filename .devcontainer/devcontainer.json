@@ -2,8 +2,7 @@
   "name": "Code-Room Dev",
   "image": "mcr.microsoft.com/devcontainers/dotnet:1-8.0-bookworm",
   "features": {
-    "ghcr.io/devcontainers/features/node:1": {},
-    "ghcr.io/devcontainers/features/git:1": {}
+    "ghcr.io/devcontainers/features/node:1": {}
   },
   "containerEnv": {
     "TMPDIR": "/tmp",
@@ -25,10 +24,9 @@
     "vscode": {
       "extensions": [
         "ms-dotnettools.csdevkit",
-        "ms-dotnettools.vscode-dotnet-runtime",
         "ms-azuretools.vscode-docker"
       ]
     }
   },
-  "postCreateCommand": "mkdir -p /tmp/coderoom && chmod 700 /tmp/coderoom && dotnet --info && git --version"
+  "postCreateCommand": "dotnet --info && git --version"
 }
