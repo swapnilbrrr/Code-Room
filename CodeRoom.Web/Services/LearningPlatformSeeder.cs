@@ -10,6 +10,7 @@ public static class LearningPlatformSeeder
     {
         await UpgradeNetworkingCourseAsync(db);
         await SeedExpandedCoursesAsync(db);
+        await EnsureModulesForAllCoursesAsync(db);
         await SeedAchievementsAsync(db);
         await SeedResourceLinksAsync(db);
     }
