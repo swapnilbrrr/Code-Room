@@ -3,24 +3,42 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Code-Room is a structured technology learning platform for students." />
     <title>@ViewData["Title"] - Code-Room</title>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 <body>
 <header class="site-header">
-    <nav class="navbar container">
-        <a class="brand" asp-controller="Home" asp-action="Index">Code-Room</a>
-        <div class="nav-links">
+    <nav class="navbar container" aria-label="Primary navigation">
+        <a class="brand" asp-controller="Home" asp-action="Index" aria-label="Code-Room home">
+            <img src="~/images/code-room-logo.png" alt="Code-Room" />
+        </a>
+
+        <div class="nav-links" data-mobile-menu>
             <a asp-controller="Home" asp-action="Index">Home</a>
             <a asp-controller="Courses" asp-action="Index">Courses</a>
             <a asp-controller="Home" asp-action="About">About</a>
             <a asp-controller="Home" asp-action="Faq">FAQ</a>
         </div>
+
         <div class="nav-actions">
-            <a class="btn btn-ghost" asp-controller="Account" asp-action="Login">Login</a>
-            <a class="btn btn-primary" asp-controller="Account" asp-action="Register">Get Started</a>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode" title="Switch to dark mode">☾</button>
+            <a class="btn btn-ghost desktop-action" asp-controller="Account" asp-action="Login">Login</a>
+            <a class="btn btn-primary desktop-action" asp-controller="Account" asp-action="Register">Get Started</a>
+            <button class="mobile-toggle" type="button" data-mobile-toggle aria-expanded="false" aria-controls="mobile-navigation" aria-label="Open navigation">☰</button>
         </div>
     </nav>
+
+    <div id="mobile-navigation" class="mobile-navigation" data-mobile-menu>
+        <div class="container">
+            <a asp-controller="Home" asp-action="Index">Home</a>
+            <a asp-controller="Courses" asp-action="Index">Courses</a>
+            <a asp-controller="Home" asp-action="About">About</a>
+            <a asp-controller="Home" asp-action="Faq">FAQ</a>
+            <a asp-controller="Account" asp-action="Login">Login</a>
+            <a class="mobile-primary" asp-controller="Account" asp-action="Register">Get Started</a>
+        </div>
+    </div>
 </header>
 
 <main>
@@ -28,12 +46,41 @@
 </main>
 
 <footer class="site-footer">
-    <div class="container footer-content">
-        <span>© @DateTime.UtcNow.Year Code-Room</span>
-        <span>Learn. Practice. Build.</span>
+    <div class="container footer-inner">
+        <div class="footer-brand">
+            <img src="~/images/code-room-logo.png" alt="Code-Room" />
+            <p>Learn. Code. Grow.</p>
+        </div>
+
+        <div class="footer-links">
+            <div>
+                <h2>Explore</h2>
+                <a asp-controller="Home" asp-action="Index">Home</a>
+                <a asp-controller="Courses" asp-action="Index">Courses</a>
+            </div>
+            <div>
+                <h2>Information</h2>
+                <a asp-controller="Home" asp-action="About">About</a>
+                <a asp-controller="Home" asp-action="Faq">FAQ</a>
+            </div>
+            <div>
+                <h2>Account</h2>
+                <a asp-controller="Account" asp-action="Login">Login</a>
+                <a asp-controller="Account" asp-action="Register">Register</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <div class="container">
+            <span>© @DateTime.UtcNow.Year Code-Room</span>
+            <span>Web Applications Development Project</span>
+            <span>All rights reserved.</span>
+        </div>
     </div>
 </footer>
 
+<script src="~/js/site.js" asp-append-version="true"></script>
 @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
