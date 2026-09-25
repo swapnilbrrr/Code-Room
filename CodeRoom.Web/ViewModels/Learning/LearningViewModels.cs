@@ -9,6 +9,7 @@ public class LessonViewModel
     public IReadOnlyList<Lesson> Lessons { get; set; } = [];
     public HashSet<int> CompletedLessonIds { get; set; } = [];
     public int? QuizId { get; set; }
+    public int? ChallengeId { get; set; }
 
     public int CompletedCount => CompletedLessonIds.Count;
     public int TotalCount => Lessons.Count;
