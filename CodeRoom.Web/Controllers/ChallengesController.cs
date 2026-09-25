@@ -16,6 +16,13 @@ public class ChallengesController(ApplicationDbContext db) : Controller
         var course = await db.Courses.FirstOrDefaultAsync(c => c.Id == id && c.IsPublished);
         if (course is null) return NotFound();
 
+        if (!User.IsInRole(Roles.Admin) && !User.IsInRole(Roles.SuperAdmin) &&
+            !await db.Enrollments.AnyAsync(e => e.UserId == User.GetUserId() && e.CourseId == id))
+        {
+            TempData["Error"] = "Enroll in this course before opening the practice lab.";
+            return RedirectToAction("Details", "Courses", new { id });
+        }
+
         var challenges = await db.Challenges
             .Where(c => c.CourseId == id)
             .Include(c => c.Lesson)
@@ -44,6 +51,12 @@ public class ChallengesController(ApplicationDbContext db) : Controller
             .FirstOrDefaultAsync(c => c.Id == id && c.Course.IsPublished);
 
         if (challenge is null) return NotFound();
+
+        if (!User.IsInRole(Roles.Admin) && !User.IsInRole(Roles.SuperAdmin) &&
+            !await db.Enrollments.AnyAsync(e => e.UserId == User.GetUserId() && e.CourseId == challenge.CourseId))
+        {
+            return Forbid();
+        }
 
         var normalizedAnswer = Normalize(answer);
         var expected = Normalize(challenge.ExpectedAnswer);
