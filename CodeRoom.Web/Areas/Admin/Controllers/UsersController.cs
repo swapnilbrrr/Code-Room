@@ -176,5 +176,6 @@ public class UsersController(ApplicationDbContext db) : Controller
 
     // Only a SuperAdmin may create/assign the SuperAdmin role.
     private bool IsRoleAllowed(string role) =>
-        role != Roles.SuperAdmin || User.IsInRole(Roles.SuperAdmin);
+        role == Roles.Student ||
+        User.IsInRole(Roles.SuperAdmin);
 }
