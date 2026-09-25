@@ -1,0 +1,96 @@
+@model CodeRoom.Web.ViewModels.Profile.ProfileSettingsViewModel
+@{
+    ViewData["Title"] = "Settings";
+}
+
+<section class="page-shell settings-page">
+    <div class="container settings-layout">
+        <div>
+            <span class="eyebrow">ACCOUNT SETTINGS</span>
+            <h1 class="page-title">Make Code-Room yours.</h1>
+            <p class="page-intro">Update your identity and account security. Changes are saved to your Code-Room account.</p>
+
+            @if (TempData["Success"] is string success)
+            {
+                <div class="alert alert-success">@success</div>
+            }
+            @if (TempData["Error"] is string error)
+            {
+                <div class="alert alert-danger">@error</div>
+            }
+        </div>
+
+        <div class="settings-card">
+            <form asp-action="Settings" method="post">
+                @Html.AntiForgeryToken()
+                <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+
+                <div class="settings-section">
+                    <span class="settings-section-label">Profile</span>
+                    <div class="form-grid">
+                        <label>Full name
+                            <input class="input" asp-for="FullName" autocomplete="name" />
+                            <span asp-validation-for="FullName" class="field-error"></span>
+                        </label>
+
+                        <label>Username
+                            <input class="input" asp-for="Username" autocomplete="username" />
+                            <span asp-validation-for="Username" class="field-error"></span>
+                        </label>
+
+                        <label>Email
+                            <input class="input" asp-for="Email" type="email" autocomplete="email" />
+                            <span asp-validation-for="Email" class="field-error"></span>
+                        </label>
+
+                        <label class="form-span-2">Bio
+                            <textarea class="input settings-textarea" asp-for="Bio" rows="4" maxlength="500" placeholder="A short line about what you are learning..."></textarea>
+                            <span asp-validation-for="Bio" class="field-error"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="settings-divider"></div>
+
+                <div class="settings-section">
+                    <span class="settings-section-label">Change password</span>
+                    <p class="settings-help">Leave these fields empty when you only want to update your profile details.</p>
+                    <div class="form-grid">
+                        <label>Current password
+                            <div class="password-field">
+                                <input class="input" asp-for="CurrentPassword" autocomplete="current-password" />
+                                <button type="button" class="password-toggle" data-password-toggle aria-label="Show current password">◉</button>
+                            </div>
+                            <span asp-validation-for="CurrentPassword" class="field-error"></span>
+                        </label>
+
+                        <label>New password
+                            <div class="password-field">
+                                <input class="input" asp-for="NewPassword" autocomplete="new-password" />
+                                <button type="button" class="password-toggle" data-password-toggle aria-label="Show new password">◉</button>
+                            </div>
+                            <span asp-validation-for="NewPassword" class="field-error"></span>
+                        </label>
+
+                        <label>Confirm new password
+                            <div class="password-field">
+                                <input class="input" asp-for="ConfirmNewPassword" autocomplete="new-password" />
+                                <button type="button" class="password-toggle" data-password-toggle aria-label="Show password confirmation">◉</button>
+                            </div>
+                            <span asp-validation-for="ConfirmNewPassword" class="field-error"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="settings-actions">
+                    <a class="btn btn-secondary" asp-controller="Profile" asp-action="Index">Cancel</a>
+                    <button class="btn btn-primary" type="submit">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
