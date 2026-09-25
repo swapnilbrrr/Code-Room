@@ -74,6 +74,13 @@ public static class DbSeeder
                     user.Role = demo.Role;
                     changed = true;
                 }
+
+                // Keep the built-in demo account usable after an older seed/version.
+                if (!PasswordHasher.Verify(demo.Password, user.PasswordHash))
+                {
+                    user.PasswordHash = PasswordHasher.Hash(demo.Password);
+                    changed = true;
+                }
             }
         }
 
