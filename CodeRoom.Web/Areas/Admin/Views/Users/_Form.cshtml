@@ -1,0 +1,26 @@
+@model CodeRoom.Web.ViewModels.Admin.UserFormViewModel
+
+<div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+
+<div class="form-grid">
+    <label class="form-field">Full name
+        <input class="input" asp-for="FullName" />
+        <span asp-validation-for="FullName" class="field-error"></span>
+    </label>
+    <label class="form-field">Email
+        <input class="input" asp-for="Email" type="email" />
+        <span asp-validation-for="Email" class="field-error"></span>
+    </label>
+    <label class="form-field">Role
+        <select class="input" asp-for="Role">
+            <option value="Student">Student</option>
+            <option value="Admin">Admin</option>
+            <option value="SuperAdmin">SuperAdmin</option>
+        </select>
+        <span asp-validation-for="Role" class="field-error"></span>
+    </label>
+    <label class="form-field">@(Model.IsEdit ? "New password (leave blank to keep)" : "Password")
+        <input class="input" asp-for="Password" type="password" autocomplete="new-password" />
+        <span asp-validation-for="Password" class="field-error"></span>
+    </label>
+</div>

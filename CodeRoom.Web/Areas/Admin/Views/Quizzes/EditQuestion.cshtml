@@ -1,0 +1,25 @@
+@model CodeRoom.Web.Models.Question
+@{
+    ViewData["Title"] = "Edit Question";
+}
+
+<section class="page-shell">
+    <div class="container narrow">
+        <span class="eyebrow">QUIZZES</span>
+        <h1 class="page-title">Edit question</h1>
+        <div class="content-panel">
+            <form asp-action="EditQuestion" asp-route-id="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="QuizId" />
+                <partial name="_QuestionForm" model="Model" />
+                <div class="form-actions">
+                    <a class="btn btn-ghost" asp-action="Manage" asp-route-id="@Model.QuizId">Cancel</a>
+                    <button class="btn btn-primary" type="submit">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

@@ -10,28 +10,36 @@
                 <h1 class="page-title">Code-Room management</h1>
                 <p class="page-intro">Manage learning content and monitor platform activity from one place.</p>
             </div>
-
             <div class="admin-header-meta">
-                <span class="admin-badge">Administrator</span>
+                <span class="admin-badge">@(User.IsInRole(Roles.SuperAdmin) ? "Super Administrator" : "Administrator")</span>
                 <span class="admin-badge">Control Centre</span>
             </div>
         </div>
 
+        @if (TempData["Success"] is string ok)
+        {
+            <div class="alert alert-success">@ok</div>
+        }
+        @if (TempData["Error"] is string err)
+        {
+            <div class="alert alert-danger">@err</div>
+        }
+
         <div class="admin-stat-grid">
             <article class="admin-stat">
                 <span class="admin-stat-label">Course library</span>
-                <strong>8</strong>
-                <small>Catalogue courses configured</small>
+                <strong>@ViewBag.CourseCount</strong>
+                <small>Courses configured</small>
             </article>
             <article class="admin-stat">
-                <span class="admin-stat-label">Lesson paths</span>
-                <strong>80</strong>
-                <small>Lessons planned across the library</small>
+                <span class="admin-stat-label">Lessons</span>
+                <strong>@ViewBag.LessonCount</strong>
+                <small>Lessons across the library</small>
             </article>
             <article class="admin-stat">
-                <span class="admin-stat-label">Student records</span>
-                <strong>—</strong>
-                <small>Live data will appear after database integration</small>
+                <span class="admin-stat-label">Students</span>
+                <strong>@ViewBag.StudentCount</strong>
+                <small>@ViewBag.EnrollmentCount enrolments · @ViewBag.AttemptCount quiz attempts</small>
             </article>
         </div>
 
@@ -45,74 +53,38 @@
                 <span class="admin-module-icon">01</span>
                 <h3>Courses</h3>
                 <p>Create, update, organise and publish learning courses.</p>
-                <button class="btn btn-secondary" type="button">Manage courses</button>
+                <a class="btn btn-secondary" asp-area="Admin" asp-controller="Courses" asp-action="Index">Manage courses</a>
             </article>
-
             <article class="admin-module">
                 <span class="admin-module-icon">02</span>
                 <h3>Lessons</h3>
                 <p>Organise lesson content, learning paths and resources.</p>
-                <button class="btn btn-secondary" type="button">Manage lessons</button>
+                <a class="btn btn-secondary" asp-area="Admin" asp-controller="Lessons" asp-action="Index">Manage lessons</a>
             </article>
-
             <article class="admin-module">
                 <span class="admin-module-icon">03</span>
                 <h3>Quizzes</h3>
                 <p>Create questions, assessments and review quiz activity.</p>
-                <button class="btn btn-secondary" type="button">Manage quizzes</button>
+                <a class="btn btn-secondary" asp-area="Admin" asp-controller="Quizzes" asp-action="Index">Manage quizzes</a>
             </article>
-
             <article class="admin-module">
                 <span class="admin-module-icon">04</span>
                 <h3>Users</h3>
-                <p>Review student accounts and manage platform access.</p>
-                <button class="btn btn-secondary" type="button">Manage users</button>
+                <p>Review accounts and manage platform access and roles.</p>
+                <a class="btn btn-secondary" asp-area="Admin" asp-controller="Users" asp-action="Index">Manage users</a>
             </article>
-
             <article class="admin-module">
                 <span class="admin-module-icon">05</span>
                 <h3>Resources</h3>
                 <p>Maintain downloadable materials and supporting content.</p>
-                <button class="btn btn-secondary" type="button">Manage resources</button>
+                <a class="btn btn-secondary" asp-area="Admin" asp-controller="Resources" asp-action="Index">Manage resources</a>
             </article>
-
             <article class="admin-module">
                 <span class="admin-module-icon">06</span>
                 <h3>Announcements</h3>
                 <p>Publish updates and important learning platform notices.</p>
-                <button class="btn btn-secondary" type="button">Manage announcements</button>
+                <a class="btn btn-secondary" asp-area="Admin" asp-controller="Announcements" asp-action="Index">Manage announcements</a>
             </article>
-        </div>
-
-        <div class="admin-activity">
-            <section class="admin-panel">
-                <h3>Platform readiness</h3>
-                <ul class="admin-list">
-                    <li>
-                        <strong>Course catalogue</strong>
-                        <span class="admin-status">Configured</span>
-                    </li>
-                    <li>
-                        <strong>Learning content</strong>
-                        <span class="admin-status">Baseline ready</span>
-                    </li>
-                    <li>
-                        <strong>Database</strong>
-                        <span>Pending integration</span>
-                    </li>
-                    <li>
-                        <strong>Authentication</strong>
-                        <span>Pending implementation</span>
-                    </li>
-                </ul>
-            </section>
-
-            <section class="admin-panel">
-                <h3>Admin focus</h3>
-                <p class="page-intro" style="font-size:.84rem;">
-                    Content CRUD, user management, quiz administration and announcements will become database-backed in the next implementation phase.
-                </p>
-            </section>
         </div>
     </div>
 </section>

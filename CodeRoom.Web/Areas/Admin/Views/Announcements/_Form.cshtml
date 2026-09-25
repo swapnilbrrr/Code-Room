@@ -1,0 +1,22 @@
+@model CodeRoom.Web.Models.Announcement
+
+<div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+
+<div class="form-grid">
+    <label class="form-field form-field-wide">Title
+        <input class="input" asp-for="Title" />
+        <span asp-validation-for="Title" class="field-error"></span>
+    </label>
+    <label class="form-field form-field-wide">Message
+        <textarea class="input" asp-for="Message" rows="5"></textarea>
+        <span asp-validation-for="Message" class="field-error"></span>
+    </label>
+    <label class="form-field">Published date
+        <input class="input" asp-for="PublishedAt" type="date" />
+        <span asp-validation-for="PublishedAt" class="field-error"></span>
+    </label>
+    <label class="checkbox-row">
+        <input asp-for="IsPublished" type="checkbox" />
+        <span>Published (visible to students)</span>
+    </label>
+</div>

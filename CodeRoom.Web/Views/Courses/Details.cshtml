@@ -1,49 +1,54 @@
-@model CodeRoom.Web.ViewModels.CoursePreviewViewModel
+@model CodeRoom.Web.Models.Course
 @{
     ViewData["Title"] = Model.Title;
+    var quizId = ViewData["QuizId"] as int?;
+    var isAuthenticated = User.Identity?.IsAuthenticated ?? false;
 }
 
 <section class="page-shell">
     <div class="container course-detail">
         <span class="eyebrow">@Model.Category.ToUpperInvariant()</span>
         <h1 class="page-title">@Model.Title</h1>
-        <p class="page-intro">@Model.Summary</p>
+        <p class="page-intro">@Model.Description</p>
 
         <div class="detail-grid">
             <div class="content-panel">
-                <h2>What you'll learn</h2>
-                <ul class="check-list">
-                    @foreach (var outcome in Model.LearningOutcomes)
+                <h2>Course outline</h2>
+                <ol class="lesson-outline">
+                    @{ var n = 1; }
+                    @foreach (var lesson in Model.Lessons)
                     {
-                        <li>@outcome</li>
+                        <li>
+                            <span>@(n++.ToString("D2"))</span>
+                            <strong>@lesson.Title</strong>
+                        </li>
                     }
-                </ul>
+                </ol>
             </div>
 
             <aside class="content-panel course-start-card">
                 <span class="level-pill">@Model.Level</span>
-                <strong>@Model.Lessons.Length lessons</strong>
+                <strong>@Model.Lessons.Count lessons</strong>
                 <span>Structured learning path</span>
-                <a class="btn btn-primary" asp-controller="Lessons" asp-action="Index" asp-route-id="@Model.Id">Start learning</a>
-            </aside>
-        </div>
 
-        <div class="course-outline">
-            <div class="section-heading">
-                <span class="eyebrow">COURSE OUTLINE</span>
-                <h2>Work through the lessons in order.</h2>
-                <p>Each lesson will become database-backed content with resources, completion tracking and assessment links.</p>
-            </div>
-
-            <ol class="lesson-outline">
-                @for (var i = 0; i < Model.Lessons.Length; i++)
+                @if (isAuthenticated)
                 {
-                    <li>
-                        <span>@((i + 1).ToString("D2"))</span>
-                        <strong>@Model.Lessons[i]</strong>
-                    </li>
+                    <form asp-controller="Student" asp-action="Enroll" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="courseId" value="@Model.Id" />
+                        <button class="btn btn-primary btn-full" type="submit">Enroll &amp; start learning</button>
+                    </form>
                 }
-            </ol>
+                else
+                {
+                    <a class="btn btn-primary btn-full" asp-controller="Account" asp-action="Login" asp-route-returnUrl="@Url.Action("Index", "Lessons", new { id = Model.Id })">Log in to start</a>
+                }
+
+                @if (quizId is not null)
+                {
+                    <a class="btn btn-secondary btn-full" asp-controller="Quiz" asp-action="Index" asp-route-id="@quizId">Take the quiz</a>
+                }
+            </aside>
         </div>
     </div>
 </section>

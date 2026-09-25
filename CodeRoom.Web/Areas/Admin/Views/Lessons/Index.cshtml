@@ -1,0 +1,59 @@
+@model IReadOnlyList<CodeRoom.Web.Models.Lesson>
+@{
+    ViewData["Title"] = "Manage Lessons";
+    var courses = ViewBag.Courses as Microsoft.AspNetCore.Mvc.Rendering.SelectList;
+    var courseId = ViewBag.CourseId as int?;
+}
+
+<section class="page-shell">
+    <div class="container">
+        <div class="admin-crud-header">
+            <div>
+                <span class="eyebrow">LESSONS</span>
+                <h1 class="page-title">Manage lessons</h1>
+            </div>
+            <a class="btn btn-primary" asp-action="Create" asp-route-courseId="@courseId">+ New lesson</a>
+        </div>
+
+        @if (TempData["Success"] is string ok)
+        {
+            <div class="alert alert-success">@ok</div>
+        }
+
+        <div class="content-panel">
+            <form method="get" class="filter-bar">
+                <label>Filter by course
+                    <select class="input" name="courseId" asp-items="courses" onchange="this.form.submit()">
+                        <option value="">All courses</option>
+                    </select>
+                </label>
+            </form>
+
+            <table class="data-table">
+                <thead><tr><th>#</th><th>Title</th><th>Course</th><th>Status</th><th>Actions</th></tr></thead>
+                <tbody>
+                @foreach (var l in Model)
+                {
+                    <tr>
+                        <td>@l.Order</td>
+                        <td>@l.Title</td>
+                        <td>@l.Course.Title</td>
+                        <td>@(l.IsPublished ? "Published" : "Draft")</td>
+                        <td class="row-actions">
+                            <a class="btn btn-secondary btn-sm" asp-action="Edit" asp-route-id="@l.Id">Edit</a>
+                            <form asp-action="Delete" asp-route-id="@l.Id" method="post" onsubmit="return confirm('Delete this lesson?');">
+                                @Html.AntiForgeryToken()
+                                <button class="btn btn-danger btn-sm" type="submit">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+                @if (Model.Count == 0)
+                {
+                    <tr><td colspan="5">No lessons found.</td></tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>

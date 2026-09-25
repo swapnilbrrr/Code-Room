@@ -1,3 +1,4 @@
+@model CodeRoom.Web.ViewModels.Learning.StudentDashboardViewModel
 @{
     ViewData["Title"] = "Dashboard";
 }
@@ -5,31 +6,85 @@
 <section class="page-shell">
     <div class="container">
         <span class="eyebrow">STUDENT DASHBOARD</span>
-        <h1 class="page-title">Your learning dashboard</h1>
+        <h1 class="page-title">Welcome back, @Model.StudentName.Split(' ')[0]</h1>
         <p class="page-intro">A single place for enrolled courses, lesson progress and quiz results.</p>
 
+        @if (TempData["Success"] is string ok)
+        {
+            <div class="alert alert-success">@ok</div>
+        }
+
         <div class="dashboard-stats">
-            <div class="stat-card"><strong>3</strong><span>Example enrolments</span></div>
-            <div class="stat-card"><strong>18</strong><span>Example lessons completed</span></div>
-            <div class="stat-card"><strong>82%</strong><span>Example quiz average</span></div>
+            <div class="stat-card"><strong>@Model.EnrolmentCount</strong><span>Enrolled courses</span></div>
+            <div class="stat-card"><strong>@Model.LessonsCompleted</strong><span>Lessons completed</span></div>
+            <div class="stat-card"><strong>@Model.QuizAverage%</strong><span>Quiz average</span></div>
         </div>
 
         <div class="content-panel">
             <div class="panel-heading"><h2>Continue learning</h2><a asp-controller="Courses" asp-action="Index">Browse courses</a></div>
 
-            <div class="course-progress-row">
-                <div><strong>ASP.NET Core MVC</strong><span>4 of 10 lessons</span></div>
-                <div class="progress-track"><span style="width: 40%"></span></div>
+            @if (Model.Enrolments.Count == 0)
+            {
+                <p>You haven't enrolled in any courses yet. <a asp-controller="Courses" asp-action="Index">Find a course</a> to get started.</p>
+            }
+            else
+            {
+                foreach (var item in Model.Enrolments)
+                {
+                    <div class="course-progress-row">
+                        <div>
+                            <strong>@item.Course.Title</strong>
+                            <span>@item.CompletedLessons of @item.TotalLessons lessons</span>
+                        </div>
+                        <div class="progress-track"><span style="width: @(item.ProgressPercent)%"></span></div>
+                        <a class="btn btn-secondary" asp-controller="Lessons" asp-action="Index" asp-route-id="@item.Course.Id">Continue</a>
+                    </div>
+                }
+            }
+        </div>
+
+        <div class="dashboard-columns">
+            <div class="content-panel">
+                <h2>Recent quiz attempts</h2>
+                @if (Model.RecentAttempts.Count == 0)
+                {
+                    <p>No quiz attempts yet.</p>
+                }
+                else
+                {
+                    <table class="data-table">
+                        <thead><tr><th>Quiz</th><th>Score</th><th>Date</th></tr></thead>
+                        <tbody>
+                        @foreach (var a in Model.RecentAttempts)
+                        {
+                            <tr>
+                                <td>@a.Quiz.Title</td>
+                                <td>@a.Score / @a.TotalQuestions</td>
+                                <td>@a.AttemptedAt.ToString("dd MMM yyyy")</td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                }
             </div>
 
-            <div class="course-progress-row">
-                <div><strong>Cybersecurity Foundations</strong><span>6 of 10 lessons</span></div>
-                <div class="progress-track"><span style="width: 60%"></span></div>
-            </div>
-
-            <div class="course-progress-row">
-                <div><strong>Networking Fundamentals</strong><span>3 of 10 lessons</span></div>
-                <div class="progress-track"><span style="width: 30%"></span></div>
+            <div class="content-panel">
+                <h2>Announcements</h2>
+                @if (Model.Announcements.Count == 0)
+                {
+                    <p>No announcements.</p>
+                }
+                else
+                {
+                    foreach (var ann in Model.Announcements)
+                    {
+                        <div class="announcement-item">
+                            <strong>@ann.Title</strong>
+                            <p>@ann.Message</p>
+                            <small>@ann.PublishedAt.ToString("dd MMM yyyy")</small>
+                        </div>
+                    }
+                }
             </div>
         </div>
     </div>

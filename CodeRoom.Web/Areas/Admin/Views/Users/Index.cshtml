@@ -1,0 +1,49 @@
+@model IReadOnlyList<CodeRoom.Web.Models.User>
+@{
+    ViewData["Title"] = "Manage Users";
+}
+
+<section class="page-shell">
+    <div class="container">
+        <div class="admin-crud-header">
+            <div>
+                <span class="eyebrow">USERS</span>
+                <h1 class="page-title">Manage users</h1>
+            </div>
+            <a class="btn btn-primary" asp-action="Create">+ New user</a>
+        </div>
+
+        @if (TempData["Success"] is string ok)
+        {
+            <div class="alert alert-success">@ok</div>
+        }
+        @if (TempData["Error"] is string err)
+        {
+            <div class="alert alert-danger">@err</div>
+        }
+
+        <div class="content-panel">
+            <table class="data-table">
+                <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Joined</th><th>Actions</th></tr></thead>
+                <tbody>
+                @foreach (var u in Model)
+                {
+                    <tr>
+                        <td>@u.FullName</td>
+                        <td>@u.Email</td>
+                        <td><span class="role-pill role-@u.Role.ToLower()">@u.Role</span></td>
+                        <td>@u.CreatedAt.ToString("dd MMM yyyy")</td>
+                        <td class="row-actions">
+                            <a class="btn btn-secondary btn-sm" asp-action="Edit" asp-route-id="@u.Id">Edit</a>
+                            <form asp-action="Delete" asp-route-id="@u.Id" method="post" onsubmit="return confirm('Delete this user?');">
+                                @Html.AntiForgeryToken()
+                                <button class="btn btn-danger btn-sm" type="submit">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>

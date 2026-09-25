@@ -1,19 +1,35 @@
+@model CodeRoom.Web.ViewModels.Quizzes.TakeQuizViewModel
 @{
-    ViewData["Title"] = "Quiz";
+    ViewData["Title"] = Model.Quiz.Title;
 }
 
 <section class="page-shell">
     <div class="container quiz-shell">
         <div class="content-panel">
             <span class="eyebrow">KNOWLEDGE CHECK</span>
-            <h1>ASP.NET Core MVC Quiz</h1>
-            <p>Question 1 of 5</p>
-            <h2>Which component handles incoming HTTP requests in MVC?</h2>
-            <label class="option"><input type="radio" name="q1" /> Model</label>
-            <label class="option"><input type="radio" name="q1" /> View</label>
-            <label class="option"><input type="radio" name="q1" /> Controller</label>
-            <label class="option"><input type="radio" name="q1" /> Database</label>
-            <button class="btn btn-primary" type="button">Next question</button>
+            <h1>@Model.Quiz.Title</h1>
+            <p>@Model.Quiz.Description</p>
+
+            <form asp-action="Submit" method="post" data-quiz-form>
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="quizId" value="@Model.Quiz.Id" />
+
+                @{ var index = 1; }
+                @foreach (var q in Model.Questions)
+                {
+                    <fieldset class="quiz-question">
+                        <legend>Question @index of @Model.Questions.Count</legend>
+                        <h2>@q.QuestionText</h2>
+                        <label class="option"><input type="radio" name="answers[@q.Id]" value="A" required /> @q.OptionA</label>
+                        <label class="option"><input type="radio" name="answers[@q.Id]" value="B" /> @q.OptionB</label>
+                        <label class="option"><input type="radio" name="answers[@q.Id]" value="C" /> @q.OptionC</label>
+                        <label class="option"><input type="radio" name="answers[@q.Id]" value="D" /> @q.OptionD</label>
+                    </fieldset>
+                    index++;
+                }
+
+                <button class="btn btn-primary" type="submit">Submit answers</button>
+            </form>
         </div>
     </div>
 </section>

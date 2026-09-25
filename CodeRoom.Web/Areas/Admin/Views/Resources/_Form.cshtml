@@ -1,0 +1,32 @@
+@model CodeRoom.Web.Models.Resource
+@{
+    var courses = ViewBag.Courses as Microsoft.AspNetCore.Mvc.Rendering.SelectList;
+}
+
+<div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+
+<div class="form-grid">
+    <label class="form-field">Title
+        <input class="input" asp-for="Title" />
+        <span asp-validation-for="Title" class="field-error"></span>
+    </label>
+    <label class="form-field">Type
+        <select class="input" asp-for="Type">
+            <option value="Document">Document</option>
+            <option value="Link">Link</option>
+            <option value="Video">Video</option>
+            <option value="PDF">PDF</option>
+        </select>
+        <span asp-validation-for="Type" class="field-error"></span>
+    </label>
+    <label class="form-field form-field-wide">URL
+        <input class="input" asp-for="Url" />
+        <span asp-validation-for="Url" class="field-error"></span>
+    </label>
+    <label class="form-field">Course (optional)
+        <select class="input" asp-for="CourseId" asp-items="courses">
+            <option value="">General (no course)</option>
+        </select>
+        <span asp-validation-for="CourseId" class="field-error"></span>
+    </label>
+</div>
