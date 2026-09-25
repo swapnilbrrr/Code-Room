@@ -1,0 +1,20 @@
+@model CodeRoom.Web.ViewModels.Admin.ChallengeFormViewModel
+@{
+    ViewData["Title"] = "Create Challenge";
+}
+<section class="page-shell">
+    <div class="container">
+        <div class="admin-crud-header">
+            <div><span class="eyebrow">PRACTICE LAB</span><h1 class="page-title">Create challenge</h1></div>
+            <a class="btn btn-secondary" asp-action="Index">Back</a>
+        </div>
+        <div class="content-panel">
+            <form asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+                <partial name="_Form" model="Model" />
+                <div class="settings-actions"><a class="btn btn-secondary" asp-action="Index">Cancel</a><button class="btn btn-primary" type="submit">Create challenge</button></div>
+            </form>
+        </div>
+    </div>
+</section>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }
