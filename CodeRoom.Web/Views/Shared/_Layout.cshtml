@@ -105,6 +105,18 @@
     </div>
 </header>
 
+@if (TempData["ToastTitle"] is string toastTitle)
+{
+    <div class="toast" data-toast role="status" aria-live="polite">
+        <span class="toast-icon">@(TempData["ToastIcon"] ?? "✓")</span>
+        <span class="toast-copy">
+            <strong>@toastTitle</strong>
+            <span>@TempData["ToastMessage"]</span>
+        </span>
+        <button class="toast-close" type="button" data-toast-close aria-label="Dismiss notification">×</button>
+    </div>
+}
+
 <main>
     @RenderBody()
 </main>
