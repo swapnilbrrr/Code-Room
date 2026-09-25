@@ -53,6 +53,7 @@ public class LessonsController(ApplicationDbContext db) : Controller
 
         db.Lessons.Add(model);
         await db.SaveChangesAsync();
+        await AdminAuditService.RecordAsync(db, User.GetUserId(), "Created", "Lesson", model.Title, $"Created lesson {model.Title}.");
         TempData["Success"] = "Lesson created.";
         return RedirectToAction(nameof(Index), new { courseId = model.CourseId });
     }
@@ -92,13 +93,18 @@ public class LessonsController(ApplicationDbContext db) : Controller
 
         lesson.CourseId = model.CourseId;
         lesson.Title = model.Title;
+        lesson.Summary = model.Summary;
         lesson.Content = model.Content;
+        lesson.ContentType = model.ContentType;
         lesson.VideoUrl = model.VideoUrl;
+        lesson.AudioUrl = model.AudioUrl;
         lesson.ResourceUrl = model.ResourceUrl;
+        lesson.DurationMinutes = model.DurationMinutes;
         lesson.Order = model.Order;
         lesson.IsPublished = model.IsPublished;
 
         await db.SaveChangesAsync();
+        await AdminAuditService.RecordAsync(db, User.GetUserId(), "Updated", "Lesson", lesson.Title, $"Updated lesson {lesson.Title}.");
         TempData["Success"] = "Lesson updated.";
         return RedirectToAction(nameof(Index), new { courseId = lesson.CourseId });
     }
@@ -110,8 +116,10 @@ public class LessonsController(ApplicationDbContext db) : Controller
         var lesson = await db.Lessons.FindAsync(id);
         if (lesson is not null)
         {
+            var deletedTitle = lesson.Title;
             db.Lessons.Remove(lesson);
             await db.SaveChangesAsync();
+            await AdminAuditService.RecordAsync(db, User.GetUserId(), "Deleted", "Lesson", deletedTitle, $"Deleted lesson {deletedTitle}.");
             TempData["Success"] = "Lesson deleted.";
         }
         return RedirectToAction(nameof(Index));
