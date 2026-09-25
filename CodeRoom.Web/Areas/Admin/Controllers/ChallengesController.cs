@@ -29,6 +29,7 @@ public class ChallengesController(ApplicationDbContext db) : Controller
     public async Task<IActionResult> Create()
     {
         await LoadCoursesAsync();
+        await LoadLessonsAsync(null, null);
         return View(new ChallengeFormViewModel());
     }
 
@@ -49,6 +50,7 @@ public class ChallengesController(ApplicationDbContext db) : Controller
         if (!ModelState.IsValid)
         {
             await LoadCoursesAsync(model.CourseId);
+            await LoadLessonsAsync(model.CourseId, model.LessonId);
             return View(model);
         }
 
@@ -68,6 +70,7 @@ public class ChallengesController(ApplicationDbContext db) : Controller
         if (challenge is null) return NotFound();
 
         await LoadCoursesAsync(challenge.CourseId);
+        await LoadLessonsAsync(challenge.CourseId, challenge.LessonId);
         return View(ToModel(challenge));
     }
 
@@ -90,6 +93,7 @@ public class ChallengesController(ApplicationDbContext db) : Controller
         if (!ModelState.IsValid)
         {
             await LoadCoursesAsync(model.CourseId);
+            await LoadLessonsAsync(model.CourseId, model.LessonId);
             model.IsEdit = true;
             return View(model);
         }
@@ -162,5 +166,14 @@ public class ChallengesController(ApplicationDbContext db) : Controller
     private async Task LoadCoursesAsync(int? selected = null)
     {
         ViewBag.Courses = new SelectList(await db.Courses.OrderBy(c => c.Title).ToListAsync(), "Id", "Title", selected);
+    }
+
+    private async Task LoadLessonsAsync(int? courseId, int? selected)
+    {
+        var lessons = courseId is null
+            ? []
+            : await db.Lessons.Where(l => l.CourseId == courseId).OrderBy(l => l.Order).ToListAsync();
+
+        ViewBag.Lessons = new SelectList(lessons, "Id", "Title", selected);
     }
 }
