@@ -19,17 +19,21 @@ public static class LessonContentBuilder
         var mistakes = GetCommonMistakes(lessonTitle);
 
         return
-            $"Lesson {lessonNumber} introduces {lessonTitle} within the {courseTitle} learning path. {focus}\n\n" +
-            $"WHY IT MATTERS: This topic is useful because it connects theory to the decisions developers and technology professionals make when building, testing, troubleshooting or securing systems. " +
-            $"Understanding the reason behind the concept makes it easier to recognise it in unfamiliar problems rather than relying on memorised steps.\n\n" +
-            $"HOW TO THINK ABOUT IT: Start by identifying the main inputs, the expected behaviour and the result you need. " +
-            $"Then break the idea into smaller actions and check what each part contributes. When something behaves differently from what you expected, compare the actual result with your original assumption and isolate the smallest part that could explain the difference.\n\n" +
-            $"IN PRACTICE: {application}\n\n" +
+            $"Lesson {lessonNumber} — {lessonTitle}: {focus}\n\n" +
+            $"WHY IT MATTERS: {courseTitle} relies on this concept because it helps you make predictable technical decisions instead of memorising isolated commands or definitions. " +
+            $"The goal is to understand what the concept does, when it is useful, and what evidence you can use to verify your result.\n\n" +
+            $"KEY CONCEPTS: Break the topic into three questions: what is it, how does it work, and what changes when the inputs change? " +
+            $"Keep the terms precise, identify the important boundaries, and connect each rule to at least one concrete example. This makes the lesson easier to recall during troubleshooting and assessment questions.\n\n" +
+            $"HOW TO THINK ABOUT IT: Start by identifying the inputs, the expected behaviour and the result you need. " +
+            $"Then work through the process one step at a time. If the result differs from your expectation, compare the actual evidence with your assumption and isolate the smallest part that could explain the difference.\n\n" +
+            $"WORKED EXAMPLE: {application} " +
+            $"Write down the expected result before you run the example, then compare it with the actual output. If the result is different, change one variable at a time rather than changing the whole example at once.\n\n" +
             $"COMMON MISTAKES: {mistakes}\n\n" +
-            $"PRACTICE FOCUS: {practice} Start by reproducing a small example yourself, change one part of it, and observe what changes. " +
-            $"Record the result and explain why it happened. A useful learner habit is to test one assumption at a time, keep examples small, and then combine the pieces only after each part works as expected.\n\n" +
-            $"CHECK YOURSELF: Can you explain the concept in your own words, identify one realistic use case, and predict what should happen before running the example? " +
-            $"Before continuing, review the lesson once more and make a short note of the key rule, one example and one question you still have.";
+            $"PRACTICE FOCUS: {practice} Reproduce a small example yourself, change one part, and record what changed. " +
+            $"For a stronger test, include one normal case and one edge case, then explain why the two results differ.\n\n" +
+            $"CHECK YOURSELF: Can you define the concept, describe one realistic use case, predict the result before execution, and explain one failure mode? " +
+            $"If not, revisit the key concepts before moving on.\n\n" +
+            $"KEY TAKEAWAY: Write one sentence in your own words, one command or pattern you would use in practice, and one question you would ask during a real technical investigation or project.";
     }
 
     private static string GetApplication(string courseTitle, string lessonTitle) =>
