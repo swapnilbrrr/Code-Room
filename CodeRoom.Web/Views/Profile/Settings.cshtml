@@ -4,29 +4,48 @@
 }
 
 <section class="page-shell settings-page">
-    <div class="container settings-layout">
-        <div>
-            <span class="eyebrow">ACCOUNT SETTINGS</span>
-            <h1 class="page-title">Make Code-Room yours.</h1>
-            <p class="page-intro">Update your identity and account security. Changes are saved to your Code-Room account.</p>
+    <div class="container settings-shell">
+        <aside class="settings-sidebar" aria-label="Settings sections">
+            <span class="eyebrow">ACCOUNT</span>
+            <a href="#profile" class="settings-tab is-active">Profile</a>
+            <a href="#account" class="settings-tab">Account</a>
+            <a href="#security" class="settings-tab">Security</a>
+            <a href="#notifications" class="settings-tab">Notifications</a>
+            <a href="#appearance" class="settings-tab">Appearance</a>
+        </aside>
 
-            @if (TempData["Success"] is string success)
-            {
-                <div class="alert alert-success">@success</div>
-            }
-            @if (TempData["Error"] is string error)
-            {
-                <div class="alert alert-danger">@error</div>
-            }
-        </div>
+        <div class="settings-content">
+            <div class="settings-heading">
+                <div>
+                    <span class="eyebrow">SETTINGS</span>
+                    <h1 class="page-title">Account settings</h1>
+                    <p class="page-intro">Control your Code-Room identity, security and learning experience.</p>
+                </div>
+                <a class="btn btn-secondary" asp-action="Index">View profile</a>
+            </div>
 
-        <div class="settings-card">
-            <form asp-action="Settings" method="post">
+            <form asp-action="Settings" method="post" id="account-settings-form">
                 @Html.AntiForgeryToken()
                 <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
 
-                <div class="settings-section">
-                    <span class="settings-section-label">Profile</span>
+                <section class="settings-card settings-section-card" id="profile">
+                    <div class="settings-card-heading">
+                        <div>
+                            <h2>Profile</h2>
+                            <p>These details are shown on your learning identity.</p>
+                        </div>
+                    </div>
+
+                    <div class="settings-profile-preview">
+                        <div class="profile-avatar profile-avatar-large">
+                            @Model.FullName.Trim().FirstOrDefault()
+                        </div>
+                        <div>
+                            <strong>@Model.FullName</strong>
+                            <span>@@@Model.Username</span>
+                        </div>
+                    </div>
+
                     <div class="form-grid">
                         <label>Full name
                             <input class="input" asp-for="FullName" autocomplete="name" />
@@ -38,23 +57,48 @@
                             <span asp-validation-for="Username" class="field-error"></span>
                         </label>
 
-                        <label>Email
+                        <label class="form-span-2">Bio
+                            <textarea class="input settings-textarea" asp-for="Bio" rows="4" maxlength="500" placeholder="What are you learning right now?"></textarea>
+                            <span asp-validation-for="Bio" class="field-error"></span>
+                        </label>
+
+                        <label class="form-span-2">Avatar URL
+                            <input class="input" asp-for="AvatarUrl" type="url" placeholder="https://..." />
+                            <small class="settings-help">Optional. Leave blank to use your initials.</small>
+                            <span asp-validation-for="AvatarUrl" class="field-error"></span>
+                        </label>
+                    </div>
+                </section>
+
+                <section class="settings-card settings-section-card" id="account">
+                    <div class="settings-card-heading">
+                        <div>
+                            <h2>Account</h2>
+                            <p>Your sign-in identity and profile visibility.</p>
+                        </div>
+                    </div>
+                    <div class="form-grid">
+                        <label>Email address
                             <input class="input" asp-for="Email" type="email" autocomplete="email" />
                             <span asp-validation-for="Email" class="field-error"></span>
                         </label>
 
-                        <label class="form-span-2">Bio
-                            <textarea class="input settings-textarea" asp-for="Bio" rows="4" maxlength="500" placeholder="A short line about what you are learning..."></textarea>
-                            <span asp-validation-for="Bio" class="field-error"></span>
+                        <label>Profile visibility
+                            <select class="input" asp-for="ProfileVisibility">
+                                <option value="Public">Public</option>
+                                <option value="Members">Code-Room members</option>
+                            </select>
                         </label>
                     </div>
-                </div>
+                </section>
 
-                <div class="settings-divider"></div>
-
-                <div class="settings-section">
-                    <span class="settings-section-label">Change password</span>
-                    <p class="settings-help">Leave these fields empty when you only want to update your profile details.</p>
+                <section class="settings-card settings-section-card" id="security">
+                    <div class="settings-card-heading">
+                        <div>
+                            <h2>Security</h2>
+                            <p>Change your password without leaving the settings area.</p>
+                        </div>
+                    </div>
                     <div class="form-grid">
                         <label>Current password
                             <div class="password-field">
@@ -80,11 +124,41 @@
                             <span asp-validation-for="ConfirmNewPassword" class="field-error"></span>
                         </label>
                     </div>
-                </div>
+                </section>
 
-                <div class="settings-actions">
-                    <a class="btn btn-secondary" asp-controller="Profile" asp-action="Index">Cancel</a>
-                    <button class="btn btn-primary" type="submit">Save changes</button>
+                <section class="settings-card settings-section-card" id="notifications">
+                    <div class="settings-card-heading">
+                        <div>
+                            <h2>Notifications</h2>
+                            <p>Choose how much activity reaches your account feed.</p>
+                        </div>
+                    </div>
+                    <label class="switch-row">
+                        <span>
+                            <strong>Activity notifications</strong>
+                            <small>Show achievements, streaks, course and assessment updates in the notification centre.</small>
+                        </span>
+                        <input asp-for="EmailNotificationsEnabled" type="checkbox" class="switch-input" />
+                    </label>
+                </section>
+
+                <section class="settings-card settings-section-card" id="appearance">
+                    <div class="settings-card-heading">
+                        <div>
+                            <h2>Appearance</h2>
+                            <p>Choose the visual mode used by Code-Room.</p>
+                        </div>
+                    </div>
+                    <div class="segmented-control" data-theme-setting>
+                        <label><input type="radio" asp-for="ThemePreference" value="light" /> <span>Light</span></label>
+                        <label><input type="radio" asp-for="ThemePreference" value="dark" /> <span>Dark</span></label>
+                        <label><input type="radio" asp-for="ThemePreference" value="system" /> <span>System</span></label>
+                    </div>
+                </section>
+
+                <div class="settings-savebar">
+                    <span>Changes are stored in your Code-Room account.</span>
+                    <button class="btn btn-primary" type="submit">Save settings</button>
                 </div>
             </form>
         </div>
@@ -93,4 +167,14 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.querySelectorAll('[data-theme-setting] input').forEach(input => {
+            input.addEventListener('change', () => {
+                if (input.checked) {
+                    localStorage.setItem('code-room-theme', input.value === 'system' ? 'light' : input.value);
+                    document.documentElement.dataset.theme = input.value === 'system' ? 'light' : input.value;
+                }
+            });
+        });
+    </script>
 }
