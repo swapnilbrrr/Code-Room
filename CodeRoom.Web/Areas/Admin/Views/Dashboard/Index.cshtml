@@ -2,22 +2,117 @@
     ViewData["Title"] = "Admin Dashboard";
 }
 
-<section class="page-shell">
+<section class="page-shell admin-dashboard">
     <div class="container">
-        <span class="eyebrow">ADMINISTRATION</span>
-        <h1 class="page-title">Code-Room management</h1>
-        <p class="page-intro">Manage learning content and monitor platform activity.</p>
+        <div class="admin-header">
+            <div class="admin-header-copy">
+                <span class="eyebrow">ADMINISTRATION</span>
+                <h1 class="page-title">Code-Room management</h1>
+                <p class="page-intro">Manage learning content and monitor platform activity from one place.</p>
+            </div>
 
-        <div class="dashboard-stats">
-            <div class="stat-card"><strong>8</strong><span>Catalogue courses</span></div>
-            <div class="stat-card"><strong>80</strong><span>Planned lessons</span></div>
-            <div class="stat-card"><strong>—</strong><span>Live student records</span></div>
+            <div class="admin-header-meta">
+                <span class="admin-badge">Administrator</span>
+                <span class="admin-badge">Control Centre</span>
+            </div>
         </div>
 
-        <div class="admin-grid">
-            <div class="content-panel"><h2>Courses</h2><p>Create, update and publish courses.</p><button class="btn btn-secondary" type="button">Manage courses</button></div>
-            <div class="content-panel"><h2>Lessons</h2><p>Organise lesson content and resources.</p><button class="btn btn-secondary" type="button">Manage lessons</button></div>
-            <div class="content-panel"><h2>Quizzes</h2><p>Create questions and review assessments.</p><button class="btn btn-secondary" type="button">Manage quizzes</button></div>
+        <div class="admin-stat-grid">
+            <article class="admin-stat">
+                <span class="admin-stat-label">Course library</span>
+                <strong>8</strong>
+                <small>Catalogue courses configured</small>
+            </article>
+            <article class="admin-stat">
+                <span class="admin-stat-label">Lesson paths</span>
+                <strong>80</strong>
+                <small>Lessons planned across the library</small>
+            </article>
+            <article class="admin-stat">
+                <span class="admin-stat-label">Student records</span>
+                <strong>—</strong>
+                <small>Live data will appear after database integration</small>
+            </article>
+        </div>
+
+        <div class="admin-section-title">
+            <h2>Content management</h2>
+            <span>Core administration modules</span>
+        </div>
+
+        <div class="admin-module-grid">
+            <article class="admin-module">
+                <span class="admin-module-icon">01</span>
+                <h3>Courses</h3>
+                <p>Create, update, organise and publish learning courses.</p>
+                <button class="btn btn-secondary" type="button">Manage courses</button>
+            </article>
+
+            <article class="admin-module">
+                <span class="admin-module-icon">02</span>
+                <h3>Lessons</h3>
+                <p>Organise lesson content, learning paths and resources.</p>
+                <button class="btn btn-secondary" type="button">Manage lessons</button>
+            </article>
+
+            <article class="admin-module">
+                <span class="admin-module-icon">03</span>
+                <h3>Quizzes</h3>
+                <p>Create questions, assessments and review quiz activity.</p>
+                <button class="btn btn-secondary" type="button">Manage quizzes</button>
+            </article>
+
+            <article class="admin-module">
+                <span class="admin-module-icon">04</span>
+                <h3>Users</h3>
+                <p>Review student accounts and manage platform access.</p>
+                <button class="btn btn-secondary" type="button">Manage users</button>
+            </article>
+
+            <article class="admin-module">
+                <span class="admin-module-icon">05</span>
+                <h3>Resources</h3>
+                <p>Maintain downloadable materials and supporting content.</p>
+                <button class="btn btn-secondary" type="button">Manage resources</button>
+            </article>
+
+            <article class="admin-module">
+                <span class="admin-module-icon">06</span>
+                <h3>Announcements</h3>
+                <p>Publish updates and important learning platform notices.</p>
+                <button class="btn btn-secondary" type="button">Manage announcements</button>
+            </article>
+        </div>
+
+        <div class="admin-activity">
+            <section class="admin-panel">
+                <h3>Platform readiness</h3>
+                <ul class="admin-list">
+                    <li>
+                        <strong>Course catalogue</strong>
+                        <span class="admin-status">Configured</span>
+                    </li>
+                    <li>
+                        <strong>Learning content</strong>
+                        <span class="admin-status">Baseline ready</span>
+                    </li>
+                    <li>
+                        <strong>Database</strong>
+                        <span>Pending integration</span>
+                    </li>
+                    <li>
+                        <strong>Authentication</strong>
+                        <span>Pending implementation</span>
+                    </li>
+                </ul>
+            </section>
+
+            <section class="admin-panel">
+                <h3>Admin focus</h3>
+                <p class="page-intro" style="font-size:.84rem;">
+                    Content CRUD, user management, quiz administration and announcements will become database-backed in the next implementation phase.
+                </p>
+            </section>
         </div>
     </div>
 </section>
