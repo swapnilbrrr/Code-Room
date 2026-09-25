@@ -24,14 +24,25 @@ public static class DatabaseSchemaUpdater
                 "ALTER TABLE Users ADD COLUMN Bio varchar(500) NULL;");
         }
 
-        var users = await db.Users.OrderBy(u => u.Id).ToListAsync();
-        var usedUsernames = users
-            .Select(u => u.Username)
+        var users = await db.Users
+            .Select(u => new { u.Id, u.FullName, u.Email })
+            .OrderBy(u => u.Id)
+            .ToListAsync();
+
+        var usernameRows = await db.Database
+            .SqlQueryRaw<UserUsernameRow>(
+                "SELECT Id, Username FROM Users ORDER BY Id")
+            .ToListAsync();
+
+        var usernames = usernameRows
+            .ToDictionary(u => u.Id, u => u.Username ?? string.Empty);
+
+        var usedUsernames = usernames.Values
             .Where(u => !string.IsNullOrWhiteSpace(u))
             .Select(u => u.Trim().ToLowerInvariant())
             .ToHashSet();
 
-        foreach (var user in users.Where(u => string.IsNullOrWhiteSpace(u.Username)))
+        foreach (var user in users.Where(u => string.IsNullOrWhiteSpace(usernames.GetValueOrDefault(u.Id))))
         {
             var baseName = BuildUsername(user.FullName, user.Email, user.Id);
             var candidate = baseName;
@@ -42,13 +53,12 @@ public static class DatabaseSchemaUpdater
                 candidate = $"{baseName}{suffix++}";
             }
 
-            user.Username = candidate;
+            await db.Database.ExecuteSqlRawAsync(
+                "UPDATE Users SET Username = {0} WHERE Id = {1}",
+                candidate,
+                user.Id);
             usedUsernames.Add(candidate);
-        }
-
-        if (users.Any(u => !string.IsNullOrWhiteSpace(u.Username)))
-        {
-            await db.SaveChangesAsync();
+            usernames[user.Id] = candidate;
         }
 
         await db.Database.ExecuteSqlRawAsync(
@@ -123,6 +133,12 @@ CREATE TABLE IF NOT EXISTS Notifications (
             .SingleAsync();
 
         return count > 0;
+    }
+
+    private sealed class UserUsernameRow
+    {
+        public int Id { get; set; }
+        public string? Username { get; set; }
     }
 
     private static string BuildUsername(string fullName, string email, int id)
