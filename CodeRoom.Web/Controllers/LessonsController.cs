@@ -16,6 +16,7 @@ public class LessonsController(ApplicationDbContext db) : Controller
     {
         var course = await db.Courses
             .Include(c => c.Lessons.OrderBy(l => l.Order))
+                .ThenInclude(l => l.CourseModule)
             .FirstOrDefaultAsync(c => c.Id == id);
 
         if (course is null || course.Lessons.Count == 0)
