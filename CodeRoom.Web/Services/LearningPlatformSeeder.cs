@@ -238,6 +238,7 @@ public static class LearningPlatformSeeder
     {
         var definitions = new[]
         {
+            ("first-course", "First Course", "Enrol in your first learning path.", "🧭", 30),
             ("first-lesson", "First Steps", "Complete your first lesson.", "🚀", 25),
             ("quiz-starter", "Quiz Starter", "Submit your first quiz.", "🧠", 30),
             ("challenge-starter", "Challenge Accepted", "Complete your first practice challenge.", "⚡", 50),
