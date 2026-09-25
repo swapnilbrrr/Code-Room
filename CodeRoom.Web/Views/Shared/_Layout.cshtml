@@ -15,23 +15,23 @@
 }
 <header class="site-header">
     <nav class="navbar container" aria-label="Primary navigation">
-        <a class="brand" asp-controller="Home" asp-action="Index" aria-label="Code-Room home">
+        <a class="brand" asp-area="" asp-area="" asp-controller="Home" asp-action="Index" aria-label="Code-Room home">
             <img class="logo-light" src="~/images/code-room-logo.svg" alt="Code-Room" /><img class="logo-dark" src="~/images/code-room-logo-dark.svg" alt="Code-Room" />
         </a>
 
         <div class="nav-links">
-            <a asp-controller="Home" asp-action="Index">Home</a>
-            <a asp-controller="Courses" asp-action="Index">Courses</a>
+            <a asp-area="" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+            <a asp-area="" asp-area="" asp-controller="Courses" asp-action="Index">Courses</a>
             @if (isAuthenticated)
             {
-                <a asp-controller="Student" asp-action="Index">Dashboard</a>
+                <a asp-area="" asp-controller="Student" asp-action="Index">Dashboard</a>
             }
             @if (isAdmin)
             {
                 <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Admin</a>
             }
-            <a asp-controller="Home" asp-action="About">About</a>
-            <a asp-controller="Home" asp-action="Faq">FAQ</a>
+            <a asp-area="" asp-area="" asp-controller="Home" asp-action="About">About</a>
+            <a asp-area="" asp-area="" asp-controller="Home" asp-action="Faq">FAQ</a>
         </div>
 
         <div class="nav-actions">
@@ -39,15 +39,15 @@
             @if (isAuthenticated)
             {
                 <span class="nav-user desktop-action" title="@displayName">Hi, @displayName.Split(' ')[0]</span>
-                <form class="logout-form desktop-action" asp-controller="Account" asp-action="Logout" method="post">
+                <form class="logout-form desktop-action" asp-area="" asp-controller="Account" asp-action="Logout" method="post">
                     @Html.AntiForgeryToken()
                     <button class="btn btn-ghost" type="submit">Logout</button>
                 </form>
             }
             else
             {
-                <a class="btn btn-ghost desktop-action" asp-controller="Account" asp-action="Login">Login</a>
-                <a class="btn btn-primary desktop-action" asp-controller="Account" asp-action="Register">Get Started</a>
+                <a class="btn btn-ghost desktop-action" asp-area="" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
+                <a class="btn btn-primary desktop-action" asp-area="" asp-area="" asp-controller="Account" asp-action="Register">Get Started</a>
             }
             <button class="mobile-toggle" type="button" data-mobile-toggle aria-expanded="false" aria-controls="mobile-navigation" aria-label="Open navigation">☰</button>
         </div>
@@ -55,29 +55,29 @@
 
     <div id="mobile-navigation" class="mobile-navigation" data-mobile-menu>
         <div class="container">
-            <a asp-controller="Home" asp-action="Index">Home</a>
-            <a asp-controller="Courses" asp-action="Index">Courses</a>
+            <a asp-area="" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+            <a asp-area="" asp-area="" asp-controller="Courses" asp-action="Index">Courses</a>
             @if (isAuthenticated)
             {
-                <a asp-controller="Student" asp-action="Index">Dashboard</a>
+                <a asp-area="" asp-controller="Student" asp-action="Index">Dashboard</a>
             }
             @if (isAdmin)
             {
                 <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Admin</a>
             }
-            <a asp-controller="Home" asp-action="About">About</a>
-            <a asp-controller="Home" asp-action="Faq">FAQ</a>
+            <a asp-area="" asp-area="" asp-controller="Home" asp-action="About">About</a>
+            <a asp-area="" asp-area="" asp-controller="Home" asp-action="Faq">FAQ</a>
             @if (isAuthenticated)
             {
-                <form asp-controller="Account" asp-action="Logout" method="post">
+                <form asp-area="" asp-controller="Account" asp-action="Logout" method="post">
                     @Html.AntiForgeryToken()
                     <button class="mobile-primary" type="submit" style="width:100%;border:0;cursor:pointer;">Logout</button>
                 </form>
             }
             else
             {
-                <a asp-controller="Account" asp-action="Login">Login</a>
-                <a class="mobile-primary" asp-controller="Account" asp-action="Register">Get Started</a>
+                <a asp-area="" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
+                <a class="mobile-primary" asp-area="" asp-area="" asp-controller="Account" asp-action="Register">Get Started</a>
             }
         </div>
     </div>
@@ -97,18 +97,18 @@
         <div class="footer-links">
             <div>
                 <h2>Explore</h2>
-                <a asp-controller="Home" asp-action="Index">Home</a>
-                <a asp-controller="Courses" asp-action="Index">Courses</a>
+                <a asp-area="" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                <a asp-area="" asp-controller="Courses" asp-action="Index">Courses</a>
             </div>
             <div>
                 <h2>Information</h2>
-                <a asp-controller="Home" asp-action="About">About</a>
-                <a asp-controller="Home" asp-action="Faq">FAQ</a>
+                <a asp-area="" asp-controller="Home" asp-action="About">About</a>
+                <a asp-area="" asp-controller="Home" asp-action="Faq">FAQ</a>
             </div>
             <div>
                 <h2>Account</h2>
-                <a asp-controller="Account" asp-action="Login">Login</a>
-                <a asp-controller="Account" asp-action="Register">Register</a>
+                <a asp-area="" asp-controller="Account" asp-action="Login">Login</a>
+                <a asp-area="" asp-controller="Account" asp-action="Register">Register</a>
             </div>
         </div>
     </div>
