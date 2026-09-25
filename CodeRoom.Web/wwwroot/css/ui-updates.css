@@ -1450,3 +1450,41 @@
     .certificate-frame { box-shadow:none; border:2px solid #333; }
     body { background:#fff !important; }
 }
+
+
+.notification-auto-popup {
+    position: fixed;
+    right: 20px;
+    top: 78px;
+    z-index: 310;
+    width: min(390px, calc(100vw - 30px));
+    display: grid;
+    grid-template-columns: 34px 1fr auto;
+    gap: 10px;
+    align-items: start;
+    padding: 13px;
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    background: var(--surface);
+    box-shadow: var(--shadow);
+    opacity: 0;
+    transform: translateY(-8px);
+    pointer-events: none;
+    transition: opacity .2s ease, transform .2s ease;
+}
+.notification-auto-popup.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+.notification-auto-popup > div { display:grid; gap:3px; }
+.notification-auto-popup strong { color:var(--heading); font-size:.75rem; }
+.notification-auto-popup span:not(.notification-auto-icon) { color:var(--muted); font-size:.64rem; line-height:1.4; }
+.notification-auto-icon {
+    display:grid; width:32px; height:32px; place-items:center;
+    border-radius:9px; background:var(--accent-soft); color:var(--accent);
+}
+
+@media (max-width: 600px) {
+    .notification-auto-popup { right:15px; top:68px; }
+}
