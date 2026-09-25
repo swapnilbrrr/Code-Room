@@ -36,6 +36,14 @@ public class ProfileController(ApplicationDbContext db) : Controller
 
         var completedLessons = await db.Progress.CountAsync(p => p.UserId == user.Id && p.IsCompleted);
         var totalLessons = courses.Sum(c => c.Course.Lessons.Count);
+        var achievements = await db.UserAchievements
+            .Where(x => x.UserId == user.Id)
+            .Include(x => x.Achievement)
+            .OrderByDescending(x => x.EarnedAt)
+            .Select(x => x.Achievement)
+            .Take(12)
+            .ToListAsync();
+        var certificateCount = await db.Certificates.CountAsync(x => x.UserId == user.Id);
 
         return View(new ProfileViewModel
         {
@@ -43,7 +51,11 @@ public class ProfileController(ApplicationDbContext db) : Controller
             FullName = user.FullName,
             Username = user.Username,
             Email = user.Email,
-            Bio = user.Bio ?? string.Empty,
+            Bio = user.Bio,
+            AvatarUrl = user.AvatarUrl,
+            ThemePreference = user.ThemePreference,
+            ProfileVisibility = user.ProfileVisibility,
+            EmailNotificationsEnabled = user.EmailNotificationsEnabled ?? string.Empty,
             RoleLabel = user.Role,
             IsAdmin = user.Role is Roles.Admin or Roles.SuperAdmin,
             CoursesEnrolled = courses.Count,
@@ -51,6 +63,12 @@ public class ProfileController(ApplicationDbContext db) : Controller
             QuizAttempts = await db.QuizAttempts.CountAsync(q => q.UserId == user.Id),
             ProgressPercent = totalLessons == 0 ? 0 : (int)Math.Round(completedLessons * 100.0 / totalLessons),
             LearningStreak = LearningActivityService.CalculateStreak(activities),
+            Xp = user.Xp,
+            Level = LearningActivityService.GetLevel(user.Xp),
+            LevelProgress = LearningActivityService.GetLevelProgress(user.Xp),
+            CertificateCount = certificateCount,
+            AvatarUrl = user.AvatarUrl,
+            Achievements = achievements,
             ActivityDays = BuildActivityDays(activities),
             RecentActivity = activities
                 .OrderByDescending(a => a.CreatedAt)
@@ -144,12 +162,20 @@ public class ProfileController(ApplicationDbContext db) : Controller
             user.FullName != model.FullName.Trim() ||
             user.Username != username ||
             user.Email != email ||
-            (user.Bio ?? string.Empty) != (model.Bio?.Trim() ?? string.Empty);
+            (user.Bio ?? string.Empty) != (model.Bio?.Trim() ?? string.Empty) ||
+            (user.AvatarUrl ?? string.Empty) != (model.AvatarUrl?.Trim() ?? string.Empty) ||
+            user.ThemePreference != model.ThemePreference ||
+            user.ProfileVisibility != model.ProfileVisibility ||
+            user.EmailNotificationsEnabled != model.EmailNotificationsEnabled;
 
         user.FullName = model.FullName.Trim();
         user.Username = username;
         user.Email = email;
         user.Bio = model.Bio?.Trim();
+        user.AvatarUrl = model.AvatarUrl?.Trim();
+        user.ThemePreference = model.ThemePreference is "light" or "dark" ? model.ThemePreference : "system";
+        user.ProfileVisibility = model.ProfileVisibility is "Public" or "Members" ? model.ProfileVisibility : "Public";
+        user.EmailNotificationsEnabled = model.EmailNotificationsEnabled;
 
         if (passwordChangeRequested && !string.IsNullOrWhiteSpace(model.NewPassword))
         {
