@@ -25,6 +25,7 @@ public class AccountController(ApplicationDbContext db) : Controller
         }
 
         var email = model.Email.Trim().ToLowerInvariant();
+        var username = model.Username.Trim().ToLowerInvariant();
 
         if (await db.Users.AnyAsync(u => u.Email == email))
         {
@@ -32,9 +33,16 @@ public class AccountController(ApplicationDbContext db) : Controller
             return View(model);
         }
 
+        if (await db.Users.AnyAsync(u => u.Username == username))
+        {
+            ModelState.AddModelError(nameof(model.Username), "That username is already in use.");
+            return View(model);
+        }
+
         var user = new User
         {
             FullName = model.FullName.Trim(),
+            Username = username,
             Email = email,
             PasswordHash = PasswordHasher.Hash(model.Password),
             Role = Roles.Student
@@ -43,8 +51,18 @@ public class AccountController(ApplicationDbContext db) : Controller
         db.Users.Add(user);
         await db.SaveChangesAsync();
 
+        await LearningActivityService.RecordAsync(
+            db,
+            user.Id,
+            "AccountCreated",
+            "Created a Code-Room account",
+            "Welcome to Code-Room",
+            "Your account is ready. Start a course and build your learning streak.",
+            "/Dashboard",
+            "Welcome");
+
         await SignInAsync(user, isPersistent: true);
-        return RedirectToAction("Index", "Student");
+        return RedirectToAction("Index", "Dashboard");
     }
 
     [HttpGet]
@@ -76,9 +94,7 @@ public class AccountController(ApplicationDbContext db) : Controller
             return Redirect(model.ReturnUrl);
         }
 
-        return user.Role is Roles.Admin or Roles.SuperAdmin
-            ? RedirectToAction("Index", "Dashboard", new { area = "Admin" })
-            : RedirectToAction("Index", "Student");
+        return RedirectToAction("Index", "Dashboard");
     }
 
     [HttpPost]
@@ -99,7 +115,8 @@ public class AccountController(ApplicationDbContext db) : Controller
             new(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new(ClaimTypes.Name, user.FullName),
             new(ClaimTypes.Email, user.Email),
-            new(ClaimTypes.Role, user.Role)
+            new(ClaimTypes.Role, user.Role),
+            new("username", user.Username)
         };
 
         var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -108,6 +125,10 @@ public class AccountController(ApplicationDbContext db) : Controller
         await HttpContext.SignInAsync(
             CookieAuthenticationDefaults.AuthenticationScheme,
             principal,
-            new AuthenticationProperties { IsPersistent = isPersistent });
+            new AuthenticationProperties
+            {
+                IsPersistent = isPersistent,
+                AllowRefresh = true
+            });
     }
 }
