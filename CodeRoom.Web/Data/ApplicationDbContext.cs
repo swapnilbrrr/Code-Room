@@ -33,6 +33,10 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         modelBuilder.Entity<User>().HasIndex(x => x.Username).IsUnique();
         modelBuilder.Entity<User>().Property(x => x.Bio).HasMaxLength(500);
 
+        modelBuilder.Entity<CourseModule>()
+            .Property(x => x.Order)
+            .HasColumnName("ModuleOrder");
+
         modelBuilder.Entity<Enrollment>()
             .HasIndex(x => new { x.UserId, x.CourseId })
             .IsUnique();
