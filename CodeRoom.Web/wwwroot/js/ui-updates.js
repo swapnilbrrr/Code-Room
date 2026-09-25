@@ -55,3 +55,31 @@
         window.setTimeout(dismiss, 5000);
     }
 })();
+
+
+(() => {
+    const popup = document.querySelector('[data-notification-popup]');
+    if (popup) {
+        const id = popup.dataset.notificationId;
+        const key = 'code-room-notification-' + id;
+        if (id && localStorage.getItem(key) !== 'seen') {
+            window.setTimeout(() => popup.classList.add('is-visible'), 250);
+            localStorage.setItem(key, 'seen');
+        }
+        popup.querySelector('[data-notification-popup-close]')?.addEventListener('click', () => popup.remove());
+        window.setTimeout(() => popup.classList.remove('is-visible'), 8500);
+    }
+})();
+
+(() => {
+    const search = document.querySelector('[data-admin-user-search]');
+    const rows = [...document.querySelectorAll('[data-user-row]')];
+    if (!search || !rows.length) return;
+
+    search.addEventListener('input', () => {
+        const term = search.value.trim().toLowerCase();
+        rows.forEach(row => {
+            row.hidden = term.length > 0 && !row.textContent.toLowerCase().includes(term);
+        });
+    });
+})();
