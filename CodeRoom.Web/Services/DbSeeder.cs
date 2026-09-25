@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 namespace CodeRoom.Web.Services;
 
 /// <summary>
-/// Creates the database schema when needed and seeds the baseline content and demo accounts.
+/// Creates the database schema when needed and seeds the baseline content and demonstration accounts.
 /// The seed is intentionally idempotent so a fresh MySQL database can be prepared from the submitted project.
 /// </summary>
 public static class DbSeeder
@@ -31,23 +31,23 @@ public static class DbSeeder
         db.Users.AddRange(
             new User
             {
-                FullName = "Super Administrator",
-                Email = "superadmin@coderoom.test",
-                PasswordHash = PasswordHasher.Hash("SuperAdmin@123"),
+                FullName = "Maya Sharma",
+                Email = "platform.admin@coderoom.test",
+                PasswordHash = "100000.u9/V8OI69QKU4Qb2qdggfA==.Fm4nbZCU5LS7bmASYExTd1k4VO7mIxeyNzo7PQdLvBU=",
                 Role = Roles.SuperAdmin
             },
             new User
             {
-                FullName = "Site Administrator",
-                Email = "admin@coderoom.test",
-                PasswordHash = PasswordHasher.Hash("Admin@123"),
+                FullName = "Rohan Thapa",
+                Email = "content.manager@coderoom.test",
+                PasswordHash = "100000.xRwBf1OHMhk1nl12BefrlA==.NuCojoZxgDuQXfx93ja+DLKp7eCXAiuyJybB8/Cnbew=",
                 Role = Roles.Admin
             },
             new User
             {
-                FullName = "Demo Student",
-                Email = "student@coderoom.test",
-                PasswordHash = PasswordHasher.Hash("Student@123"),
+                FullName = "Aarav Karki",
+                Email = "aarav.learner@coderoom.test",
+                PasswordHash = "100000.4eo2A1LstZpd0mqYsZ7TVA==.RocQCT2fO+YhMB18FajPAIACjMiYdV6Y6W6BJ8WQPsI=",
                 Role = Roles.Student
             });
     }
@@ -89,8 +89,9 @@ public static class DbSeeder
                 {
                     Title = def.Lessons[i],
                     Order = i + 1,
-                    Content = $"This lesson covers \"{def.Lessons[i]}\" as part of the {def.Title} course. " +
-                              "Work through the explanation, review the examples, then mark the lesson complete to track your progress.",
+                    Content = LessonContentBuilder.Build(def.Title, def.Lessons[i], i + 1),
+                    VideoUrl = i == 0 ? LessonMediaCatalog.VideoFor(def.Title) : null,
+                    ResourceUrl = i == 0 ? LessonMediaCatalog.ResourceFor(def.Title) : null,
                     IsPublished = true
                 });
             }
