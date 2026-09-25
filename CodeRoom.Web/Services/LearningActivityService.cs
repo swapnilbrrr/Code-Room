@@ -14,8 +14,14 @@ public static class LearningActivityService
         string? notificationTitle = null,
         string? notificationMessage = null,
         string? linkUrl = null,
-        string notificationType = "Activity")
+        string notificationType = "Activity",
+        int? xpOverride = null)
     {
+        var user = await db.Users.FirstAsync(u => u.Id == userId);
+        var xp = xpOverride ?? GetXp(activityType);
+
+        user.Xp += Math.Max(0, xp);
+
         db.UserActivities.Add(new UserActivity
         {
             UserId = userId,
@@ -24,7 +30,8 @@ public static class LearningActivityService
             CreatedAt = DateTime.UtcNow
         });
 
-        if (!string.IsNullOrWhiteSpace(notificationTitle) && !string.IsNullOrWhiteSpace(notificationMessage))
+        if (!string.IsNullOrWhiteSpace(notificationTitle) && !string.IsNullOrWhiteSpace(notificationMessage)
+            && user.EmailNotificationsEnabled)
         {
             db.Notifications.Add(new Notification
             {
@@ -38,7 +45,26 @@ public static class LearningActivityService
         }
 
         await db.SaveChangesAsync();
+        await AwardEligibleAchievementsAsync(db, userId, activityType);
     }
+
+    public static int GetXp(string activityType) => activityType switch
+    {
+        "AccountCreated" => 25,
+        "ProfileUpdated" => 5,
+        "CourseEnrolled" => 20,
+        "LessonCompleted" => 20,
+        "QuizAttempted" => 30,
+        "ChallengeCompleted" => 50,
+        "CourseCompleted" => 100,
+        "ExamPassed" => 150,
+        "CertificateEarned" => 200,
+        _ => 10
+    };
+
+    public static int GetLevel(int xp) => Math.Max(1, (xp / 250) + 1);
+
+    public static int GetLevelProgress(int xp) => xp % 250;
 
     public static int CalculateStreak(IEnumerable<UserActivity> activities, DateTime? today = null)
     {
@@ -47,7 +73,9 @@ public static class LearningActivityService
             "CourseEnrolled",
             "LessonCompleted",
             "QuizAttempted",
-            "CourseCompleted"
+            "ChallengeCompleted",
+            "CourseCompleted",
+            "ExamPassed"
         };
 
         var activeDays = activities
@@ -112,6 +140,77 @@ public static class LearningActivityService
                 CreatedAt = DateTime.UtcNow
             });
         }
+
+        await db.SaveChangesAsync();
+
+        if (streak >= 7)
+        {
+            await TryAwardAchievementAsync(db, userId, "streak-7");
+        }
+    }
+
+    private static async Task AwardEligibleAchievementsAsync(ApplicationDbContext db, int userId, string activityType)
+    {
+        switch (activityType)
+        {
+            case "LessonCompleted":
+                if (!await db.UserAchievements.AnyAsync(x => x.UserId == userId && x.Achievement.Code == "first-lesson"))
+                    await TryAwardAchievementAsync(db, userId, "first-lesson");
+                break;
+            case "QuizAttempted":
+                await TryAwardAchievementAsync(db, userId, "quiz-starter");
+                break;
+            case "ChallengeCompleted":
+                await TryAwardAchievementAsync(db, userId, "challenge-starter");
+                break;
+            case "CourseCompleted":
+                await TryAwardAchievementAsync(db, userId, "course-finisher");
+                break;
+            case "CertificateEarned":
+                await TryAwardAchievementAsync(db, userId, "certificate");
+                break;
+        }
+
+        var user = await db.Users.FindAsync(userId);
+        if (user is not null && user.Xp >= 500)
+        {
+            await TryAwardAchievementAsync(db, userId, "xp-500");
+        }
+    }
+
+    public static async Task TryAwardAchievementAsync(ApplicationDbContext db, int userId, string code)
+    {
+        var achievement = await db.Achievements.FirstOrDefaultAsync(a => a.Code == code);
+        if (achievement is null || await db.UserAchievements.AnyAsync(x => x.UserId == userId && x.AchievementId == achievement.Id))
+        {
+            return;
+        }
+
+        db.UserAchievements.Add(new UserAchievement
+        {
+            UserId = userId,
+            AchievementId = achievement.Id,
+            EarnedAt = DateTime.UtcNow
+        });
+
+        if (achievement.XpReward > 0)
+        {
+            var user = await db.Users.FindAsync(userId);
+            if (user is not null)
+            {
+                user.Xp += achievement.XpReward;
+            }
+        }
+
+        db.Notifications.Add(new Notification
+        {
+            UserId = userId,
+            Type = "Achievement",
+            Title = $"Achievement unlocked: {achievement.Name}",
+            Message = achievement.Description,
+            LinkUrl = "/Profile",
+            CreatedAt = DateTime.UtcNow
+        });
 
         await db.SaveChangesAsync();
     }
