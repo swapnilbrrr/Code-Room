@@ -38,6 +38,7 @@ public class ResourcesController(ApplicationDbContext db) : Controller
         }
         db.Resources.Add(model);
         await db.SaveChangesAsync();
+        await AdminAuditService.RecordAsync(db, User.GetUserId(), "Created", "Resource", model.Title, $"Created resource {model.Title}.");
         TempData["Success"] = "Resource created.";
         return RedirectToAction(nameof(Index));
     }
@@ -78,6 +79,7 @@ public class ResourcesController(ApplicationDbContext db) : Controller
         resource.Type = model.Type;
         resource.CourseId = model.CourseId;
         await db.SaveChangesAsync();
+        await AdminAuditService.RecordAsync(db, User.GetUserId(), "Updated", "Resource", resource.Title, $"Updated resource {resource.Title}.");
         TempData["Success"] = "Resource updated.";
         return RedirectToAction(nameof(Index));
     }
@@ -89,8 +91,10 @@ public class ResourcesController(ApplicationDbContext db) : Controller
         var resource = await db.Resources.FindAsync(id);
         if (resource is not null)
         {
+            var deletedTitle = resource.Title;
             db.Resources.Remove(resource);
             await db.SaveChangesAsync();
+            await AdminAuditService.RecordAsync(db, User.GetUserId(), "Deleted", "Resource", deletedTitle, $"Deleted resource {deletedTitle}.");
             TempData["Success"] = "Resource deleted.";
         }
         return RedirectToAction(nameof(Index));
