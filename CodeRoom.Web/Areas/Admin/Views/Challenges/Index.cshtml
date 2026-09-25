@@ -1,0 +1,38 @@
+@model IReadOnlyList<CodeRoom.Web.Models.Challenge>
+@{
+    ViewData["Title"] = "Manage Challenges";
+}
+<section class="page-shell">
+    <div class="container">
+        <div class="admin-crud-header">
+            <div><span class="eyebrow">PRACTICE LAB</span><h1 class="page-title">Manage challenges</h1><p class="page-intro">Create short tasks that turn course concepts into hands-on practice.</p></div>
+            <div class="admin-header-meta"><a class="admin-badge admin-badge-link" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Admin Console</a><a class="btn btn-primary" asp-action="Create">+ New challenge</a></div>
+        </div>
+        @if (TempData["Success"] is string ok) { <div class="alert alert-success">@ok</div> }
+        <div class="content-panel">
+            <div class="data-table-wrap">
+                <table class="data-table">
+                    <thead><tr><th>Challenge</th><th>Course</th><th>Points</th><th>Mode</th><th>Actions</th></tr></thead>
+                    <tbody>
+                    @foreach (var challenge in Model)
+                    {
+                        <tr>
+                            <td><strong>@challenge.Title</strong></td>
+                            <td>@challenge.Course.Title</td>
+                            <td>+@challenge.Points XP</td>
+                            <td>@challenge.ValidationMode</td>
+                            <td class="row-actions">
+                                <a class="btn btn-secondary btn-sm" asp-action="Edit" asp-route-id="@challenge.Id">Edit</a>
+                                <form asp-action="Delete" asp-route-id="@challenge.Id" method="post" onsubmit="return confirm('Delete this challenge?');">
+                                    @Html.AntiForgeryToken()
+                                    <button class="btn btn-danger btn-sm" type="submit">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
