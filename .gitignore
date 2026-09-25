@@ -1,0 +1,27 @@
+# Build output
+bin/
+obj/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# Rider
+.idea/
+
+# Test results
+TestResults/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Local secrets/config
+appsettings.Development.json
+*.usersecrets
+
+# Entity Framework local artifacts
+*.db
+*.db-shm
+*.db-wal
