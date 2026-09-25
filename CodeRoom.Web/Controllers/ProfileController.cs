@@ -13,7 +13,7 @@ using System.Security.Claims;
 namespace CodeRoom.Web.Controllers;
 
 [Authorize]
-public class ProfileController(ApplicationDbContext db) : Controller
+public class ProfileController(ApplicationDbContext db, IWebHostEnvironment environment) : Controller
 {
     public async Task<IActionResult> Index()
     {
@@ -172,7 +172,40 @@ public class ProfileController(ApplicationDbContext db) : Controller
         user.Username = username;
         user.Email = email;
         user.Bio = model.Bio?.Trim();
-        user.AvatarUrl = model.AvatarUrl?.Trim();
+        if (model.AvatarFile is not null)
+        {
+            var allowed = new[] { ".jpg", ".jpeg", ".png", ".webp" };
+            var extension = Path.GetExtension(model.AvatarFile.FileName).ToLowerInvariant();
+
+            if (!allowed.Contains(extension) || model.AvatarFile.Length > 2 * 1024 * 1024)
+            {
+                ModelState.AddModelError(nameof(model.AvatarFile), "Avatar must be JPG, PNG or WebP and no larger than 2 MB.");
+                return View(model);
+            }
+
+            var directory = Path.Combine(environment.WebRootPath, "uploads", "avatars");
+            Directory.CreateDirectory(directory);
+
+            var fileName = $"{Guid.NewGuid():N}{extension}";
+            var filePath = Path.Combine(directory, fileName);
+            await using var stream = System.IO.File.Create(filePath);
+            await model.AvatarFile.CopyToAsync(stream);
+
+            if (!string.IsNullOrWhiteSpace(user.AvatarUrl) && user.AvatarUrl.StartsWith("/uploads/avatars/", StringComparison.OrdinalIgnoreCase))
+            {
+                var oldPath = Path.Combine(environment.WebRootPath, user.AvatarUrl.TrimStart('/').Replace('/', Path.DirectorySeparatorChar));
+                if (System.IO.File.Exists(oldPath))
+                {
+                    System.IO.File.Delete(oldPath);
+                }
+            }
+
+            user.AvatarUrl = $"/uploads/avatars/{fileName}";
+        }
+        else
+        {
+            user.AvatarUrl = model.AvatarUrl?.Trim();
+        }
         user.ThemePreference = model.ThemePreference is "light" or "dark" ? model.ThemePreference : "system";
         user.ProfileVisibility = model.ProfileVisibility is "Public" or "Members" ? model.ProfileVisibility : "Public";
         user.EmailNotificationsEnabled = model.EmailNotificationsEnabled;
