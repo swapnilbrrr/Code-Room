@@ -32,9 +32,9 @@ public static class DbSeeder
     {
         var demos = new (string[] Aliases, string Email, string Name, string Password, string Role)[]
         {
-            (["superadmin@coderoom.test", "platform.admin@coderoom.test"], "swapnil.superadmin@coderoom.test", "Swapnil Katuwal", "Swapnil.Admin@2026", Roles.SuperAdmin),
-            (["admin@coderoom.test", "content.manager@coderoom.test"], "chandra.admin@coderoom.test", "Chandra Shrestha", "Chandra.Admin@2026", Roles.Admin),
-            (["student@coderoom.test", "aarav.learner@coderoom.test"], "bijay.student@coderoom.test", "Bijay Thapa", "Bijay.Student@2026", Roles.Student)
+            (["superadmin@coderoom.test", "platform.admin@coderoom.test", "swapnil.superadmin@coderoom.test"], "swapnil.katuwal@coderoom.com", "Swapnil Katuwal", "Swapnil.Admin@2026", Roles.SuperAdmin),
+            (["admin@coderoom.test", "content.manager@coderoom.test", "chandra.admin@coderoom.test"], "chandra.shrestha@coderoom.com", "Chandra Shrestha", "Chandra.Admin@2026", Roles.Admin),
+            (["student@coderoom.test", "aarav.learner@coderoom.test", "bijay.student@coderoom.test"], "bijay.khadka@coderoom.com", "Bijay Khadka", "Bijay.Student@2026", Roles.Student)
         };
 
         var changed = false;
@@ -176,50 +176,57 @@ public static class DbSeeder
             new User
             {
                 FullName = "Swapnil Katuwal",
-                Email = "swapnil.superadmin@coderoom.test",
+                Email = "swapnil.katuwal@coderoom.com",
                 PasswordHash = PasswordHasher.Hash("Swapnil.Admin@2026"),
                 Role = Roles.SuperAdmin
             },
             new User
             {
                 FullName = "Chandra Shrestha",
-                Email = "chandra.admin@coderoom.test",
+                Email = "chandra.shrestha@coderoom.com",
                 PasswordHash = PasswordHasher.Hash("Chandra.Admin@2026"),
                 Role = Roles.Admin
             },
             new User
             {
-                FullName = "Bijay Thapa",
-                Email = "bijay.student@coderoom.test",
+                FullName = "Bijay Khadka",
+                Email = "bijay.khadka@coderoom.com",
                 PasswordHash = PasswordHasher.Hash("Bijay.Student@2026"),
                 Role = Roles.Student
             },
             new User
             {
                 FullName = "Anisha Gurung",
-                Email = "anisha.student@coderoom.test",
+                Email = "anisha.gurung@coderoom.com",
                 PasswordHash = PasswordHasher.Hash("Anisha.Student@2026"),
                 Role = Roles.Student
             },
             new User
             {
                 FullName = "Nischal Bhandari",
-                Email = "nischal.student@coderoom.test",
+                Email = "nischal.bhandari@coderoom.com",
                 PasswordHash = PasswordHasher.Hash("Nischal.Student@2026"),
                 Role = Roles.Student
             },
             new User
             {
                 FullName = "Suman Adhikari",
-                Email = "suman.student@coderoom.test",
+                Email = "suman.adhikari@coderoom.com",
                 PasswordHash = PasswordHasher.Hash("Suman.Student@2026"),
                 Role = Roles.Student
             },
             new User
             {
                 FullName = "Prerana Rai",
-                Email = "prerana.student@coderoom.test",
+                Email = "prerana.rai@coderoom.com",
                 PasswordHash = PasswordHasher.Hash("Prerana.Student@2026"),
+                Role = Roles.Student
+            },
+            new User
+            {
+                FullName = "Babin Aryal",
+                Email = "babin.aryal@coderoom.com",
+                PasswordHash = PasswordHasher.Hash("Babin.Student@2026"),
                 Role = Roles.Student
             });
     }
