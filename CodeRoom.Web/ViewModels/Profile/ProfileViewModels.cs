@@ -19,6 +19,7 @@ public class ProfileViewModel
     public int AdminCourseCount { get; set; }
     public int AdminAuditEvents { get; set; }
     public int AdminPublishedAnnouncements { get; set; }
+    public int AdminCertificateCount { get; set; }
 
     public int CoursesEnrolled { get; set; }
     public int LessonsCompleted { get; set; }
