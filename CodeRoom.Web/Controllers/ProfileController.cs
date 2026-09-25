@@ -229,12 +229,15 @@ public class ProfileController(ApplicationDbContext db) : Controller
         };
 
         var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+        var currentAuth = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        var isPersistent = currentAuth.Properties?.IsPersistent ?? true;
+
         await HttpContext.SignInAsync(
             CookieAuthenticationDefaults.AuthenticationScheme,
             new ClaimsPrincipal(identity),
             new AuthenticationProperties
             {
-                IsPersistent = User.Identity?.IsAuthenticated ?? true,
+                IsPersistent = isPersistent,
                 AllowRefresh = true
             });
     }
