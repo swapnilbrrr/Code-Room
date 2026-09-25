@@ -1,0 +1,44 @@
+@model IReadOnlyList<CodeRoom.Web.Models.Certificate>
+@{
+    ViewData["Title"] = "Certificates";
+}
+<section class="page-shell">
+    <div class="container">
+        <div class="learning-page-heading">
+            <div>
+                <span class="eyebrow">ACHIEVEMENTS</span>
+                <h1 class="page-title">Your certificates</h1>
+                <p class="page-intro">Credentials earned by passing Code-Room certification examinations.</p>
+            </div>
+            <span class="learning-count">@Model.Count earned</span>
+        </div>
+
+        @if (Model.Count == 0)
+        {
+            <div class="empty-state">
+                <div class="empty-state-icon">🎓</div>
+                <h2>Your first certificate starts here.</h2>
+                <p>Explore a certification path, complete its learning content and pass the final examination.</p>
+                <a class="btn btn-primary" asp-controller="Courses" asp-action="Index">Explore certification paths</a>
+            </div>
+        }
+        else
+        {
+            <div class="certificate-grid">
+                @foreach (var certificate in Model)
+                {
+                    <a class="certificate-card" asp-action="Details" asp-route-id="@certificate.Id">
+                        <span class="certificate-icon">🎓</span>
+                        <div>
+                            <span class="eyebrow">@certificate.Course.Category.ToUpperInvariant()</span>
+                            <h2>@certificate.Title</h2>
+                            <p>@certificate.Course.Title</p>
+                            <small>Issued @certificate.IssuedAt.ToLocalTime().ToString("dd MMM yyyy")</small>
+                        </div>
+                        <span class="certificate-arrow">→</span>
+                    </a>
+                }
+            </div>
+        }
+    </div>
+</section>
