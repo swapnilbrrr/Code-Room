@@ -19,7 +19,7 @@ public class User
     [Required]
     public string PasswordHash { get; set; } = string.Empty;
 
-    [Required, StringLength(500)]
+    [StringLength(500)]
     public string? Bio { get; set; }
 
     [Required, StringLength(30)]
