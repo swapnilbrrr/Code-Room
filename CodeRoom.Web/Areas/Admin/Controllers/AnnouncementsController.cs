@@ -31,6 +31,7 @@ public class AnnouncementsController(ApplicationDbContext db) : Controller
 
         db.Announcements.Add(model);
         await db.SaveChangesAsync();
+        await AdminAuditService.RecordAsync(db, User.GetUserId(), "Created", "Announcement", model.Title, $"Created announcement {model.Title}.");
 
         if (model.IsPublished)
         {
@@ -83,6 +84,7 @@ public class AnnouncementsController(ApplicationDbContext db) : Controller
         item.PublishedAt = model.PublishedAt;
         item.IsPublished = model.IsPublished;
         await db.SaveChangesAsync();
+        await AdminAuditService.RecordAsync(db, User.GetUserId(), "Updated", "Announcement", item.Title, $"Updated announcement {item.Title}.");
 
         if (!wasPublished && model.IsPublished)
         {
@@ -110,9 +112,10 @@ public class AnnouncementsController(ApplicationDbContext db) : Controller
         var item = await db.Announcements.FindAsync(id);
         if (item is not null)
         {
+            var deletedTitle = item.Title;
             db.Announcements.Remove(item);
             await db.SaveChangesAsync();
-            TempData["Success"] = "Announcement deleted.";
+            await AdminAuditService.RecordAsync(db, User.GetUserId(), "Deleted", "Announcement", deletedTitle, $"Deleted announcement {deletedTitle}.");
         }
         return RedirectToAction(nameof(Index));
     }
