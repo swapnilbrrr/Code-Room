@@ -162,15 +162,15 @@ dotnet dev-certs https --trust
 
 ### 6. Demo accounts
 
-The first successful startup seeds these demonstration accounts:
+The first successful startup seeds these fictional demonstration accounts:
 
-| Role | Email | Password |
+| Role | Name | Email |
 | --- | --- | --- |
-| Super Administrator | `superadmin@coderoom.test` | `SuperAdmin@123` |
-| Administrator | `admin@coderoom.test` | `Admin@123` |
-| Student | `student@coderoom.test` | `Student@123` |
+| Super Administrator | Maya Sharma | `platform.admin@coderoom.test` |
+| Administrator | Rohan Thapa | `content.manager@coderoom.test` |
+| Student | Aarav Karki | `aarav.learner@coderoom.test` |
 
-These are project demo credentials only. Change or remove them before any real deployment.
+These accounts are for local project demonstration and evaluation only. Do not reuse their credentials for a real deployment.
 
 ## Database Setup Model
 
