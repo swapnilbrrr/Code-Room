@@ -196,7 +196,14 @@
         </div>
 
         <div class="dashboard-footer-actions">
-            <a class="btn btn-secondary" asp-controller="Challenges" asp-action="Index" asp-route-id="1">Practice challenges</a>
+            @if (Model.Courses.Count > 0)
+            {
+                <a class="btn btn-secondary" asp-controller="Challenges" asp-action="Index" asp-route-id="@Model.Courses[0].Course.Id">Practice challenges</a>
+            }
+            else
+            {
+                <a class="btn btn-secondary" asp-controller="Courses" asp-action="Index">Find a practice path</a>
+            }
             <a class="btn btn-secondary" asp-controller="Certificates" asp-action="Index">Certificates</a>
         </div>
     </div>
