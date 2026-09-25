@@ -2,13 +2,21 @@
 @{
     ViewData["Title"] = "Profile";
     var initial = string.IsNullOrWhiteSpace(Model.FullName) ? "C" : Model.FullName.Trim()[0].ToString().ToUpperInvariant();
+    var levelWidth = Math.Clamp((Model.LevelProgress / 250.0) * 100.0, 0, 100);
 }
 
 <section class="page-shell profile-page">
     <div class="container">
-        <div class="profile-hero">
+        <div class="profile-hero profile-hero-enhanced">
             <div class="profile-identity">
-                <div class="profile-avatar profile-avatar-large">@initial</div>
+                @if (!string.IsNullOrWhiteSpace(Model.AvatarUrl))
+                {
+                    <img class="profile-avatar profile-avatar-large" src="@Model.AvatarUrl" alt="@Model.FullName avatar" />
+                }
+                else
+                {
+                    <div class="profile-avatar profile-avatar-large">@initial</div>
+                }
                 <div>
                     <span class="eyebrow">CODE-ROOM PROFILE</span>
                     <h1 class="page-title">@Model.FullName</h1>
@@ -29,15 +37,27 @@
             </div>
         </div>
 
-        <div class="profile-stat-grid">
-            <article class="profile-stat"><strong>@Model.CoursesEnrolled</strong><span>Courses enrolled</span></article>
-            <article class="profile-stat"><strong>@Model.LessonsCompleted</strong><span>Lessons completed</span></article>
-            <article class="profile-stat"><strong>@Model.QuizAttempts</strong><span>Quiz attempts</span></article>
-            <article class="profile-stat"><strong>@Model.LearningStreak</strong><span>Day learning streak</span></article>
-            <article class="profile-stat"><strong>@Model.ProgressPercent%</strong><span>Overall progress</span></article>
+        <div class="xp-profile-card">
+            <div>
+                <span class="eyebrow">LEVEL @Model.Level</span>
+                <h2>@Model.Xp XP</h2>
+                <p>@(250 - Model.LevelProgress) XP until your next level</p>
+            </div>
+            <div class="xp-bar-wrap">
+                <div class="xp-bar"><span style="width:@levelWidth.ToString("0")%"></span></div>
+                <div class="xp-bar-labels"><span>Level @Model.Level</span><span>Level @(Model.Level + 1)</span></div>
+            </div>
         </div>
 
-        <div class="profile-main-grid">
+        <div class="profile-stat-grid">
+            <article class="profile-stat"><strong>@Model.CoursesEnrolled</strong><span>Courses</span></article>
+            <article class="profile-stat"><strong>@Model.LessonsCompleted</strong><span>Lessons</span></article>
+            <article class="profile-stat"><strong>@Model.QuizAttempts</strong><span>Assessments</span></article>
+            <article class="profile-stat"><strong>@Model.LearningStreak</strong><span>Day streak</span></article>
+            <article class="profile-stat"><strong>@Model.CertificateCount</strong><span>Certificates</span></article>
+        </div>
+
+        <div class="profile-main-grid profile-main-grid-three">
             <section class="profile-panel profile-activity-panel">
                 <div class="panel-heading">
                     <div>
@@ -63,6 +83,35 @@
                         <span class="activity-cell level-@day.Level" title="@day.Date.ToString("dd MMM yyyy"): @day.Count activities"></span>
                     }
                 </div>
+            </section>
+
+            <section class="profile-panel">
+                <div class="panel-heading">
+                    <div>
+                        <span class="eyebrow">ACHIEVEMENTS</span>
+                        <h2>Unlocked</h2>
+                    </div>
+                </div>
+
+                @if (Model.Achievements.Count == 0)
+                {
+                    <p class="profile-empty">Finish lessons, quizzes and challenges to unlock your first badge.</p>
+                }
+                else
+                {
+                    <div class="achievement-list">
+                        @foreach (var achievement in Model.Achievements)
+                        {
+                            <div class="achievement-card">
+                                <span class="achievement-icon">@achievement.Icon</span>
+                                <div>
+                                    <strong>@achievement.Name</strong>
+                                    <p>@achievement.Description</p>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
             </section>
 
             <section class="profile-panel">
@@ -101,14 +150,17 @@
                     <span class="eyebrow">ACCOUNT</span>
                     <h2>Profile details</h2>
                 </div>
-                <a class="text-link" asp-action="Settings">Settings <span>→</span></a>
+                <div class="profile-panel-actions">
+                    <a class="text-link" asp-controller="Certificates" asp-action="Index">Certificates →</a>
+                    <a class="text-link" asp-action="Settings">Settings →</a>
+                </div>
             </div>
 
             <div class="profile-detail-grid">
                 <div><span>Email</span><strong>@Model.Email</strong></div>
                 <div><span>Username</span><strong>@@@Model.Username</strong></div>
                 <div><span>Role</span><strong>@Model.RoleLabel</strong></div>
-                <div><span>Progress</span><strong>@Model.ProgressPercent% complete</strong></div>
+                <div><span>Overall progress</span><strong>@Model.ProgressPercent% complete</strong></div>
             </div>
         </section>
     </div>
