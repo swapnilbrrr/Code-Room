@@ -15,13 +15,51 @@ public static class LessonContentBuilder
         var focus = GetFocus(courseTitle, lessonTitle);
         var practice = GetPractice(lessonTitle);
 
+        var application = GetApplication(courseTitle, lessonTitle);
+        var mistakes = GetCommonMistakes(lessonTitle);
+
         return
             $"Lesson {lessonNumber} introduces {lessonTitle} within the {courseTitle} learning path. {focus}\n\n" +
-            $"The goal is to understand the idea well enough to recognise it in real code or technical scenarios, not just memorise a definition. " +
-            $"As you study, pay attention to how the concept connects with the lessons before and after it: {lessonTitle} becomes more useful when it is applied as part of a larger workflow.\n\n" +
-            $"Practice focus: {practice} Start by reproducing a small example yourself, change one part of it, and observe what changes. " +
-            $"That hands-on step turns the lesson into a skill you can reuse in later projects.";
+            $"WHY IT MATTERS: This topic is useful because it connects theory to the decisions developers and technology professionals make when building, testing, troubleshooting or securing systems. " +
+            $"Understanding the reason behind the concept makes it easier to recognise it in unfamiliar problems rather than relying on memorised steps.\n\n" +
+            $"HOW TO THINK ABOUT IT: Start by identifying the main inputs, the expected behaviour and the result you need. " +
+            $"Then break the idea into smaller actions and check what each part contributes. When something behaves differently from what you expected, compare the actual result with your original assumption and isolate the smallest part that could explain the difference.\n\n" +
+            $"IN PRACTICE: {application}\n\n" +
+            $"COMMON MISTAKES: {mistakes}\n\n" +
+            $"PRACTICE FOCUS: {practice} Start by reproducing a small example yourself, change one part of it, and observe what changes. " +
+            $"Record the result and explain why it happened. A useful learner habit is to test one assumption at a time, keep examples small, and then combine the pieces only after each part works as expected.\n\n" +
+            $"CHECK YOURSELF: Can you explain the concept in your own words, identify one realistic use case, and predict what should happen before running the example? " +
+            $"Before continuing, review the lesson once more and make a short note of the key rule, one example and one question you still have.";
     }
+
+    private static string GetApplication(string courseTitle, string lessonTitle) =>
+        $"Create a small example centred on {lessonTitle}. First write down what you expect the example to do, then run it and compare the actual result. " +
+        $"For {courseTitle}, try to relate the example to a realistic task such as building a feature, analysing input, troubleshooting a problem or protecting a system.";
+
+    private static string GetCommonMistakes(string title) => title switch
+    {
+        "Variables & Data Types" => "Using a type without considering the kind of value it represents, converting data without checking the result, or changing values in more places than necessary.",
+        "Loops" or "Conditional Statements" or "Conditions" => "Making the condition too broad, forgetting an exit condition, or assuming every iteration or branch will run.",
+        "Methods" or "Functions" => "Making one method responsible for too many unrelated tasks, using unclear parameter names, or duplicating logic instead of reusing a well-defined function.",
+        "Classes & Objects" => "Putting unrelated responsibilities into one class or exposing data without considering how the object should control its own state.",
+        "Inheritance & Polymorphism" => "Using inheritance simply for code reuse when composition or a shared interface would communicate the design more clearly.",
+        "HTML Structure" or "Semantic HTML" => "Choosing elements based only on visual appearance instead of the meaning of the content, or skipping labels and document structure that users and assistive technology rely on.",
+        "CSS Fundamentals" or "Box Model" or "Flexbox" or "Grid" => "Changing several layout properties at once without checking which property is actually controlling the result.",
+        "Responsive Design" => "Designing only for one screen width and trying to patch smaller screens with lots of fixed dimensions.",
+        "Forms & Accessibility" or "Forms & Validation" => "Relying only on browser-side checks and assuming submitted data is trustworthy.",
+        "Routing" => "Creating links that depend on hard-coded URLs or changing a route without checking the navigation paths that depend on it.",
+        "Entity Framework Core" or "Database Design" => "Ignoring relationships and constraints because the application appears to work with a small sample of data.",
+        "Authentication" or "Authentication & Authorization" => "Confusing identity verification with permission checks or granting broader access than the user actually needs.",
+        "OSI Model" or "TCP/IP Model" => "Treating the models as seven or four exact physical boxes rather than conceptual ways of organising networking responsibilities.",
+        "TCP & UDP" => "Choosing a transport protocol from habit without considering reliability, latency and application behaviour.",
+        "DNS" => "Assuming every name lookup is a simple one-to-one mapping and overlooking caching, record types and the possibility of failures at different points.",
+        "HTTP/HTTPS" => "Looking only at the page content instead of checking the request method, status code, headers and transport security.",
+        "Permissions" => "Granting broad access because it makes a test work instead of applying the least privilege required.",
+        "Security Monitoring" => "Treating a single event as proof of compromise without checking surrounding context, timing, source and related activity.",
+        "Phishing" => "Trusting urgency, display names or familiar branding without independently verifying the sender and destination.",
+        "Normalization" => "Removing duplication mechanically without first understanding the relationships and access patterns the application needs.",
+        _ => "Skipping the small verification step and assuming the first result proves that the concept is understood."
+    };
 
     private static string GetFocus(string courseTitle, string title) => title switch
     {
