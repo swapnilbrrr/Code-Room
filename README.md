@@ -110,10 +110,10 @@ The included Dev Container config provides the expected development environment.
 dotnet --version
 ```
 
-Expected major/minor version:
+Expected major version:
 
 ```text
-8.0.415
+8.0.x
 ```
 
 ### 3. Restore dependencies
