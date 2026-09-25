@@ -144,6 +144,7 @@ public class QuizzesController(ApplicationDbContext db) : Controller
         }
         db.Questions.Add(model);
         await db.SaveChangesAsync();
+        await AdminAuditService.RecordAsync(db, User.GetUserId(), "Created", "Question", $"Quiz #{model.QuizId}", "Added a quiz question.");
         TempData["Success"] = "Question added.";
         return RedirectToAction(nameof(Manage), new { id = model.QuizId });
     }
@@ -180,6 +181,7 @@ public class QuizzesController(ApplicationDbContext db) : Controller
         question.OptionD = model.OptionD;
         question.CorrectOption = model.CorrectOption;
         await db.SaveChangesAsync();
+        await AdminAuditService.RecordAsync(db, User.GetUserId(), "Updated", "Question", $"Question #{question.Id}", "Updated a quiz question.");
         TempData["Success"] = "Question updated.";
         return RedirectToAction(nameof(Manage), new { id = question.QuizId });
     }
@@ -194,6 +196,7 @@ public class QuizzesController(ApplicationDbContext db) : Controller
             var quizId = question.QuizId;
             db.Questions.Remove(question);
             await db.SaveChangesAsync();
+            await AdminAuditService.RecordAsync(db, User.GetUserId(), "Deleted", "Question", $"Question #{question.Id}", "Deleted a quiz question.");
             TempData["Success"] = "Question deleted.";
             return RedirectToAction(nameof(Manage), new { id = quizId });
         }
