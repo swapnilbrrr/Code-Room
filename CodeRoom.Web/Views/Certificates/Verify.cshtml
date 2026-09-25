@@ -1,0 +1,43 @@
+@model CodeRoom.Web.Models.Certificate?
+@{
+    ViewData["Title"] = "Verify Certificate";
+}
+<section class="page-shell">
+    <div class="container certificate-page">
+        <div class="content-panel verification-card">
+            <span class="eyebrow">CREDENTIAL VERIFICATION</span>
+            <h1 class="page-title">Verify a Code-Room certificate</h1>
+            <p class="page-intro">Enter the certificate number shown on a Code-Room credential.</p>
+
+            <form asp-action="Verify" method="get" class="verification-form">
+                <label>Certificate number
+                    <input class="input" name="number" value="@Context.Request.Query["number"]" placeholder="e.g. CR-004-007-00021" />
+                </label>
+                <button class="btn btn-primary" type="submit">Verify credential</button>
+            </form>
+
+            @if (Context.Request.Query.ContainsKey("number"))
+            {
+                if (Model is null)
+                {
+                    <div class="result-status result-failed"><strong>Certificate not found</strong><span>Check the number and try again.</span></div>
+                }
+                else
+                {
+                    <div class="verification-result">
+                        <span class="verification-check">✓</span>
+                        <div>
+                            <span class="eyebrow">VERIFIED</span>
+                            <h2>@Model.Title</h2>
+                            <p>Awarded to <strong>@Model.User.FullName</strong> for completing <strong>@Model.Course.Title</strong>.</p>
+                            <div class="certificate-meta">
+                                <span><small>Certificate ID</small><strong>@Model.CertificateNumber</strong></span>
+                                <span><small>Issued</small><strong>@Model.IssuedAt.ToLocalTime().ToString("dd MMM yyyy")</strong></span>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</section>
