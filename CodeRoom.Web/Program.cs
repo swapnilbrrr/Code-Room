@@ -1,9 +1,11 @@
 using CodeRoom.Web.Data;
+using CodeRoom.Web.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
+builder.Services.AddSingleton<CourseCatalog>();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
