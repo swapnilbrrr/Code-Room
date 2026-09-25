@@ -859,6 +859,18 @@ main {
     max-width: 100%;
 }
 
+.footer-brand .logo-dark {
+    display: none;
+}
+
+:root[data-theme="dark"] .footer-brand .logo-light {
+    display: none;
+}
+
+:root[data-theme="dark"] .footer-brand .logo-dark {
+    display: inline-block;
+}
+
 .footer-brand p {
     margin: 8px 0 0;
     color: var(--muted);
