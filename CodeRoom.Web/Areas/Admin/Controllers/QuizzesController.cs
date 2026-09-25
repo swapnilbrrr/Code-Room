@@ -46,6 +46,7 @@ public class QuizzesController(ApplicationDbContext db) : Controller
 
         db.Quizzes.Add(model);
         await db.SaveChangesAsync();
+        await AdminAuditService.RecordAsync(db, User.GetUserId(), "Created", "Quiz", model.Title, $"Created assessment {model.Title}.");
         TempData["Success"] = "Quiz created. Now add questions.";
         return RedirectToAction(nameof(Manage), new { id = model.Id });
     }
@@ -84,7 +85,12 @@ public class QuizzesController(ApplicationDbContext db) : Controller
         quiz.CourseId = model.CourseId;
         quiz.Title = model.Title;
         quiz.Description = model.Description;
+        quiz.AssessmentType = model.AssessmentType;
+        quiz.TimeLimitMinutes = model.TimeLimitMinutes;
+        quiz.PassingScorePercent = model.PassingScorePercent;
+        quiz.IsCertificationExam = model.IsCertificationExam;
         await db.SaveChangesAsync();
+        await AdminAuditService.RecordAsync(db, User.GetUserId(), "Updated", "Quiz", quiz.Title, $"Updated assessment {quiz.Title}.");
         TempData["Success"] = "Quiz updated.";
         return RedirectToAction(nameof(Index));
     }
@@ -96,9 +102,11 @@ public class QuizzesController(ApplicationDbContext db) : Controller
         var quiz = await db.Quizzes.Include(q => q.Questions).FirstOrDefaultAsync(q => q.Id == id);
         if (quiz is not null)
         {
+            var deletedTitle = quiz.Title;
             db.Questions.RemoveRange(quiz.Questions);
             db.Quizzes.Remove(quiz);
             await db.SaveChangesAsync();
+            await AdminAuditService.RecordAsync(db, User.GetUserId(), "Deleted", "Quiz", deletedTitle, $"Deleted assessment {deletedTitle}.");
             TempData["Success"] = "Quiz deleted.";
         }
         return RedirectToAction(nameof(Index));
