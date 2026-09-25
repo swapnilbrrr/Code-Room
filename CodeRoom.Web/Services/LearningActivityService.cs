@@ -42,7 +42,16 @@ public static class LearningActivityService
 
     public static int CalculateStreak(IEnumerable<UserActivity> activities, DateTime? today = null)
     {
+        var qualifyingTypes = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            "CourseEnrolled",
+            "LessonCompleted",
+            "QuizAttempted",
+            "CourseCompleted"
+        };
+
         var activeDays = activities
+            .Where(a => qualifyingTypes.Contains(a.ActivityType))
             .Select(a => a.CreatedAt.Date)
             .Distinct()
             .ToHashSet();
