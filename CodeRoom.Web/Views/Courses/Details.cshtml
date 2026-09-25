@@ -3,33 +3,39 @@
     ViewData["Title"] = Model.Title;
     var quizId = ViewData["QuizId"] as int?;
     var isAuthenticated = User.Identity?.IsAuthenticated ?? false;
+    var resources = ViewData["CourseResources"] as IReadOnlyList<CodeRoom.Web.Models.Resource> ?? [];
 }
 
 <section class="page-shell">
     <div class="container course-detail">
-        <span class="eyebrow">@Model.Category.ToUpperInvariant()</span>
-        <h1 class="page-title">@Model.Title</h1>
-        <p class="page-intro">@Model.Description</p>
-
-        <div class="detail-grid">
-            <div class="content-panel">
-                <h2>Course outline</h2>
-                <ol class="lesson-outline">
-                    @{ var n = 1; }
-                    @foreach (var lesson in Model.Lessons)
+        <div class="course-detail-hero">
+            <div>
+                <span class="eyebrow">@Model.Category.ToUpperInvariant()</span>
+                <h1 class="page-title">@Model.Title</h1>
+                <p class="page-intro">@Model.Description</p>
+                <div class="course-meta-row">
+                    <span class="level-pill">@Model.Level</span>
+                    <span>⏱ @Model.EstimatedMinutes min</span>
+                    <span>📚 @Model.Lessons.Count lessons</span>
+                    @if (Model.IsCertification)
                     {
-                        <li>
-                            <span>@(n++.ToString("D2"))</span>
-                            <strong>@lesson.Title</strong>
-                        </li>
+                        <span class="cert-pill">🎓 Certification path</span>
                     }
-                </ol>
+                </div>
             </div>
-
-            <aside class="content-panel course-start-card">
-                <span class="level-pill">@Model.Level</span>
-                <strong>@Model.Lessons.Count lessons</strong>
-                <span>Structured learning path</span>
+            <div class="course-start-card">
+                @if (Model.IsCertification)
+                {
+                    <span class="eyebrow">CERTIFICATION</span>
+                    <strong>@(Model.CertificateName ?? "Code-Room Certificate")</strong>
+                    <span>Pass the final exam with @Model.PassingScorePercent% or higher.</span>
+                }
+                else
+                {
+                    <span class="eyebrow">LEARNING PATH</span>
+                    <strong>Learn → practise → assess</strong>
+                    <span>Move through the modules at your own pace.</span>
+                }
 
                 @if (isAuthenticated)
                 {
@@ -46,7 +52,107 @@
 
                 @if (quizId is not null)
                 {
-                    <a class="btn btn-secondary btn-full" asp-controller="Quiz" asp-action="Index" asp-route-id="@quizId">Take the quiz</a>
+                    <a class="btn btn-secondary btn-full" asp-controller="Quiz" asp-action="Index" asp-route-id="@quizId">
+                        @(Model.IsCertification ? "Take final exam" : "Take knowledge check") →
+                    </a>
+                }
+                @if (Model.Challenges.Count > 0)
+                {
+                    <a class="btn btn-secondary btn-full" asp-controller="Challenges" asp-action="Index" asp-route-id="@Model.Id">Practice challenges →</a>
+                }
+            </div>
+        </div>
+
+        <div class="course-detail-grid">
+            <section class="content-panel">
+                <div class="panel-heading">
+                    <div>
+                        <span class="eyebrow">CURRICULUM</span>
+                        <h2>Course roadmap</h2>
+                    </div>
+                    <span class="profile-muted">@Model.Modules.Count modules</span>
+                </div>
+
+                @if (Model.Modules.Count > 0)
+                {
+                    <div class="module-list">
+                        @foreach (var module in Model.Modules.OrderBy(m => m.Order))
+                        {
+                            <details class="module-card" open>
+                                <summary>
+                                    <span class="module-number">@module.Order.ToString("D2")</span>
+                                    <span>
+                                        <strong>@module.Title</strong>
+                                        <small>@module.Description</small>
+                                    </span>
+                                    <span>⌄</span>
+                                </summary>
+                                <div class="module-lessons">
+                                    @foreach (var lesson in module.Lessons.OrderBy(l => l.Order))
+                                    {
+                                        <a asp-controller="Lessons" asp-action="Index" asp-route-id="@Model.Id" asp-route-lessonId="@lesson.Id" class="module-lesson-row">
+                                            <span class="content-type-icon">
+                                                @(lesson.ContentType switch
+                                                {
+                                                    "Video" => "▶",
+                                                    "Audio" => "♫",
+                                                    "Challenge" => "⚡",
+                                                    "Assessment" => "◎",
+                                                    "Final Exam" => "🎓",
+                                                    _ => "▤"
+                                                })
+                                            </span>
+                                            <span>
+                                                <strong>@lesson.Title</strong>
+                                                <small>@lesson.Summary</small>
+                                            </span>
+                                            <span class="module-lesson-time">@lesson.DurationMinutes min</span>
+                                        </a>
+                                    }
+                                </div>
+                            </details>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <ol class="lesson-outline">
+                        @foreach (var lesson in Model.Lessons.OrderBy(l => l.Order))
+                        {
+                            <li><span>@lesson.Order.ToString("D2")</span><strong>@lesson.Title</strong></li>
+                        }
+                    </ol>
+                }
+            </section>
+
+            <aside class="course-side-stack">
+                @if (resources.Count > 0)
+                {
+                    <section class="content-panel">
+                        <div class="panel-heading">
+                            <div><span class="eyebrow">RESOURCES</span><h2>Study materials</h2></div>
+                        </div>
+                        <div class="resource-list">
+                            @foreach (var resource in resources)
+                            {
+                                <a class="resource-card" href="@resource.Url" target="_blank" rel="noopener noreferrer">
+                                    <span class="resource-type">@resource.Type</span>
+                                    <strong>@resource.Title</strong>
+                                    <span>Open resource ↗</span>
+                                </a>
+                            }
+                        </div>
+                    </section>
+                }
+
+                @if (Model.Challenges.Count > 0)
+                {
+                    <section class="content-panel challenge-summary-card">
+                        <span class="eyebrow">PRACTICE LAB</span>
+                        <h2>@Model.Challenges.Count challenges</h2>
+                        <p>Apply the concepts with short, repeatable tasks and earn XP as you pass them.</p>
+                        <a class="btn btn-secondary btn-full" asp-controller="Challenges" asp-action="Index" asp-route-id="@Model.Id">Open practice lab</a>
+                    </section>
                 }
             </aside>
         </div>
