@@ -62,6 +62,7 @@ public class UsersController(ApplicationDbContext db) : Controller
             PasswordHash = PasswordHasher.Hash(model.Password!)
         });
         await db.SaveChangesAsync();
+        await AdminAuditService.RecordAsync(db, User.GetUserId(), "Created", "User", username, $"Created {model.Role} account {model.FullName.Trim()}.");
         TempData["Success"] = "User created.";
         return RedirectToAction(nameof(Index));
     }
@@ -136,6 +137,7 @@ public class UsersController(ApplicationDbContext db) : Controller
         }
 
         await db.SaveChangesAsync();
+        await AdminAuditService.RecordAsync(db, User.GetUserId(), "Updated", "User", username, $"Updated account {model.FullName.Trim()}.");
         TempData["Success"] = "User updated.";
         return RedirectToAction(nameof(Index));
     }
@@ -162,8 +164,12 @@ public class UsersController(ApplicationDbContext db) : Controller
             return RedirectToAction(nameof(Index));
         }
 
+        var adminId = User.GetUserId();
+        var deletedName = user.FullName;
+        var deletedUsername = user.Username;
         db.Users.Remove(user);
         await db.SaveChangesAsync();
+        await AdminAuditService.RecordAsync(db, adminId, "Deleted", "User", deletedUsername, $"Deleted account {deletedName}.");
         TempData["Success"] = "User deleted.";
         return RedirectToAction(nameof(Index));
     }
