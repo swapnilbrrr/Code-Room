@@ -184,9 +184,9 @@ The repository is reviewed before moving between milestones so incomplete demo U
 | Member | Contribution |
 | --- | --- |
 | Swapnil Katuwal | Programming and web application implementation |
-| Om Kyapchhaki Magar | To be recorded from confirmed group contribution |
-| Bihason Ben Luitel | To be recorded from confirmed group contribution |
-| Ganesh Chaudhary | To be recorded from confirmed group contribution |
+| Member | To be recorded from confirmed group contribution |
+| Member | To be recorded from confirmed group contribution |
+| Member | To be recorded from confirmed group contribution |
 
 Only confirmed contributions should be added here; the table is intentionally not inventing responsibilities.
 
