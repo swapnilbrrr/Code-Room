@@ -11,8 +11,6 @@
   <img src="https://img.shields.io/badge/MySQL-8-4479A1?logo=mysql&logoColor=white" alt="MySQL" />
   <img src="https://img.shields.io/badge/Razor-Views-512BD4" alt="Razor Views" />
   <img src="https://img.shields.io/badge/JavaScript-ES6%2B-F7DF1E?logo=javascript&logoColor=black" alt="JavaScript" />
-  <img src="https://img.shields.io/badge/Tests-xUnit-512BD4" alt="xUnit" />
-  <img src="https://img.shields.io/github/actions/workflow/status/swapnilbrrr/Code-Room/dotnet.yml?branch=main&label=CI&logo=github" alt="CI status" />
 </p>
 
 <p align="center">
@@ -87,9 +85,12 @@ Code-Room/
 │   ├── Controllers/            # MVC request handling
 │   ├── Data/                   # EF Core database context
 │   ├── Models/                 # Domain entities
+│   ├── Migrations/             # EF Core migrations
+│   ├── Services/               # Application services
+│   ├── ViewModels/             # UI-specific models
 │   ├── Views/                  # Razor UI
-│   └── wwwroot/                # CSS and JavaScript
-├── tests/CodeRoom.Web.Tests/   # Automated tests
+│   └── wwwroot/                # CSS, JavaScript and images
+├── database/                   # Schema/seed planning assets
 ├── PROJECT-CHECKLIST.md        # Definition of done and project control
 ├── CodeRoom.sln
 ├── global.json                 # .NET SDK version policy
@@ -195,7 +196,7 @@ Only confirmed contributions should be added here; the table is intentionally no
 
 ## Repository Topics / Tags
 
-`aspnet-core` · `csharp` · `dotnet` · `mvc` · `entity-framework-core` · `mysql` · `razor` · `web-application` · `e-learning` · `education` · `xunit` · `github-actions` · `github-codespaces`
+`aspnet-core` · `csharp` · `dotnet` · `mvc` · `entity-framework-core` · `mysql` · `razor` · `web-application` · `e-learning` · `education` · `github-codespaces`
 
 ## License
 
