@@ -48,6 +48,11 @@ public class LessonsController(ApplicationDbContext db) : Controller
             .ToListAsync();
 
         var quiz = await db.Quizzes.FirstOrDefaultAsync(q => q.CourseId == id);
+        var challenge = await db.Challenges
+            .Where(ch => ch.CourseId == id && (ch.LessonId == current.Id || ch.LessonId == null))
+            .OrderBy(ch => ch.LessonId == current.Id ? 0 : 1)
+            .ThenBy(ch => ch.Id)
+            .FirstOrDefaultAsync();
 
         var model = new LessonViewModel
         {
@@ -55,7 +60,8 @@ public class LessonsController(ApplicationDbContext db) : Controller
             Current = current,
             Lessons = course.Lessons.ToList(),
             CompletedLessonIds = [.. completed],
-            QuizId = quiz?.Id
+            QuizId = quiz?.Id,
+            ChallengeId = challenge?.Id
         };
 
         return View(model);
