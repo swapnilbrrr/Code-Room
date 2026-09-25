@@ -1,5 +1,6 @@
 using CodeRoom.Web.Data;
 using CodeRoom.Web.Models;
+using CodeRoom.Web.ViewModels.Learning;
 using CodeRoom.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -89,8 +90,3 @@ public class ChallengesController(ApplicationDbContext db) : Controller
         (value ?? string.Empty).Trim().Replace(" ", string.Empty).Replace("\r", string.Empty).Replace("\n", string.Empty);
 }
 
-public class ChallengeListViewModel
-{
-    public Course Course { get; set; } = null!;
-    public IReadOnlyList<Challenge> Challenges { get; set; } = [];
-}
