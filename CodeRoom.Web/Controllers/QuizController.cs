@@ -11,7 +11,6 @@ namespace CodeRoom.Web.Controllers;
 [Authorize]
 public class QuizController(ApplicationDbContext db) : Controller
 {
-    // id = quiz id
     public async Task<IActionResult> Index(int id)
     {
         var quiz = await db.Quizzes
@@ -60,10 +59,27 @@ public class QuizController(ApplicationDbContext db) : Controller
         db.QuizAttempts.Add(attempt);
         await db.SaveChangesAsync();
 
+        var percentage = quiz.Questions.Count == 0 ? 0 : (int)Math.Round(score * 100.0 / quiz.Questions.Count);
+
+        await LearningActivityService.RecordAsync(
+            db,
+            User.GetUserId(),
+            "QuizAttempted",
+            $"Completed {quiz.Title} with {percentage}%",
+            "Quiz completed",
+            $"You scored {score}/{quiz.Questions.Count} ({percentage}%) in {quiz.Title}.",
+            $"/Quiz/Results/{attempt.Id}",
+            "QuizCompleted");
+
+        await LearningActivityService.TryRecordStreakMilestoneAsync(db, User.GetUserId());
+
+        TempData["ToastTitle"] = "Quiz submitted";
+        TempData["ToastMessage"] = $"You scored {percentage}% in {quiz.Title}.";
+        TempData["ToastIcon"] = percentage >= 80 ? "🏆" : "✓";
+
         return RedirectToAction(nameof(Results), new { id = attempt.Id });
     }
 
-    // id = attempt id
     public async Task<IActionResult> Results(int id)
     {
         var attempt = await db.QuizAttempts
