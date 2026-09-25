@@ -5,8 +5,8 @@ using Microsoft.EntityFrameworkCore;
 namespace CodeRoom.Web.Services;
 
 /// <summary>
-/// Creates the database (if needed) and seeds baseline content and accounts.
-/// Uses EnsureCreated so no EF migrations are required to get a working demo.
+/// Creates the database schema when needed and seeds the baseline content and demo accounts.
+/// The seed is intentionally idempotent so a fresh MySQL database can be prepared from the submitted project.
 /// </summary>
 public static class DbSeeder
 {
@@ -16,7 +16,7 @@ public static class DbSeeder
 
         if (await db.Users.AnyAsync())
         {
-            return; // Already seeded.
+            return;
         }
 
         SeedUsers(db);
