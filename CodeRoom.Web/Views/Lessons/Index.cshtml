@@ -1,17 +1,35 @@
 @model CodeRoom.Web.ViewModels.Learning.LessonViewModel
 @{
     ViewData["Title"] = Model.Current.Title;
-
     var currentIndex = Model.Lessons.ToList().FindIndex(x => x.Id == Model.Current.Id);
     var previousLesson = currentIndex > 0 ? Model.Lessons.ElementAt(currentIndex - 1) : null;
     var nextLesson = currentIndex >= 0 && currentIndex < Model.Lessons.Count - 1 ? Model.Lessons.ElementAt(currentIndex + 1) : null;
+    var moduleName = Model.Current.CourseModule?.Title ?? "Course module";
 }
 
 <section class="page-shell">
     <div class="container lesson-layout">
         <main class="content-panel lesson-content">
-            <span class="eyebrow">LESSON @Model.Current.Order.ToString("D2") · @Model.Course.Title</span>
+            <div class="lesson-kicker">
+                <span class="eyebrow">@Model.Course.Title</span>
+                <span class="lesson-content-type">@Model.Current.ContentType · @Model.Current.DurationMinutes min</span>
+            </div>
             <h1>@Model.Current.Title</h1>
+            @if (!string.IsNullOrWhiteSpace(Model.Current.Summary))
+            {
+                <p class="lesson-summary">@Model.Current.Summary</p>
+            }
+
+            <div class="lesson-tool-row">
+                <button type="button" class="btn btn-secondary" data-lesson-speak aria-label="Read lesson aloud">🔊 Read aloud</button>
+                <button type="button" class="btn btn-secondary" data-lesson-stop-speech hidden>■ Stop audio</button>
+                @if (!string.IsNullOrWhiteSpace(Model.Current.AudioUrl))
+                {
+                    <audio controls preload="none" class="lesson-audio" aria-label="Audio lesson">
+                        <source src="@Model.Current.AudioUrl" />
+                    </audio>
+                }
+            </div>
 
             @if (!string.IsNullOrWhiteSpace(Model.Current.VideoUrl))
             {
@@ -23,12 +41,14 @@
                         loading="lazy"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                         allowfullscreen></iframe>
-                    <p class="lesson-video-caption">Supporting tutorial video. Use the lesson notes below to reinforce the concepts covered in the video.</p>
+                    <p class="lesson-video-caption">Watch the supporting tutorial, then use the notes and practice task below to reinforce the idea.</p>
                 </div>
             }
 
-            <div class="lesson-copy">
-                @foreach (var paragraph in (Model.Current.Content ?? string.Empty).Split("\n\n", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+            <article class="lesson-copy" data-lesson-content>
+                @foreach (var paragraph in (Model.Current.Content ?? string.Empty).Split("
+
+", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
                 {
                     var separator = paragraph.IndexOf(':');
                     var label = separator > 0 ? paragraph[..separator] : string.Empty;
@@ -37,7 +57,7 @@
                     if (label is "WHY IT MATTERS" or "HOW TO THINK ABOUT IT" or "IN PRACTICE" or "COMMON MISTAKES" or "PRACTICE FOCUS" or "CHECK YOURSELF")
                     {
                         <div class="lesson-copy-block">
-                            <h3>@label</h3>
+                            <span class="lesson-section-label">@label</span>
                             <p>@body</p>
                         </div>
                     }
@@ -46,15 +66,33 @@
                         <p>@paragraph</p>
                     }
                 }
-            </div>
+            </article>
 
             @if (!string.IsNullOrWhiteSpace(Model.Current.ResourceUrl))
             {
                 <div class="lesson-resource">
                     <strong>SUPPORTING RESOURCE</strong>
-                    <a href="@Model.Current.ResourceUrl" target="_blank" rel="noopener noreferrer">Open the reference material →</a>
+                    <a href="@Model.Current.ResourceUrl" target="_blank" rel="noopener noreferrer">Open the reference material ↗</a>
                 </div>
             }
+
+            <div class="lesson-practice-strip">
+                <div>
+                    <span class="eyebrow">NEXT STEP</span>
+                    <h2>Turn the concept into a skill.</h2>
+                    <p>Finish the lesson, then test yourself with a quiz or practical challenge.</p>
+                </div>
+                <div class="lesson-practice-actions">
+                    @if (Model.ChallengeId is not null)
+                    {
+                        <a class="btn btn-secondary" asp-controller="Challenges" asp-action="Take" asp-route-id="@Model.ChallengeId">⚡ Practice challenge</a>
+                    }
+                    @if (Model.QuizId is not null)
+                    {
+                        <a class="btn btn-secondary" asp-controller="Quiz" asp-action="Index" asp-route-id="@Model.QuizId">🧠 @(Model.Course.IsCertification ? "Final exam" : "Knowledge check")</a>
+                    }
+                </div>
+            </div>
 
             <div class="lesson-actions">
                 @if (Model.IsCurrentCompleted)
@@ -69,11 +107,6 @@
                         <input type="hidden" name="courseId" value="@Model.Course.Id" />
                         <button class="btn btn-primary" type="submit">Mark lesson complete</button>
                     </form>
-                }
-
-                @if (Model.QuizId is not null)
-                {
-                    <a class="btn btn-secondary" asp-controller="Quiz" asp-action="Index" asp-route-id="@Model.QuizId">Take the quiz →</a>
                 }
             </div>
 
@@ -95,16 +128,52 @@
         </main>
 
         <aside class="content-panel lesson-sidebar">
-            <h3>Course progress</h3>
+            <div class="lesson-sidebar-head">
+                <div>
+                    <span class="eyebrow">ROADMAP</span>
+                    <h3>@moduleName</h3>
+                </div>
+                <span class="lesson-sidebar-progress">@Model.ProgressPercent%</span>
+            </div>
             <div class="progress-track"><span style="width: @(Model.ProgressPercent)%"></span></div>
             <small>@Model.CompletedCount of @Model.TotalCount lessons completed</small>
             <hr />
-            @foreach (var lesson in Model.Lessons)
+            @foreach (var lesson in Model.Lessons.OrderBy(l => l.Order))
             {
                 var active = lesson.Id == Model.Current.Id ? "active" : "";
                 var done = Model.CompletedLessonIds.Contains(lesson.Id) ? "✓ " : "";
-                <a class="lesson-link @active" asp-action="Index" asp-route-id="@Model.Course.Id" asp-route-lessonId="@lesson.Id">@done@lesson.Order.ToString("D2"). @lesson.Title</a>
+                <a class="lesson-link @active" asp-action="Index" asp-route-id="@Model.Course.Id" asp-route-lessonId="@lesson.Id">
+                    <span>@done@lesson.Order.ToString("D2"). @lesson.Title</span>
+                    <small>@lesson.DurationMinutes min</small>
+                </a>
             }
         </aside>
     </div>
 </section>
+
+@section Scripts {
+<script>
+(() => {
+    const content = document.querySelector('[data-lesson-content]');
+    const speak = document.querySelector('[data-lesson-speak]');
+    const stop = document.querySelector('[data-lesson-stop-speech]');
+    if (!content || !speak || !('speechSynthesis' in window)) return;
+
+    speak.addEventListener('click', () => {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(content.innerText);
+        utterance.rate = 0.95;
+        utterance.addEventListener('end', () => {
+            stop.hidden = true;
+        });
+        window.speechSynthesis.speak(utterance);
+        stop.hidden = false;
+    });
+
+    stop?.addEventListener('click', () => {
+        window.speechSynthesis.cancel();
+        stop.hidden = true;
+    });
+})();
+</script>
+}
