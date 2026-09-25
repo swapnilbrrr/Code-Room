@@ -28,8 +28,25 @@ public class AnnouncementsController(ApplicationDbContext db) : Controller
         {
             return View(model);
         }
+
         db.Announcements.Add(model);
         await db.SaveChangesAsync();
+
+        if (model.IsPublished)
+        {
+            var users = await db.Users.Select(u => u.Id).ToListAsync();
+            db.Notifications.AddRange(users.Select(userId => new Notification
+            {
+                UserId = userId,
+                Type = "Announcement",
+                Title = model.Title,
+                Message = model.Message,
+                LinkUrl = "/Notifications",
+                CreatedAt = DateTime.UtcNow
+            }));
+            await db.SaveChangesAsync();
+        }
+
         TempData["Success"] = "Announcement published.";
         return RedirectToAction(nameof(Index));
     }
@@ -59,11 +76,29 @@ public class AnnouncementsController(ApplicationDbContext db) : Controller
         {
             return NotFound();
         }
+
+        var wasPublished = item.IsPublished;
         item.Title = model.Title;
         item.Message = model.Message;
         item.PublishedAt = model.PublishedAt;
         item.IsPublished = model.IsPublished;
         await db.SaveChangesAsync();
+
+        if (!wasPublished && model.IsPublished)
+        {
+            var users = await db.Users.Select(u => u.Id).ToListAsync();
+            db.Notifications.AddRange(users.Select(userId => new Notification
+            {
+                UserId = userId,
+                Type = "Announcement",
+                Title = model.Title,
+                Message = model.Message,
+                LinkUrl = "/Notifications",
+                CreatedAt = DateTime.UtcNow
+            }));
+            await db.SaveChangesAsync();
+        }
+
         TempData["Success"] = "Announcement updated.";
         return RedirectToAction(nameof(Index));
     }
