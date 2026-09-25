@@ -1,18 +1,18 @@
 @{
-    ViewData["Title"] = "Admin Dashboard";
+    ViewData["Title"] = "Admin Console";
 }
 
 <section class="page-shell admin-dashboard">
     <div class="container">
         <div class="admin-header">
             <div class="admin-header-copy">
-                <span class="eyebrow">ADMINISTRATION</span>
-                <h1 class="page-title">Code-Room management</h1>
-                <p class="page-intro">Manage learning content and monitor platform activity from one place.</p>
+                <span class="eyebrow">ADMIN CONSOLE</span>
+                <h1 class="page-title">Platform management</h1>
+                <p class="page-intro">Manage users, learning content and platform operations from one dedicated workspace.</p>
             </div>
             <div class="admin-header-meta">
                 <span class="admin-badge">@(User.IsInRole(Roles.SuperAdmin) ? "Super Administrator" : "Administrator")</span>
-                <span class="admin-badge">Control Centre</span>
+                <a class="admin-badge admin-badge-link" asp-area="" asp-controller="Dashboard" asp-action="Index">Personal dashboard</a>
             </div>
         </div>
 
@@ -27,51 +27,51 @@
 
         <div class="admin-stat-grid">
             <article class="admin-stat">
-                <span class="admin-stat-label">Course library</span>
-                <strong>@ViewBag.CourseCount</strong>
-                <small>Courses configured</small>
+                <span class="admin-stat-label">Users</span>
+                <strong>@ViewBag.UserCount</strong>
+                <small>@ViewBag.StudentCount students with accounts</small>
             </article>
             <article class="admin-stat">
-                <span class="admin-stat-label">Lessons</span>
-                <strong>@ViewBag.LessonCount</strong>
-                <small>Lessons across the library</small>
+                <span class="admin-stat-label">Enrolments</span>
+                <strong>@ViewBag.EnrollmentCount</strong>
+                <small>Learning paths started by users</small>
             </article>
             <article class="admin-stat">
-                <span class="admin-stat-label">Students</span>
-                <strong>@ViewBag.StudentCount</strong>
-                <small>@ViewBag.EnrollmentCount enrolments · @ViewBag.AttemptCount quiz attempts</small>
+                <span class="admin-stat-label">Quiz activity</span>
+                <strong>@ViewBag.AttemptCount</strong>
+                <small>@ViewBag.QuizCount quizzes currently configured</small>
             </article>
         </div>
 
         <div class="admin-section-title">
-            <h2>Content management</h2>
-            <span>Core administration modules</span>
+            <h2>Platform management</h2>
+            <span>Users first, then learning content</span>
         </div>
 
         <div class="admin-module-grid">
-            <article class="admin-module">
+            <article class="admin-module admin-module-priority">
                 <span class="admin-module-icon">01</span>
+                <h3>Users</h3>
+                <p>Review accounts, roles and platform access. Monitor the student base from one place.</p>
+                <a class="btn btn-secondary" asp-area="Admin" asp-controller="Users" asp-action="Index">Manage users</a>
+            </article>
+            <article class="admin-module">
+                <span class="admin-module-icon">02</span>
                 <h3>Courses</h3>
                 <p>Create, update, organise and publish learning courses.</p>
                 <a class="btn btn-secondary" asp-area="Admin" asp-controller="Courses" asp-action="Index">Manage courses</a>
             </article>
             <article class="admin-module">
-                <span class="admin-module-icon">02</span>
+                <span class="admin-module-icon">03</span>
                 <h3>Lessons</h3>
                 <p>Organise lesson content, learning paths and resources.</p>
                 <a class="btn btn-secondary" asp-area="Admin" asp-controller="Lessons" asp-action="Index">Manage lessons</a>
             </article>
             <article class="admin-module">
-                <span class="admin-module-icon">03</span>
+                <span class="admin-module-icon">04</span>
                 <h3>Quizzes</h3>
                 <p>Create questions, assessments and review quiz activity.</p>
                 <a class="btn btn-secondary" asp-area="Admin" asp-controller="Quizzes" asp-action="Index">Manage quizzes</a>
-            </article>
-            <article class="admin-module">
-                <span class="admin-module-icon">04</span>
-                <h3>Users</h3>
-                <p>Review accounts and manage platform access and roles.</p>
-                <a class="btn btn-secondary" asp-area="Admin" asp-controller="Users" asp-action="Index">Manage users</a>
             </article>
             <article class="admin-module">
                 <span class="admin-module-icon">05</span>
