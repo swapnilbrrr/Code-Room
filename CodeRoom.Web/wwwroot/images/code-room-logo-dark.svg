@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 420" role="img" aria-labelledby="title desc">
+  <title id="title">Code-Room logo</title>
+  <desc id="desc">Code-Room learning logo with a code monitor, open doorway, book and Learn Code Grow tagline.</desc>
+  <g fill="none" stroke="#f3f6fb" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke-width="13" d="M106 164V111l104-60 101 58v55"/>
+    <path fill="#2d78e6" stroke="#2d78e6" stroke-width="10" d="M282 106l43 25v98l-43 26z"/>
+    <rect x="132" y="115" width="138" height="94" rx="9" fill="#171e28" stroke-width="10"/>
+    <path stroke="#6ea8fe" stroke-width="8" d="M163 143l-25 18 25 18"/>
+    <path stroke="#35c978" stroke-width="8" d="M238 143l25 18-25 18"/>
+    <path stroke="#f3f6fb" stroke-width="8" d="M207 138l-12 48"/>
+    <path stroke-width="10" d="M201 209v18"/>
+    <path stroke-width="10" d="M173 227h57"/>
+    <path fill="#2d78e6" stroke-width="9" d="M113 270l97 15 97-15 29 35-126 35-126-35z"/>
+    <path fill="#171e28" stroke-width="7" d="M113 270l97 15 97-15-97 58z"/>
+    <path fill="#171e28" stroke-width="7" d="M84 306l126 35 126-35"/>
+  </g>
+  <g fill="#2d78e6">
+    <rect x="51" y="154" width="17" height="17" rx="3"/>
+    <rect x="73" y="132" width="17" height="17" rx="3"/>
+    <rect x="73" y="177" width="17" height="17" rx="3"/>
+  </g>
+  <rect x="51" y="178" width="17" height="17" rx="3" fill="#35c978"/>
+  <g font-family="Arial, Helvetica, sans-serif" text-anchor="middle">
+    <text x="210" y="382" font-size="55" font-weight="700" fill="#f3f6fb">Code-<tspan fill="#6ea8fe">Room</tspan></text>
+    <path d="M88 395h74" stroke="#f3f6fb" stroke-width="2"/>
+    <path d="M258 395h74" stroke="#f3f6fb" stroke-width="2"/>
+    <text x="210" y="402" font-size="16" font-weight="700" letter-spacing="3" fill="#6ea8fe">LEARN <tspan fill="#35c978">•</tspan> CODE <tspan fill="#6ea8fe">•</tspan> GROW</text>
+  </g>
+</svg>
