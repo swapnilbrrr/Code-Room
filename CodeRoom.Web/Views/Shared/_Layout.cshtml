@@ -12,13 +12,13 @@
         <a class="brand" asp-controller="Home" asp-action="Index">Code-Room</a>
         <div class="nav-links">
             <a asp-controller="Home" asp-action="Index">Home</a>
-            <a href="#">Courses</a>
-            <a href="#">About</a>
-            <a href="#">FAQ</a>
+            <a asp-controller="Courses" asp-action="Index">Courses</a>
+            <a asp-controller="Info" asp-action="About">About</a>
+            <a asp-controller="Info" asp-action="Faq">FAQ</a>
         </div>
         <div class="nav-actions">
-            <a class="btn btn-ghost" href="#">Login</a>
-            <a class="btn btn-primary" href="#">Get Started</a>
+            <a class="btn btn-ghost" asp-controller="Account" asp-action="Login">Login</a>
+            <a class="btn btn-primary" asp-controller="Account" asp-action="Register">Get Started</a>
         </div>
     </nav>
 </header>
