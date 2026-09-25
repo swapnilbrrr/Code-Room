@@ -38,24 +38,45 @@ public static class DatabaseSchemaUpdater
 
     private static async Task EnsureUsernamesAsync(ApplicationDbContext db)
     {
-        var rows = await db.Database
-            .SqlQueryRaw<UserUsernameRow>(
-                "SELECT Id, Username FROM Users ORDER BY Id")
-            .ToListAsync();
+        var rows = new List<(int Id, string FullName, string Email, string? Username)>();
+        var connection = db.Database.GetDbConnection();
+        var openedHere = connection.State != System.Data.ConnectionState.Open;
 
-        var users = await db.Users
-            .IgnoreQueryFilters()
-            .Select(u => new { u.Id, u.FullName, u.Email })
-            .OrderBy(u => u.Id)
-            .ToListAsync();
+        if (openedHere)
+        {
+            await connection.OpenAsync();
+        }
 
-        var usernames = rows.ToDictionary(u => u.Id, u => u.Username ?? string.Empty);
-        var used = usernames.Values
+        try
+        {
+            await using var command = connection.CreateCommand();
+            command.CommandText = "SELECT Id, FullName, Email, Username FROM Users ORDER BY Id";
+            await using var reader = await command.ExecuteReaderAsync();
+
+            while (await reader.ReadAsync())
+            {
+                rows.Add((
+                    reader.GetInt32(0),
+                    reader.IsDBNull(1) ? string.Empty : reader.GetString(1),
+                    reader.IsDBNull(2) ? string.Empty : reader.GetString(2),
+                    reader.IsDBNull(3) ? null : reader.GetString(3)));
+            }
+        }
+        finally
+        {
+            if (openedHere)
+            {
+                await connection.CloseAsync();
+            }
+        }
+
+        var used = rows
+            .Select(r => r.Username)
             .Where(x => !string.IsNullOrWhiteSpace(x))
-            .Select(x => x.Trim().ToLowerInvariant())
+            .Select(x => x!.Trim().ToLowerInvariant())
             .ToHashSet();
 
-        foreach (var user in users.Where(u => string.IsNullOrWhiteSpace(usernames.GetValueOrDefault(u.Id))))
+        foreach (var user in rows.Where(r => string.IsNullOrWhiteSpace(r.Username)))
         {
             var baseName = BuildUsername(user.FullName, user.Email, user.Id);
             var candidate = baseName;
@@ -283,9 +304,4 @@ CREATE TABLE IF NOT EXISTS AdminAuditLogs (
             : cleaned.Length > 50 ? cleaned[..50] : cleaned;
     }
 
-    private sealed class UserUsernameRow
-    {
-        public int Id { get; set; }
-        public string? Username { get; set; }
-    }
 }
