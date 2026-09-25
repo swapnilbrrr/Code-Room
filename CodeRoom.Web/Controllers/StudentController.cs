@@ -56,9 +56,11 @@ public class StudentController(ApplicationDbContext db) : Controller
 
             await LearningActivityService.TryRecordStreakMilestoneAsync(db, userId);
 
-            TempData["ToastTitle"] = "Course enrolled";
-            TempData["ToastMessage"] = $"You're ready to start {course.Title}.";
-            TempData["ToastIcon"] = "✓";
+            TempData["ToastTitle"] = totalEnrollments == 1 ? "Achievement unlocked" : "Course enrolled";
+            TempData["ToastMessage"] = totalEnrollments == 1
+                ? "First course unlocked. Your Code-Room journey has started."
+                : $"You're ready to start {course.Title}.";
+            TempData["ToastIcon"] = totalEnrollments == 1 ? "🏆" : "✓";
         }
 
         return RedirectToAction("Index", "Lessons", new { id = courseId });
