@@ -8,8 +8,12 @@ public class UserFormViewModel
 
     [Required(ErrorMessage = "Full name is required.")]
     [StringLength(80, MinimumLength = 3)]
-    [Display(Name = "Full name")]
     public string FullName { get; set; } = string.Empty;
+
+    [Required(ErrorMessage = "Username is required.")]
+    [StringLength(30, MinimumLength = 3)]
+    [RegularExpression("^[a-zA-Z0-9._-]+$", ErrorMessage = "Username may contain letters, numbers, dots, underscores and hyphens.")]
+    public string Username { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "Email is required.")]
     [EmailAddress]
@@ -19,7 +23,6 @@ public class UserFormViewModel
     [Required]
     public string Role { get; set; } = "Student";
 
-    // On create: required. On edit: optional (blank keeps existing password).
     [DataType(DataType.Password)]
     [StringLength(100, MinimumLength = 8, ErrorMessage = "Password must be at least 8 characters.")]
     public string? Password { get; set; }
