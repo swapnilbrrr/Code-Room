@@ -17,18 +17,29 @@
                 <span asp-validation-for="FullName" class="field-error"></span>
             </label>
 
+            <label>Username
+                <input class="input" asp-for="Username" type="text" autocomplete="username" placeholder="e.g. swapnil" />
+                <span asp-validation-for="Username" class="field-error"></span>
+            </label>
+
             <label>Email
                 <input class="input" asp-for="Email" type="email" autocomplete="email" />
                 <span asp-validation-for="Email" class="field-error"></span>
             </label>
 
             <label>Password
-                <input class="input" asp-for="Password" type="password" autocomplete="new-password" />
+                <div class="password-field">
+                    <input class="input" asp-for="Password" type="password" autocomplete="new-password" data-password-input />
+                    <button type="button" class="password-toggle" data-password-toggle aria-label="Show password" title="Show password">◉</button>
+                </div>
                 <span asp-validation-for="Password" class="field-error"></span>
             </label>
 
             <label>Confirm password
-                <input class="input" asp-for="ConfirmPassword" type="password" autocomplete="new-password" />
+                <div class="password-field">
+                    <input class="input" asp-for="ConfirmPassword" type="password" autocomplete="new-password" data-password-input />
+                    <button type="button" class="password-toggle" data-password-toggle aria-label="Show password confirmation" title="Show password confirmation">◉</button>
+                </div>
                 <span asp-validation-for="ConfirmPassword" class="field-error"></span>
             </label>
 
