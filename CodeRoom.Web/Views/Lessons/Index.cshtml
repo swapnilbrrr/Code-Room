@@ -1,6 +1,10 @@
 @model CodeRoom.Web.ViewModels.Learning.LessonViewModel
 @{
     ViewData["Title"] = Model.Current.Title;
+
+    var currentIndex = Model.Lessons.ToList().FindIndex(x => x.Id == Model.Current.Id);
+    var previousLesson = currentIndex > 0 ? Model.Lessons.ElementAt(currentIndex - 1) : null;
+    var nextLesson = currentIndex >= 0 && currentIndex < Model.Lessons.Count - 1 ? Model.Lessons.ElementAt(currentIndex + 1) : null;
 }
 
 <section class="page-shell">
@@ -11,14 +15,31 @@
 
             @if (!string.IsNullOrWhiteSpace(Model.Current.VideoUrl))
             {
-                <p><a class="btn btn-secondary" href="@Model.Current.VideoUrl" target="_blank" rel="noopener">Watch video</a></p>
+                <div class="lesson-video">
+                    <iframe
+                        class="lesson-video-frame"
+                        src="@Model.Current.VideoUrl"
+                        title="Video lesson: @Model.Current.Title"
+                        loading="lazy"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowfullscreen></iframe>
+                    <p class="lesson-video-caption">Supporting tutorial video. Use the lesson notes below to reinforce the concepts covered in the video.</p>
+                </div>
             }
 
-            <p>@Model.Current.Content</p>
+            <div class="lesson-copy">
+                @foreach (var paragraph in (Model.Current.Content ?? string.Empty).Split("\n\n", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+                {
+                    <p>@paragraph</p>
+                }
+            </div>
 
             @if (!string.IsNullOrWhiteSpace(Model.Current.ResourceUrl))
             {
-                <p><a href="@Model.Current.ResourceUrl" target="_blank" rel="noopener">Download lesson resource</a></p>
+                <div class="lesson-resource">
+                    <strong>SUPPORTING RESOURCE</strong>
+                    <a href="@Model.Current.ResourceUrl" target="_blank" rel="noopener noreferrer">Open the reference material →</a>
+                </div>
             }
 
             <div class="lesson-actions">
@@ -38,7 +59,23 @@
 
                 @if (Model.QuizId is not null)
                 {
-                    <a class="btn btn-secondary" asp-controller="Quiz" asp-action="Index" asp-route-id="@Model.QuizId">Take the quiz</a>
+                    <a class="btn btn-secondary" asp-controller="Quiz" asp-action="Index" asp-route-id="@Model.QuizId">Take the quiz →</a>
+                }
+            </div>
+
+            <div class="lesson-nav" aria-label="Lesson navigation">
+                @if (previousLesson is not null)
+                {
+                    <a class="btn btn-secondary" asp-action="Index" asp-route-id="@Model.Course.Id" asp-route-lessonId="@previousLesson.Id">← Previous lesson</a>
+                }
+                else
+                {
+                    <span></span>
+                }
+
+                @if (nextLesson is not null)
+                {
+                    <a class="btn btn-secondary" asp-action="Index" asp-route-id="@Model.Course.Id" asp-route-lessonId="@nextLesson.Id">Next lesson →</a>
                 }
             </div>
         </main>
