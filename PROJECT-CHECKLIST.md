@@ -13,7 +13,7 @@ The project is submission-ready when:
 - [ ] MySQL + Entity Framework Core persistence works from a clean setup.
 - [ ] Responsive UI works on desktop and mobile.
 - [ ] Security basics are implemented: password hashing, authorization, validation, safe configuration, anti-forgery protection where applicable.
-- [ ] Automated build/test workflow passes.
+- [ ] Automated tests and build verification pass.
 - [ ] A final manual test pass covers the main user journeys.
 - [ ] README contains setup/run instructions suitable for the group.
 
@@ -26,8 +26,6 @@ The project is submission-ready when:
 - [x] Initial DbContext created.
 - [x] Core domain models scaffolded.
 - [x] Dev Container configuration added.
-- [x] GitHub Actions build/test workflow added.
-- [x] Basic smoke test added.
 
 ## Phase 1 — Frontend Skeleton
 
@@ -109,8 +107,7 @@ Optional only if all required functionality is stable:
 - [ ] Accessibility/basic usability review.
 - [ ] Remove placeholder links/content.
 - [ ] Remove development secrets.
-- [ ] CI build passes.
-- [ ] CI tests pass.
+- [ ] Automated build and test verification passes.
 - [ ] Final clean clone/Codespaces setup verified.
 - [ ] Submission-ready README.
 
