@@ -1,7 +1,6 @@
 using CodeRoom.Web.Data;
 using CodeRoom.Web.Models;
 using CodeRoom.Web.Services;
-using CodeRoom.Web.ViewModels.Learning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,53 +10,7 @@ namespace CodeRoom.Web.Controllers;
 [Authorize]
 public class StudentController(ApplicationDbContext db) : Controller
 {
-    public async Task<IActionResult> Index()
-    {
-        var userId = User.GetUserId();
-
-        var enrollments = await db.Enrollments
-            .Where(e => e.UserId == userId)
-            .Include(e => e.Course)
-                .ThenInclude(c => c.Lessons)
-            .ToListAsync();
-
-        var completedByCourse = await db.Progress
-            .Where(p => p.UserId == userId && p.IsCompleted)
-            .Include(p => p.Lesson)
-            .GroupBy(p => p.Lesson.CourseId)
-            .Select(g => new { CourseId = g.Key, Count = g.Count() })
-            .ToDictionaryAsync(x => x.CourseId, x => x.Count);
-
-        var enrolled = enrollments
-            .Select(e => new EnrolledCourseViewModel
-            {
-                Course = e.Course,
-                TotalLessons = e.Course.Lessons.Count,
-                CompletedLessons = completedByCourse.GetValueOrDefault(e.CourseId, 0)
-            })
-            .ToList();
-
-        var attempts = await db.QuizAttempts
-            .Where(a => a.UserId == userId)
-            .Include(a => a.Quiz)
-            .OrderByDescending(a => a.AttemptedAt)
-            .Take(5)
-            .ToListAsync();
-
-        var announcements = await db.Announcements
-            .Where(a => a.IsPublished)
-            .OrderByDescending(a => a.PublishedAt)
-            .Take(3)
-            .ToListAsync();
-
-        return View(new StudentDashboardViewModel
-        {
-            StudentName = User.GetDisplayName(),
-            Enrolments = enrolled,
-            RecentAttempts = attempts,
-            Announcements = announcements
-        });
-    }
+    public IActionResult Index() => RedirectToAction("Index", "Dashboard");
 
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -71,10 +24,41 @@ public class StudentController(ApplicationDbContext db) : Controller
             return NotFound();
         }
 
-        if (!await db.Enrollments.AnyAsync(e => e.UserId == userId && e.CourseId == courseId))
+        var alreadyEnrolled = await db.Enrollments.AnyAsync(e => e.UserId == userId && e.CourseId == courseId);
+        if (!alreadyEnrolled)
         {
             db.Enrollments.Add(new Enrollment { UserId = userId, CourseId = courseId });
             await db.SaveChangesAsync();
+
+            await LearningActivityService.RecordAsync(
+                db,
+                userId,
+                "CourseEnrolled",
+                $"Enrolled in {course.Title}",
+                "Course enrolled",
+                $"You are now enrolled in {course.Title}. Your learning journey starts here.",
+                $"/Lessons/Index/{course.Id}",
+                "CourseEnrollment");
+
+            var totalEnrollments = await db.Enrollments.CountAsync(e => e.UserId == userId);
+            if (totalEnrollments == 1)
+            {
+                await LearningActivityService.RecordAsync(
+                    db,
+                    userId,
+                    "AchievementUnlocked",
+                    "Unlocked the First Course achievement",
+                    "Achievement unlocked",
+                    "You enrolled in your first Code-Room course. Nice start!",
+                    "/Profile",
+                    "AchievementUnlocked");
+            }
+
+            await LearningActivityService.TryRecordStreakMilestoneAsync(db, userId);
+
+            TempData["ToastTitle"] = "Course enrolled";
+            TempData["ToastMessage"] = $"You're ready to start {course.Title}.";
+            TempData["ToastIcon"] = "✓";
         }
 
         return RedirectToAction("Index", "Lessons", new { id = courseId });
