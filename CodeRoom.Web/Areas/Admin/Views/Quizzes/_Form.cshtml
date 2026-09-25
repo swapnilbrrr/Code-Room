@@ -16,6 +16,24 @@
         <input class="input" asp-for="Title" />
         <span asp-validation-for="Title" class="field-error"></span>
     </label>
+    <label class="form-field">Assessment type
+        <select class="input" asp-for="AssessmentType">
+            <option>Quiz</option>
+            <option>Assessment</option>
+            <option>Final Exam</option>
+        </select>
+    </label>
+    <label class="form-field">Time limit (minutes)
+        <input class="input" asp-for="TimeLimitMinutes" type="number" min="0" max="180" />
+        <span asp-validation-for="TimeLimitMinutes" class="field-error"></span>
+    </label>
+    <label class="form-field">Passing score (%)
+        <input class="input" asp-for="PassingScorePercent" type="number" min="0" max="100" />
+        <span asp-validation-for="PassingScorePercent" class="field-error"></span>
+    </label>
+    <label class="checkbox-row">
+        <input asp-for="IsCertificationExam" type="checkbox" /> <span>Certification examination</span>
+    </label>
     <label class="form-field form-field-wide">Description
         <textarea class="input" asp-for="Description" rows="3"></textarea>
         <span asp-validation-for="Description" class="field-error"></span>
