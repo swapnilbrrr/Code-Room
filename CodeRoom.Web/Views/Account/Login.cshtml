@@ -19,19 +19,22 @@
             </label>
 
             <label>Password
-                <input class="input" asp-for="Password" type="password" autocomplete="current-password" />
+                <div class="password-field">
+                    <input class="input" asp-for="Password" type="password" autocomplete="current-password" data-password-input />
+                    <button type="button" class="password-toggle" data-password-toggle aria-label="Show password" title="Show password">◉</button>
+                </div>
                 <span asp-validation-for="Password" class="field-error"></span>
             </label>
 
             <label class="checkbox-row">
-                <input asp-for="RememberMe" type="checkbox" /> <span>Remember me</span>
+                <input asp-for="RememberMe" type="checkbox" />
+                <span>Remember me</span>
             </label>
 
             <button class="btn btn-primary btn-full" type="submit">Sign in</button>
         </form>
 
         <p class="auth-footer">New to Code-Room? <a asp-action="Register">Create an account</a></p>
-        <p class="auth-hint">Demo admin: <strong>admin@coderoom.test</strong> / <strong>Admin@123</strong></p>
     </div>
 </section>
 
