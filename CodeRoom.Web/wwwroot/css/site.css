@@ -2465,3 +2465,26 @@ main {
         padding: 12px 0 10px;
     }
 }
+
+.lesson-copy {
+    gap: 18px;
+}
+
+.lesson-copy-block {
+    display: grid;
+    gap: 5px;
+}
+
+.lesson-copy-block h3 {
+    margin: 0;
+    color: var(--accent);
+    font-size: .72rem;
+    font-weight: 800;
+    letter-spacing: .12em;
+}
+
+.lesson-copy-block p {
+    margin: 0;
+    color: var(--text);
+    line-height: 1.78;
+}
