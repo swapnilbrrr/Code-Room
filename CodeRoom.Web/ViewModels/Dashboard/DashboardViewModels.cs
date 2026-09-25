@@ -36,4 +36,15 @@ public class PersonalDashboardViewModel
     public int ProgressPercent { get; set; }
     public int QuizAverage { get; set; }
     public int LearningStreak { get; set; }
+    public int Xp { get; set; }
+    public int Level { get; set; }
+    public int LevelProgress { get; set; }
+    public int CertificateCount { get; set; }
+    public IReadOnlyList<RecommendedCourseViewModel> RecommendedCourses { get; set; } = [];
+}
+
+public class RecommendedCourseViewModel
+{
+    public Course Course { get; set; } = null!;
+    public string Reason { get; set; } = string.Empty;
 }
