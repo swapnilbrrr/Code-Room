@@ -6,12 +6,16 @@
     <meta name="description" content="Code-Room is a structured technology learning platform for students." />
     <title>@ViewData["Title"] - Code-Room</title>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/ui-updates.css" asp-append-version="true" />
 </head>
 <body>
 @{
     var isAuthenticated = User.Identity?.IsAuthenticated ?? false;
     var isAdmin = User.IsInRole(Roles.Admin) || User.IsInRole(Roles.SuperAdmin);
     var displayName = isAuthenticated ? User.GetDisplayName() : string.Empty;
+    var username = isAuthenticated ? (User.FindFirst("username")?.Value ?? string.Empty) : string.Empty;
+    var firstName = string.IsNullOrWhiteSpace(displayName) ? "Learner" : displayName.Split(' ')[0];
+    var initial = string.IsNullOrWhiteSpace(firstName) ? "C" : firstName[0].ToString().ToUpperInvariant();
 }
 <header class="site-header">
     <nav class="navbar container" aria-label="Primary navigation">
@@ -23,24 +27,10 @@
         <div class="nav-links">
             <a asp-area="" asp-controller="Home" asp-action="Index">Home</a>
             <a asp-area="" asp-controller="Courses" asp-action="Index">Courses</a>
-
             @if (isAuthenticated)
             {
-                if (isAdmin)
-                {
-                    <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Dashboard</a>
-                }
-                else
-                {
-                    <a asp-area="" asp-controller="Student" asp-action="Index">Dashboard</a>
-                }
+                <a asp-area="" asp-controller="Dashboard" asp-action="Index">Dashboard</a>
             }
-
-            @if (isAdmin)
-            {
-                <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Admin</a>
-            }
-
             <a asp-area="" asp-controller="Home" asp-action="About">About</a>
             <a asp-area="" asp-controller="Home" asp-action="Faq">FAQ</a>
         </div>
@@ -50,11 +40,31 @@
 
             @if (isAuthenticated)
             {
-                <span class="nav-user desktop-action" title="@displayName">Hi, @displayName.Split(' ')[0]</span>
-                <form class="logout-form desktop-action" asp-area="" asp-controller="Account" asp-action="Logout" method="post">
-                    @Html.AntiForgeryToken()
-                    <button class="btn btn-ghost" type="submit">Logout</button>
-                </form>
+                @await Component.InvokeAsync("NotificationBell")
+
+                <div class="account-menu">
+                    <button class="account-trigger" type="button" data-account-toggle aria-expanded="false" aria-controls="account-popover" aria-label="Open account menu" title="Account">
+                        <span class="profile-avatar">@initial</span>
+                    </button>
+                    <div id="account-popover" class="account-popover" data-account-menu hidden>
+                        <div class="account-popover-header">
+                            <strong>@displayName</strong>
+                            <span>@@@username</span>
+                            <span class="account-role">@(isAdmin ? "Administrator" : "Student")</span>
+                        </div>
+                        <a asp-area="" asp-controller="Dashboard" asp-action="Index">▦&nbsp;&nbsp;Dashboard</a>
+                        <a asp-area="" asp-controller="Profile" asp-action="Index">◎&nbsp;&nbsp;Profile</a>
+                        <a asp-area="" asp-controller="Profile" asp-action="Settings">⚙&nbsp;&nbsp;Settings</a>
+                        @if (isAdmin)
+                        {
+                            <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index">▤&nbsp;&nbsp;Admin Console</a>
+                        }
+                        <form asp-area="" asp-controller="Account" asp-action="Logout" method="post">
+                            @Html.AntiForgeryToken()
+                            <button class="account-danger" type="submit">↪&nbsp;&nbsp;Logout</button>
+                        </form>
+                    </div>
+                </div>
             }
             else
             {
@@ -73,32 +83,20 @@
 
             @if (isAuthenticated)
             {
-                if (isAdmin)
-                {
-                    <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Dashboard</a>
-                }
-                else
-                {
-                    <a asp-area="" asp-controller="Student" asp-action="Index">Dashboard</a>
-                }
-            }
+                <a asp-area="" asp-controller="Dashboard" asp-action="Index">Dashboard</a>
+                <a asp-area="" asp-controller="Profile" asp-action="Index">Profile</a>
+                <a asp-area="" asp-controller="Profile" asp-action="Settings">Settings</a>
 
-            @if (isAdmin)
-            {
-                <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Admin</a>
+                @if (isAdmin)
+                {
+                    <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Admin Console</a>
+                }
             }
 
             <a asp-area="" asp-controller="Home" asp-action="About">About</a>
             <a asp-area="" asp-controller="Home" asp-action="Faq">FAQ</a>
 
-            @if (isAuthenticated)
-            {
-                <form asp-area="" asp-controller="Account" asp-action="Logout" method="post">
-                    @Html.AntiForgeryToken()
-                    <button class="mobile-primary" type="submit" style="width:100%;border:0;cursor:pointer;">Logout</button>
-                </form>
-            }
-            else
+            @if (!isAuthenticated)
             {
                 <a asp-area="" asp-controller="Account" asp-action="Login">Login</a>
                 <a class="mobile-primary" asp-area="" asp-controller="Account" asp-action="Register">Get Started</a>
@@ -160,6 +158,7 @@
 </footer>
 
 <script src="~/js/site.js" asp-append-version="true"></script>
+<script src="~/js/ui-updates.js" asp-append-version="true"></script>
 @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
