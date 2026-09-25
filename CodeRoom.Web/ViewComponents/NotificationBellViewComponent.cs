@@ -15,7 +15,7 @@ public class NotificationBellViewComponent(ApplicationDbContext db) : ViewCompon
             return Content(string.Empty);
         }
 
-        var userId = User.GetUserId();
+        var userId = HttpContext.User.GetUserId();
 
         var notifications = await db.Notifications
             .Where(n => n.UserId == userId)
