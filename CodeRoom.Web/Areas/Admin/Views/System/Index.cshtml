@@ -1,0 +1,44 @@
+@{
+    ViewData["Title"] = "SuperAdmin Workspace";
+}
+<section class="page-shell admin-dashboard">
+    <div class="container">
+        <div class="admin-header">
+            <div>
+                <span class="eyebrow">SUPER ADMINISTRATOR</span>
+                <h1 class="page-title">System governance</h1>
+                <p class="page-intro">Higher-level controls for account governance, platform oversight and administrative traceability.</p>
+            </div>
+            <a class="btn btn-secondary" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Back to Admin Console</a>
+        </div>
+
+        <div class="admin-stat-grid">
+            <article class="admin-stat"><span class="admin-stat-label">Users</span><strong>@ViewBag.UserCount</strong><small>Total registered accounts</small></article>
+            <article class="admin-stat"><span class="admin-stat-label">Admins</span><strong>@ViewBag.AdminCount</strong><small>Administrator accounts</small></article>
+            <article class="admin-stat"><span class="admin-stat-label">SuperAdmins</span><strong>@ViewBag.SuperAdminCount</strong><small>Highest-trust accounts</small></article>
+            <article class="admin-stat"><span class="admin-stat-label">Courses</span><strong>@ViewBag.CourseCount</strong><small>Learning catalogue items</small></article>
+            <article class="admin-stat"><span class="admin-stat-label">Certificates</span><strong>@ViewBag.CertificateCount</strong><small>Credentials issued</small></article>
+        </div>
+
+        <div class="admin-module-grid">
+            <article class="admin-module admin-super-module">
+                <span class="admin-module-icon">01</span>
+                <h3>Role governance</h3>
+                <p>Only SuperAdministrators can grant or edit privileged administrative roles.</p>
+                <a class="btn btn-secondary" asp-area="Admin" asp-controller="Users" asp-action="Index">Open users</a>
+            </article>
+            <article class="admin-module">
+                <span class="admin-module-icon">02</span>
+                <h3>Audit trail</h3>
+                <p>@ViewBag.AuditCount platform administration events are available for review.</p>
+                <a class="btn btn-secondary" asp-area="Admin" asp-controller="Audit" asp-action="Index">Review audit</a>
+            </article>
+            <article class="admin-module">
+                <span class="admin-module-icon">03</span>
+                <h3>Platform oversight</h3>
+                <p>Review catalogue, certificates and administrative activity from the main console.</p>
+                <a class="btn btn-secondary" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Open console</a>
+            </article>
+        </div>
+    </div>
+</section>
