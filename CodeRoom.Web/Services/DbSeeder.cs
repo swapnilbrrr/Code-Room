@@ -34,7 +34,7 @@ public static class DbSeeder
         var demos = new (string[] Aliases, string Email, string Username, string Name, string Password, string Role)[]
         {
             (["superadmin@coderoom.test", "platform.admin@coderoom.test", "swapnil.superadmin@coderoom.test"], "swapnil.katuwal@coderoom.com", "swapnil", "Swapnil Katuwal", "Swapnil.Admin@2026", Roles.SuperAdmin),
-            (["admin@coderoom.test", "content.manager@coderoom.test", "chandra.admin@coderoom.test"], "chandra.bhatta@coderoom.com", "chandra", "Chandra Bhatta", "Chandra.Admin@2026", Roles.Admin),
+            (["admin@coderoom.test", "content.manager@coderoom.test", "chandra.admin@coderoom.test", "chandra.shrestha@coderoom.com"], "chandra.bhatta@coderoom.com", "chandra", "Chandra Bhatta", "Chandra.Admin@2026", Roles.Admin),
             (["student@coderoom.test", "aarav.learner@coderoom.test", "bijay.student@coderoom.test"], "bijay.khadka@coderoom.com", "bijay", "Bijay Khadka", "Bijay.Student@2026", Roles.Student)
         };
 
