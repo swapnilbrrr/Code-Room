@@ -27,6 +27,18 @@ public class Course
     [StringLength(30)]
     public string Level { get; set; } = "Beginner";
 
+    [Range(10, 1000)]
+    public int EstimatedMinutes { get; set; } = 120;
+
+    [Display(Name = "Certification course")]
+    public bool IsCertification { get; set; }
+
+    [StringLength(160)]
+    public string? CertificateName { get; set; }
+
+    [Range(50, 100)]
+    public int PassingScorePercent { get; set; } = 70;
+
     [StringLength(300)]
     [Display(Name = "Thumbnail URL")]
     public string? ThumbnailUrl { get; set; }
@@ -36,6 +48,9 @@ public class Course
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
+    public ICollection<CourseModule> Modules { get; set; } = [];
     public ICollection<Lesson> Lessons { get; set; } = [];
     public ICollection<Enrollment> Enrollments { get; set; } = [];
+    public ICollection<Challenge> Challenges { get; set; } = [];
+    public ICollection<Certificate> Certificates { get; set; } = [];
 }
