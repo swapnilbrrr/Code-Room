@@ -22,6 +22,13 @@ public class QuizController(ApplicationDbContext db) : Controller
             return NotFound();
         }
 
+        if (!User.IsInRole(Roles.Admin) && !User.IsInRole(Roles.SuperAdmin) &&
+            !await db.Enrollments.AnyAsync(e => e.UserId == User.GetUserId() && e.CourseId == quiz.CourseId))
+        {
+            TempData["Error"] = "Enroll in this course before taking the assessment.";
+            return RedirectToAction("Details", "Courses", new { id = quiz.CourseId });
+        }
+
         return View(new TakeQuizViewModel
         {
             Quiz = quiz,
@@ -40,6 +47,12 @@ public class QuizController(ApplicationDbContext db) : Controller
         if (quiz is null || quiz.Questions.Count == 0)
         {
             return NotFound();
+        }
+
+        if (!User.IsInRole(Roles.Admin) && !User.IsInRole(Roles.SuperAdmin) &&
+            !await db.Enrollments.AnyAsync(e => e.UserId == User.GetUserId() && e.CourseId == quiz.CourseId))
+        {
+            return Forbid();
         }
 
         answers ??= [];
