@@ -13,6 +13,11 @@ public class DashboardController(ApplicationDbContext db) : Controller
 {
     public async Task<IActionResult> Index()
     {
+        if (User.IsInRole(Roles.Admin) || User.IsInRole(Roles.SuperAdmin))
+        {
+            return RedirectToAction("Index", "Dashboard", new { area = "Admin" });
+        }
+
         var userId = User.GetUserId();
         var user = await db.Users.FirstOrDefaultAsync(u => u.Id == userId);
 
@@ -43,6 +48,24 @@ public class DashboardController(ApplicationDbContext db) : Controller
                 CompletedLessons = completedByCourse.GetValueOrDefault(e.CourseId, 0)
             })
             .ToList();
+
+        var enrolledIds = enrollments.Select(e => e.CourseId).ToHashSet();
+        var recommendationQuery = db.Courses
+            .Where(c => c.IsPublished && !enrolledIds.Contains(c.Id))
+            .OrderByDescending(c => c.IsCertification)
+            .ThenBy(c => c.Category)
+            .ThenByDescending(c => c.CreatedAt)
+            .Take(6);
+
+        var recommended = await recommendationQuery.ToListAsync();
+        var primaryCategory = enrollments.Select(e => e.Course.Category).FirstOrDefault();
+
+        if (!string.IsNullOrWhiteSpace(primaryCategory))
+        {
+            var sameCategory = recommended.Where(c => c.Category == primaryCategory).ToList();
+            var otherCategory = recommended.Where(c => c.Category != primaryCategory).ToList();
+            recommended = sameCategory.Concat(otherCategory).Take(4).ToList();
+        }
 
         var allAttempts = await db.QuizAttempts
             .Where(a => a.UserId == userId)
@@ -90,7 +113,18 @@ public class DashboardController(ApplicationDbContext db) : Controller
             QuizAverage = allAttempts.Count == 0
                 ? 0
                 : (int)Math.Round(allAttempts.Average(a => a.TotalQuestions == 0 ? 0 : a.Score * 100.0 / a.TotalQuestions)),
-            LearningStreak = LearningActivityService.CalculateStreak(activities)
+            LearningStreak = LearningActivityService.CalculateStreak(activities),
+            Xp = user.Xp,
+            Level = LearningActivityService.GetLevel(user.Xp),
+            LevelProgress = LearningActivityService.GetLevelProgress(user.Xp),
+            CertificateCount = await db.Certificates.CountAsync(c => c.UserId == userId),
+            RecommendedCourses = recommended.Select(course => new RecommendedCourseViewModel
+            {
+                Course = course,
+                Reason = !string.IsNullOrWhiteSpace(primaryCategory) && course.Category == primaryCategory
+                    ? $"Because you're learning {primaryCategory}"
+                    : "Recommended for your learning path"
+            }).ToList()
         });
     }
 
