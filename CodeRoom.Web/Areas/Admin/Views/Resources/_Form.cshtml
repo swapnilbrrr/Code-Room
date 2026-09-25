@@ -12,15 +12,19 @@
     </label>
     <label class="form-field">Type
         <select class="input" asp-for="Type">
-            <option value="Document">Document</option>
-            <option value="Link">Link</option>
-            <option value="Video">Video</option>
-            <option value="PDF">PDF</option>
+            <option>Document</option>
+            <option>Link</option>
+            <option>Video</option>
+            <option>Audio</option>
+            <option>PDF</option>
+            <option>Learning</option>
+            <option>Exam Prep</option>
+            <option>Security</option>
         </select>
         <span asp-validation-for="Type" class="field-error"></span>
     </label>
     <label class="form-field form-field-wide">URL
-        <input class="input" asp-for="Url" />
+        <input class="input" asp-for="Url" type="url" />
         <span asp-validation-for="Url" class="field-error"></span>
     </label>
     <label class="form-field">Course (optional)
