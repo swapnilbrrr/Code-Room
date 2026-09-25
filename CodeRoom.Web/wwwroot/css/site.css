@@ -2012,3 +2012,365 @@ main {
         white-space: nowrap;
     }
 }
+
+
+/* ============================================================
+   Visual refinement pass
+   ============================================================ */
+
+:root {
+    --header-height: 60px;
+}
+
+.navbar {
+    min-height: var(--header-height);
+    gap: 18px;
+}
+
+.brand img,
+.footer-brand img {
+    width: 104px;
+}
+
+.nav-links {
+    gap: 18px;
+}
+
+.nav-links a {
+    font-size: .88rem;
+}
+
+.nav-actions {
+    gap: 6px;
+    margin-left: auto;
+}
+
+.theme-toggle,
+.mobile-toggle {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    font-size: .95rem;
+}
+
+.nav-user {
+    font-size: .83rem;
+}
+
+.nav-actions .btn {
+    min-height: 34px;
+    padding: 6px 11px;
+    font-size: .82rem;
+}
+
+.site-footer .footer-inner {
+    gap: 28px;
+    padding: 24px 0 20px;
+}
+
+.footer-brand p {
+    margin-top: 3px;
+    font-size: .74rem;
+}
+
+.footer-links {
+    gap: 28px;
+}
+
+.footer-links h2 {
+    margin-bottom: 6px;
+    font-size: .78rem;
+}
+
+.footer-links a {
+    font-size: .78rem;
+    margin-top: 3px;
+}
+
+.footer-bottom .container {
+    min-height: 38px;
+    font-size: .72rem;
+}
+
+.hero {
+    padding: 118px 0 72px;
+}
+
+.hero-grid {
+    gap: 52px;
+}
+
+.hero-panel {
+    padding: 24px;
+}
+
+.hero-trust {
+    gap: 24px;
+    margin-top: 36px;
+}
+
+.section {
+    padding: 72px 0;
+}
+
+.section-heading {
+    margin-bottom: 30px;
+}
+
+.home-stat-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: var(--border);
+    box-shadow: var(--shadow);
+}
+
+.home-stat {
+    padding: 22px 20px;
+    background: var(--surface);
+}
+
+.home-stat strong {
+    display: block;
+    color: var(--heading);
+    font-size: 1.45rem;
+    letter-spacing: -.03em;
+}
+
+.home-stat span {
+    display: block;
+    margin-top: 2px;
+    color: var(--muted);
+    font-size: .78rem;
+}
+
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.feature-card {
+    padding: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-3px);
+    border-color: color-mix(in srgb, var(--accent) 35%, var(--border));
+    box-shadow: var(--shadow);
+}
+
+.feature-number {
+    display: inline-grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: .72rem;
+    font-weight: 800;
+}
+
+.feature-card h3 {
+    margin: 18px 0 7px;
+    color: var(--heading);
+    font-size: 1.05rem;
+}
+
+.feature-card p {
+    margin: 0;
+    color: var(--muted);
+    font-size: .88rem;
+}
+
+.home-cta {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 26px;
+    padding: 34px;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: var(--surface);
+    box-shadow: var(--shadow);
+}
+
+.home-cta h2 {
+    margin: 7px 0 5px;
+    color: var(--heading);
+    font-size: clamp(1.55rem, 3vw, 2.2rem);
+    line-height: 1.1;
+}
+
+.home-cta p {
+    max-width: 680px;
+    margin: 0;
+    color: var(--muted);
+}
+
+.lesson-content {
+    gap: 18px;
+}
+
+.lesson-content h1 {
+    margin: 0 0 4px;
+    color: var(--heading);
+    font-size: clamp(2rem, 4vw, 3rem);
+    line-height: 1.08;
+    letter-spacing: -.045em;
+}
+
+.lesson-copy {
+    display: grid;
+    gap: 14px;
+}
+
+.lesson-copy p {
+    margin: 0;
+    color: var(--text);
+    line-height: 1.78;
+}
+
+.lesson-video {
+    margin: 4px 0 6px;
+}
+
+.lesson-video-frame {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    display: block;
+    border: 0;
+    border-radius: 12px;
+    background: #0d1117;
+    box-shadow: var(--shadow);
+}
+
+.lesson-video-caption {
+    margin: 7px 0 0;
+    color: var(--muted);
+    font-size: .76rem;
+}
+
+.lesson-resource {
+    padding: 15px 16px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface-muted);
+}
+
+.lesson-resource strong {
+    display: block;
+    color: var(--heading);
+    font-size: .78rem;
+    margin-bottom: 3px;
+}
+
+.lesson-resource a {
+    color: var(--accent);
+    font-size: .85rem;
+    font-weight: 700;
+}
+
+.lesson-actions {
+    align-items: center;
+    gap: 10px;
+    padding-top: 4px;
+    border-top: 1px solid var(--border);
+}
+
+.lesson-actions form {
+    margin: 0;
+}
+
+.lesson-actions .btn {
+    min-height: 44px;
+}
+
+.lesson-actions .btn-secondary {
+    align-self: center;
+}
+
+.lesson-nav {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 2px;
+}
+
+.lesson-nav .btn {
+    min-height: 40px;
+}
+
+@media (max-width: 900px) {
+    .feature-grid,
+    .home-stat-strip {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 760px) {
+    :root { --header-height: 54px; }
+
+    .navbar {
+        gap: 10px;
+    }
+
+    .brand img,
+    .footer-brand img {
+        width: 86px;
+    }
+
+    .desktop-action {
+        display: none !important;
+    }
+
+    .theme-toggle,
+    .mobile-toggle {
+        width: 31px;
+        height: 31px;
+    }
+
+    .hero {
+        padding-top: 96px;
+        padding-bottom: 56px;
+    }
+
+    .section {
+        padding: 58px 0;
+    }
+
+    .feature-grid,
+    .home-stat-strip {
+        grid-template-columns: 1fr;
+    }
+
+    .home-cta {
+        grid-template-columns: 1fr;
+        padding: 24px;
+    }
+
+    .site-footer .footer-inner {
+        padding: 20px 0 16px;
+    }
+
+    .footer-links {
+        gap: 20px;
+    }
+
+    .lesson-nav {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .lesson-nav .btn {
+        width: 100%;
+    }
+}
