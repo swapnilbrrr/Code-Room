@@ -31,9 +31,16 @@ public class UsersController(ApplicationDbContext db) : Controller
         }
 
         var email = model.Email.Trim().ToLowerInvariant();
+        var username = model.Username.Trim().ToLowerInvariant();
+
         if (await db.Users.AnyAsync(u => u.Email == email))
         {
             ModelState.AddModelError(nameof(model.Email), "This email is already registered.");
+        }
+
+        if (await db.Users.AnyAsync(u => u.Username == username))
+        {
+            ModelState.AddModelError(nameof(model.Username), "This username is already in use.");
         }
 
         if (!IsRoleAllowed(model.Role))
@@ -49,6 +56,7 @@ public class UsersController(ApplicationDbContext db) : Controller
         db.Users.Add(new User
         {
             FullName = model.FullName.Trim(),
+            Username = username,
             Email = email,
             Role = model.Role,
             PasswordHash = PasswordHasher.Hash(model.Password!)
@@ -71,6 +79,7 @@ public class UsersController(ApplicationDbContext db) : Controller
         {
             Id = user.Id,
             FullName = user.FullName,
+            Username = user.Username,
             Email = user.Email,
             Role = user.Role,
             IsEdit = true
@@ -88,9 +97,16 @@ public class UsersController(ApplicationDbContext db) : Controller
         model.IsEdit = true;
 
         var email = model.Email.Trim().ToLowerInvariant();
+        var username = model.Username.Trim().ToLowerInvariant();
+
         if (await db.Users.AnyAsync(u => u.Email == email && u.Id != id))
         {
             ModelState.AddModelError(nameof(model.Email), "This email is already registered.");
+        }
+
+        if (await db.Users.AnyAsync(u => u.Username == username && u.Id != id))
+        {
+            ModelState.AddModelError(nameof(model.Username), "This username is already in use.");
         }
 
         if (!IsRoleAllowed(model.Role))
@@ -110,6 +126,7 @@ public class UsersController(ApplicationDbContext db) : Controller
         }
 
         user.FullName = model.FullName.Trim();
+        user.Username = username;
         user.Email = email;
         user.Role = model.Role;
 
