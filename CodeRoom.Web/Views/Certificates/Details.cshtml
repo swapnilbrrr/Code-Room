@@ -17,6 +17,7 @@
             </div>
             <div class="certificate-actions">
                 <a class="btn btn-secondary" asp-action="Index">Back to certificates</a>
+                <a class="btn btn-secondary" asp-action="Verify" asp-route-number="@Model.CertificateNumber">Verify ID</a>
                 <button class="btn btn-primary" type="button" onclick="window.print()">Print certificate</button>
             </div>
         </article>
