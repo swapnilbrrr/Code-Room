@@ -76,24 +76,59 @@ The planned learning experience connects courses, lessons, resources, quizzes an
 
 ## Project Structure
 
+The application is intentionally organised around the MVC responsibilities agreed for Code-Room. Empty folders are kept where a feature will be implemented later so the architecture is visible before the code is filled in.
+
 ```text
 Code-Room/
-├── .devcontainer/              # Reproducible Codespaces environment
-├── .github/workflows/          # CI build and test workflow
+├── .devcontainer/
+│   └── devcontainer.json
 ├── CodeRoom.Web/
-│   ├── Areas/Admin/            # Administrative area
-│   ├── Controllers/            # MVC request handling
-│   ├── Data/                   # EF Core database context
-│   ├── Models/                 # Domain entities
-│   ├── Migrations/             # EF Core migrations
-│   ├── Services/               # Application services
-│   ├── ViewModels/             # UI-specific models
-│   ├── Views/                  # Razor UI
-│   └── wwwroot/                # CSS, JavaScript and images
-├── database/                   # Schema/seed planning assets
-├── PROJECT-CHECKLIST.md        # Definition of done and project control
+│   ├── Areas/
+│   │   └── Admin/
+│   │       ├── Controllers/
+│   │       └── Views/
+│   │           ├── Dashboard/
+│   │           ├── Courses/
+│   │           ├── Lessons/
+│   │           ├── Quizzes/
+│   │           ├── Users/
+│   │           ├── Resources/
+│   │           └── Announcements/
+│   ├── Controllers/
+│   │   ├── AccountController.cs
+│   │   ├── CoursesController.cs
+│   │   ├── HomeController.cs
+│   │   ├── LessonsController.cs
+│   │   ├── QuizController.cs
+│   │   └── StudentController.cs
+│   ├── Data/
+│   │   └── ApplicationDbContext.cs
+│   ├── Migrations/
+│   ├── Models/
+│   ├── Services/
+│   ├── ViewModels/
+│   ├── Views/
+│   │   ├── Account/
+│   │   ├── Courses/
+│   │   ├── Home/
+│   │   ├── Lessons/
+│   │   ├── Quiz/
+│   │   ├── Shared/
+│   │   └── Student/
+│   ├── wwwroot/
+│   │   ├── css/
+│   │   ├── js/
+│   │   └── images/
+│   ├── appsettings.json
+│   ├── CodeRoom.Web.csproj
+│   └── Program.cs
+├── database/
+│   ├── schema/
+│   └── seed/
+├── tests/
 ├── CodeRoom.sln
-├── global.json                 # .NET SDK version policy
+├── global.json
+├── PROJECT-CHECKLIST.md
 └── README.md
 ```
 
