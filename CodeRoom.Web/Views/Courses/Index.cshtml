@@ -30,6 +30,9 @@
                     <option value="web">Web development</option>
                     <option value="security">Cybersecurity</option>
                     <option value="database">Databases</option>
+                    <option value="networking">Networking</option>
+                    <option value="cloud">Cloud</option>
+                    <option value="linux">Linux</option>
                 </select>
             </label>
             <label>
@@ -51,11 +54,19 @@
                         <span class="course-tag">@course.Category</span>
                         <span class="level-pill">@course.Level</span>
                     </div>
+                    @if (course.IsCertification)
+                    {
+                        <span class="cert-pill">🎓 Certification path</span>
+                    }
                     <h2>@course.Title</h2>
                     <p>@course.Description</p>
                     <div class="course-meta">
                         <span>@course.Lessons.Count lessons</span>
-                        <span>@course.Level</span>
+                        <span>⏱ @course.EstimatedMinutes min</span>
+                        @if (course.IsCertification)
+                        {
+                            <span>Pass @course.PassingScorePercent%</span>
+                        }
                     </div>
                     <a class="btn btn-secondary" asp-action="Details" asp-route-id="@course.Id">View course</a>
                 </article>
