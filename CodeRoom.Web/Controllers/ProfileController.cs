@@ -59,7 +59,7 @@ public class ProfileController(ApplicationDbContext db, IWebHostEnvironment envi
             FullName = user.FullName,
             Username = user.Username,
             Email = user.Email,
-            Bio = user.Bio,
+            Bio = user.Bio ?? string.Empty,
             AvatarUrl = user.AvatarUrl,
             RoleLabel = user.Role,
             IsAdmin = isAdmin,
