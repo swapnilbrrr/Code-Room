@@ -235,6 +235,94 @@ public static class LearningPlatformSeeder
         await db.SaveChangesAsync();
     }
 
+
+    private static async Task EnsureModulesForAllCoursesAsync(ApplicationDbContext db)
+    {
+        var courses = await db.Courses
+            .Include(c => c.Lessons)
+            .Include(c => c.Modules)
+            .ToListAsync();
+
+        foreach (var course in courses)
+        {
+            var orderedLessons = course.Lessons.OrderBy(l => l.Order).ToList();
+            if (orderedLessons.Count == 0)
+            {
+                continue;
+            }
+
+            var modules = course.Modules.OrderBy(m => m.Order).ToList();
+
+            if (modules.Count == 0)
+            {
+                var moduleCount = (int)Math.Ceiling(orderedLessons.Count / 2.0);
+                for (var i = 0; i < moduleCount; i++)
+                {
+                    var module = new CourseModule
+                    {
+                        Course = course,
+                        Title = $"Module {i + 1} — {GetModuleTitle(course.Category, i)}",
+                        Description = $"Learn and practise the {GetModuleTitle(course.Category, i).ToLowerInvariant()} stage of this path.",
+                        Order = i + 1
+                    };
+                    db.CourseModules.Add(module);
+                    modules.Add(module);
+                }
+            }
+
+            for (var i = 0; i < orderedLessons.Count; i++)
+            {
+                if (orderedLessons[i].CourseModuleId is null && modules.Count > 0)
+                {
+                    orderedLessons[i].CourseModule = modules[Math.Min(i / 2, modules.Count - 1)];
+                }
+            }
+        }
+
+        await db.SaveChangesAsync();
+    }
+
+    private static async Task MaterializeLessonResourcesAsync(ApplicationDbContext db)
+    {
+        var lessons = await db.Lessons
+            .AsNoTracking()
+            .Where(l => l.VideoUrl != null || l.AudioUrl != null || l.ResourceUrl != null)
+            .ToListAsync();
+
+        foreach (var lesson in lessons)
+        {
+            var resources = new[]
+            {
+                (Url: lesson.VideoUrl, Title: $"Video — {lesson.Title}", Type: "Video"),
+                (Url: lesson.AudioUrl, Title: $"Audio — {lesson.Title}", Type: "Audio"),
+                (Url: lesson.ResourceUrl, Title: $"Reference — {lesson.Title}", Type: "Reference")
+            };
+
+            foreach (var item in resources)
+            {
+                if (string.IsNullOrWhiteSpace(item.Url))
+                {
+                    continue;
+                }
+
+                if (await db.Resources.AnyAsync(r => r.Url == item.Url))
+                {
+                    continue;
+                }
+
+                db.Resources.Add(new Resource
+                {
+                    CourseId = lesson.CourseId,
+                    Url = item.Url!,
+                    Title = item.Title,
+                    Type = item.Type
+                });
+            }
+        }
+
+        await db.SaveChangesAsync();
+    }
+
     private static async Task SeedAchievementsAsync(ApplicationDbContext db)
     {
         var definitions = new[]
