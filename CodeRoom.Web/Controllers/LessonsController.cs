@@ -34,10 +34,11 @@ public class LessonsController(ApplicationDbContext db) : Controller
             return RedirectToAction("Details", "Courses", new { id });
         }
 
-        var completed = await db.Progress
+        var completed = (await db.Progress
             .Where(p => p.UserId == userId && p.IsCompleted && p.Lesson.CourseId == id)
             .Select(p => p.LessonId)
-            .ToHashSetAsync();
+            .ToListAsync())
+            .ToHashSet();
 
         var current = lessonId is not null
             ? course.Lessons.FirstOrDefault(l => l.Id == lessonId) ?? course.Lessons.FirstOrDefault(l => !completed.Contains(l.Id)) ?? course.Lessons.First()
