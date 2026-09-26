@@ -39,7 +39,19 @@ public class ChallengesController(ApplicationDbContext db) : Controller
             .Include(c => c.Course)
             .FirstOrDefaultAsync(c => c.Id == id && c.Course.IsPublished);
 
-        return challenge is null ? NotFound() : View(challenge);
+        if (challenge is null)
+        {
+            return NotFound();
+        }
+
+        if (!User.IsInRole(Roles.Admin) && !User.IsInRole(Roles.SuperAdmin) &&
+            !await db.Enrollments.AnyAsync(e => e.UserId == User.GetUserId() && e.CourseId == challenge.CourseId))
+        {
+            TempData["Error"] = "Enroll in this course before opening the practice lab.";
+            return RedirectToAction("Details", "Courses", new { id = challenge.CourseId });
+        }
+
+        return View(challenge);
     }
 
     [HttpPost]
