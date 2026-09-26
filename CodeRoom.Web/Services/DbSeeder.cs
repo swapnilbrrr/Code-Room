@@ -154,6 +154,23 @@ public static class DbSeeder
             }
         }
 
+        // Remove obsolete local demo accounts left behind by older seed versions.
+        // Only the explicitly known .test demo identities are touched; real registered users are preserved.
+        var legacyEmails = demos.SelectMany(d => d.Aliases)
+            .Concat(additionalUsers.SelectMany(d => d.Aliases))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+
+        var legacyUsers = await db.Users
+            .Where(u => legacyEmails.Contains(u.Email))
+            .ToListAsync();
+
+        if (legacyUsers.Count > 0)
+        {
+            db.Users.RemoveRange(legacyUsers);
+            changed = true;
+        }
+
         var lessons = await db.Lessons
             .Include(l => l.Course)
             .ToListAsync();
