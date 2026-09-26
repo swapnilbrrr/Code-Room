@@ -132,6 +132,7 @@ public class LessonsController(ApplicationDbContext db) : Controller
     {
         var module = await db.CourseModules
             .Where(m => m.CourseId == lesson.CourseId)
+            .Include(m => m.Lessons)
             .OrderBy(m => m.Order)
             .ThenBy(m => m.Id)
             .ToListAsync();
