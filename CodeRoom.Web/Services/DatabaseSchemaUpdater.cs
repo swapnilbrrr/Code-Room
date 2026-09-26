@@ -253,7 +253,7 @@ CREATE TABLE IF NOT EXISTS AdminAuditLogs (
     {
         if (!await ColumnExistsAsync(db, tableName, columnName))
         {
-            await db.Database.ExecuteSqlRawAsync(
+            await db.Database.ExecuteSqlInterpolatedAsync(
                 $"ALTER TABLE {tableName} ADD COLUMN {columnName} {definition};");
         }
     }
