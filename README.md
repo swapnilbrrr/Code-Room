@@ -49,7 +49,9 @@ The learning workflow connects courses, lessons, resources, quizzes, enrolment a
 - Dark/light theme support
 - Safe local database configuration without committed credentials
 
-> **Status:** Active development. Items are treated as complete only after implementation and verification. See [PROJECT-CHECKLIST.md](PROJECT-CHECKLIST.md).
+## Project status
+
+> **Academic project:** Code-Room is structured as a complete database-driven learning platform for development, demonstration, and academic evaluation.
 
 ## Technology Stack
 
@@ -88,10 +90,8 @@ Code-Room/
 │   ├── schema/
 │   ├── seed/
 │   └── setup.sql
-├── tests/
 ├── CodeRoom.sln
 ├── global.json
-├── PROJECT-CHECKLIST.md
 └── README.md
 ```
 
@@ -110,7 +110,7 @@ Verify the SDK:
 dotnet --version
 ```
 
-The repository pins the .NET 8 SDK through `global.json`.
+The repository pins the .NET 8 SDK family through `global.json`.
 
 ### 2. Create the Code-Room database
 
@@ -200,21 +200,7 @@ Submitted ZIP
 
 The application uses EF Core's `EnsureCreated` during startup for this assignment so a fresh database can be prepared without requiring a pre-existing schema or migration history.
 
-## Development Workflow
-
-Implementation follows controlled milestones:
-
-1. Foundation and development environment
-2. Database and persistence
-3. Authentication and authorization
-4. Core learning workflows
-5. Administration
-6. Selected additional features
-7. Testing, security review and UI polish
-
-The repository is reviewed before moving between milestones so incomplete demo UI is not mistaken for finished functionality.
-
-## Code Quality
+## Development & Code Quality
 
 - Keep controllers focused on request handling.
 - Keep persistence concerns in the data layer.
@@ -235,10 +221,17 @@ The repository is reviewed before moving between milestones so incomplete demo U
 
 Only confirmed contributions should be recorded.
 
-## Project Control
-
-[PROJECT-CHECKLIST.md](PROJECT-CHECKLIST.md) contains the definition of done, implementation phases and final submission checks.
-
-## License
 
 This project is intended for educational and portfolio use.
+
+
+## Repository
+
+**GitHub:** https://github.com/swapnilbrrr/Code-Room
+
+---
+
+<p align="center">
+  <strong>Code-Room</strong><br>
+  Learn. Practise. Track. Progress.
+</p>
