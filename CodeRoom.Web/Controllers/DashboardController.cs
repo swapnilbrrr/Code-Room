@@ -73,6 +73,8 @@ public class DashboardController(ApplicationDbContext db) : Controller
             .OrderByDescending(a => a.AttemptedAt)
             .ToListAsync();
 
+        await EnsureEnrollmentActivitiesAsync(db, userId, enrollments);
+
         var activities = await db.UserActivities
             .Where(a => a.UserId == userId && a.CreatedAt >= DateTime.UtcNow.Date.AddDays(-364))
             .OrderBy(a => a.CreatedAt)
@@ -126,6 +128,35 @@ public class DashboardController(ApplicationDbContext db) : Controller
                     : "Recommended for your learning path"
             }).ToList()
         });
+    }
+
+    private static async Task EnsureEnrollmentActivitiesAsync(
+        ApplicationDbContext db,
+        int userId,
+        IEnumerable<Models.Enrollment> enrollments)
+    {
+        var existingEnrollmentActivities = await db.UserActivities
+            .Where(a => a.UserId == userId && a.ActivityType == "CourseEnrolled")
+            .Select(a => a.Description)
+            .ToListAsync();
+
+        var missing = enrollments
+            .Where(e => !existingEnrollmentActivities.Any(description =>
+                string.Equals(description, $"Enrolled in {e.Course.Title}", StringComparison.Ordinal)))
+            .Select(e => new Models.UserActivity
+            {
+                UserId = userId,
+                ActivityType = "CourseEnrolled",
+                Description = $"Enrolled in {e.Course.Title}",
+                CreatedAt = e.EnrolledAt
+            })
+            .ToList();
+
+        if (missing.Count > 0)
+        {
+            db.UserActivities.AddRange(missing);
+            await db.SaveChangesAsync();
+        }
     }
 
     private static List<ActivityDayViewModel> BuildActivityDays(IEnumerable<Models.UserActivity> activities)
