@@ -126,6 +126,19 @@ public class UsersController(ApplicationDbContext db) : Controller
             return NotFound();
         }
 
+        if (user.Id == User.GetUserId() && !string.Equals(model.Role, user.Role, StringComparison.Ordinal))
+        {
+            ModelState.AddModelError(nameof(model.Role), "You cannot change your own administrator role.");
+            ViewBag.CannotChangeRole = true;
+            return View(model);
+        }
+
+        if (user.Role == Roles.SuperAdmin && !User.IsInRole(Roles.SuperAdmin))
+        {
+            TempData["Error"] = "Only a Super Administrator can modify a Super Administrator account.";
+            return RedirectToAction(nameof(Index));
+        }
+
         user.FullName = model.FullName.Trim();
         user.Username = username;
         user.Email = email;
