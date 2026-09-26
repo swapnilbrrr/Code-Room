@@ -46,9 +46,7 @@
             }
 
             <article class="lesson-copy" data-lesson-content>
-                @foreach (var paragraph in (Model.Current.Content ?? string.Empty).Split("
-
-", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+                @foreach (var paragraph in (Model.Current.Content ?? string.Empty).Split(new[] { "\r\n\r\n", "\n\n" }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
                 {
                     var separator = paragraph.IndexOf(':');
                     var label = separator > 0 ? paragraph[..separator] : string.Empty;
