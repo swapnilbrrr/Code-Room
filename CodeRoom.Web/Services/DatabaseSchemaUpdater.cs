@@ -253,8 +253,10 @@ CREATE TABLE IF NOT EXISTS AdminAuditLogs (
     {
         if (!await ColumnExistsAsync(db, tableName, columnName))
         {
-            await db.Database.ExecuteSqlInterpolatedAsync(
-                $"ALTER TABLE {tableName} ADD COLUMN {columnName} {definition};");
+            // Table/column/definition names are internal schema constants, not user input.
+            // They cannot be SQL parameters, so quote the identifiers explicitly.
+            var sql = "ALTER TABLE `" + tableName + "` ADD COLUMN `" + columnName + "` " + definition + ";";
+            await db.Database.ExecuteSqlRawAsync(sql);
         }
     }
 
